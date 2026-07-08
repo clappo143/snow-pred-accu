@@ -1,9 +1,15 @@
 """Render docs/index.html — a self-contained dashboard app — from the DB.
 
 Single generated file, vanilla JS, no external assets. Four switchable
-palettes (each designed for light and dark), three chart modes, a table
-view, forecast-event badges, and a manual-entry panel whose export feeds
-data/manual_actuals.json for season backfill.
+palettes (each designed for light and dark), stackable chart views (bars,
+range band, cumulative, lines, table), forecast-event badges, and a
+manual-entry panel whose export feeds data/manual.json for season backfill.
+
+The ensemble shown on the page is computed client-side as a weighted median
+of whichever forecasters are toggled on (legend clicks), with per-forecaster
+weights editable in the Weights panel. The server-side stored ensemble
+(score.weighted_ensemble) is still written to the DB for scoring history but
+the page ignores it for display.
 """
 from __future__ import annotations
 
@@ -130,6 +136,21 @@ h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--muted); margin-bottom: 14px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px;
   margin-right: 5px; }
+.legend button.lgd { display: inline-flex; align-items: center; border: 0;
+  background: none; color: var(--muted); font: inherit; font-size: 12.5px;
+  cursor: pointer; padding: 0; }
+.lgd.off { opacity: 0.35; text-decoration: line-through; }
+#advanced { border: 1px dashed var(--line); border-radius: 6px;
+  padding: 12px 14px; margin-bottom: 14px; }
+.advhead { display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  margin-bottom: 8px; }
+.wrow { display: grid; grid-template-columns: 150px 1fr 36px; gap: 10px;
+  align-items: center; font-size: 13px; margin: 6px 0; }
+.wrow span i { display: inline-block; width: 10px; height: 10px;
+  border-radius: 2px; margin-right: 6px; }
+.wrow.off { opacity: 0.4; }
+.wrow b { text-align: right; font-variant-numeric: tabular-nums; }
+.wrow input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .days { display: grid; grid-auto-flow: column; gap: 14px; align-items: end;
   height: 200px; padding-top: 10px; }
 .day { display: flex; flex-direction: column; height: 100%; }
@@ -166,6 +187,7 @@ footer { color: var(--muted); font-size: 12px; margin-top: 10px; }
   border-radius: 6px; padding: 7px 14px; font: 600 13px system-ui; cursor: pointer; }
 .ghost { background: transparent; color: var(--accent);
   border: 1px solid var(--accent); }
+.ghost.on { background: var(--accent); color: var(--card); }
 .chip { display: inline-flex; gap: 6px; align-items: center; background: var(--chip);
   border-radius: 999px; padding: 3px 10px; font-size: 12px; margin: 2px;
   font-variant-numeric: tabular-nums; }
@@ -182,19 +204,67 @@ button:focus-visible, input:focus-visible, .swatch:focus-visible {
 
 JS = r"""
 const $ = (s) => document.querySelector(s);
-const PANEL_ORDER = ["bars", "cumulative", "lines", "table"];
-const PANEL_LABEL = { bars: "Daily bars", cumulative: "Cumulative",
-  lines: "Daily lines", table: "Table" };
+const PANEL_ORDER = ["bars", "range", "cumulative", "lines", "table"];
+const PANEL_LABEL = { bars: "Daily bars", range: "Range band — provider spread with ensemble median",
+  cumulative: "Cumulative", lines: "Daily lines", table: "Table" };
 const state = {
   palette: localStorage.getItem("palette") || "glacier",
   panels: JSON.parse(localStorage.getItem("panels") || '["bars","cumulative"]'),
   horizon: +(localStorage.getItem("horizon") || 5),
+  disabled: JSON.parse(localStorage.getItem("disabledSources") || "[]"),
+  weights: JSON.parse(localStorage.getItem("sourceWeights") || "{}"),
+  showAdv: localStorage.getItem("showAdv") === "1",
   manual: JSON.parse(localStorage.getItem("manualActuals") || "{}"),
   mforecasts: JSON.parse(localStorage.getItem("manualForecasts") || "[]"),
 };
 const fmtDay = (iso) => new Date(iso + "T12:00").toLocaleDateString("en-AU",
   { weekday: "short", day: "numeric" });
-const sources = DATA.sources.filter((s) => s.id in DATA.forecasts);
+const sources = DATA.sources.filter((s) =>
+  s.id === "ensemble" || s.id in DATA.forecasts);
+const providers = sources.filter((s) => s.id !== "ensemble");
+const isOn = (id) => !state.disabled.includes(id);
+const weightOf = (id) => state.weights[id] ?? 50;
+const visible = () => sources.filter((s) => isOn(s.id));
+
+// The ensemble is recomputed live in the browser: a weighted median of the
+// providers that are toggled on, using the Advanced-panel weights (default 50
+// each, i.e. a plain median). It ignores the server-side stored ensemble.
+let ENS = {};
+
+function wmedian(pairs) { // [value, weight], weights > 0
+  const s = pairs.slice().sort((a, b) => a[0] - b[0]);
+  const tot = s.reduce((t, p) => t + p[1], 0);
+  let c = 0;
+  for (let i = 0; i < s.length; i++) {
+    c += s[i][1];
+    if (c > tot / 2) return s[i][0];
+    if (c === tot / 2) return (s[i][0] + s[Math.min(i + 1, s.length - 1)][0]) / 2;
+  }
+  return s[s.length - 1][0];
+}
+
+function computeEnsemble() {
+  ENS = {};
+  const act = providers.filter((s) => isOn(s.id) && weightOf(s.id) > 0);
+  const dates = new Set();
+  act.forEach((s) => Object.keys(DATA.forecasts[s.id]).forEach((d) => dates.add(d)));
+  for (const d of dates) {
+    const pairs = act.map((s) => [DATA.forecasts[s.id][d], weightOf(s.id)])
+      .filter((p) => p[0] != null);
+    if (pairs.length) ENS[d] = wmedian(pairs);
+  }
+}
+
+const F = (id, d) => (id === "ensemble" ? ENS[d] : DATA.forecasts[id][d]);
+
+// per-day summary across the toggled-on providers (ensemble excluded)
+function dayStats(d) {
+  const vals = providers.filter((s) => isOn(s.id))
+    .map((s) => DATA.forecasts[s.id][d]).filter((v) => v != null);
+  if (!vals.length) return null;
+  return { d, med: ENS[d] ?? median(vals),
+    lo: Math.min(...vals), hi: Math.max(...vals) };
+}
 
 function setPalette(p) {
   state.palette = p;
@@ -221,24 +291,31 @@ function median(a) {
 
 function renderBadges() {
   const days = horizonDates();
-  let event = null, peak = null;
-  for (const d of days) {
-    const vals = sources.filter((s) => s.id !== "ensemble")
-      .map((s) => DATA.forecasts[s.id][d]).filter((v) => v != null);
-    if (!vals.length) continue;
-    const med = median(vals), stat = { d, med,
-      lo: Math.min(...vals), hi: Math.max(...vals) };
-    if (!event && med >= 1) event = stat;
-    if (!peak || stat.med > peak.med) peak = stat;
-  }
+  const stats = days.map(dayStats);
+  const first = stats.findIndex((s) => s && s.med >= 1);
+  let peak = null;
+  for (const s of stats) if (s && (!peak || s.med > peak.med)) peak = s;
   const st = DATA.status || {};
   let html = "";
-  html += event
-    ? `<div class="badge event"><small>Next snowfall event</small><b>${fmtDay(event.d)}</b>
-       <div class="range">median ${event.med.toFixed(1)}cm · range ${event.lo.toFixed(0)}–${event.hi.toFixed(0)}cm</div></div>`
-    : `<div class="badge event"><small>Next snowfall event</small><b>None sighted</b>
-       <div class="range">no provider median ≥ 1cm in ${state.horizon} days</div></div>`;
-  if (peak && (!event || peak.d !== event.d) && peak.med >= 1)
+  if (first >= 0) {
+    const day = stats[first];
+    // the event is the run of consecutive snow days starting at the first one
+    let end = first;
+    while (end + 1 < stats.length && stats[end + 1] && stats[end + 1].med >= 1) end++;
+    const run = stats.slice(first, end + 1);
+    const cum = run.reduce((t, s) =>
+      ({ med: t.med + s.med, lo: t.lo + s.lo, hi: t.hi + s.hi }),
+      { med: 0, lo: 0, hi: 0 });
+    html += `<div class="badge event"><small>Next snow day</small><b>${fmtDay(day.d)}</b>
+      <div class="range">median ${day.med.toFixed(1)}cm · range ${day.lo.toFixed(0)}–${day.hi.toFixed(0)}cm</div></div>`;
+    html += `<div class="badge event"><small>Next snow event · ${run.length} day${run.length > 1 ? "s" : ""}</small>
+      <b>${run.length > 1 ? fmtDay(day.d) + " – " + fmtDay(run[end - first].d) : fmtDay(day.d)}</b>
+      <div class="range">cumulative median ${cum.med.toFixed(0)}cm · range ${cum.lo.toFixed(0)}–${cum.hi.toFixed(0)}cm</div></div>`;
+  } else {
+    html += `<div class="badge event"><small>Next snow day</small><b>None sighted</b>
+      <div class="range">no ensemble median ≥ 1cm in ${state.horizon} days</div></div>`;
+  }
+  if (peak && peak.med >= 1 && (first < 0 || peak.d !== stats[first].d))
     html += `<div class="badge"><small>Biggest day ahead</small><b>${fmtDay(peak.d)}</b>
       <div class="range">median ${peak.med.toFixed(1)}cm · range ${peak.lo.toFixed(0)}–${peak.hi.toFixed(0)}cm</div></div>`;
   if (st.natural_depth != null)
@@ -249,17 +326,19 @@ function renderBadges() {
       <div class="range">Perisher official 24h-to-7am</div></div>`;
   html += `<div class="badge"><small>Days scored</small><b>${DATA.scored_days}</b>
     <div class="range">24h-lead comparisons</div></div>`;
-  html += `<div class="badge"><small>Forecasters</small><b>${sources.length - 1}</b>
-    <div class="range">+ weighted ensemble</div></div>`;
+  const nOn = providers.filter((s) => isOn(s.id)).length;
+  html += `<div class="badge"><small>Forecasters</small><b>${nOn}${nOn < providers.length ? " / " + providers.length : ""}</b>
+    <div class="range">in the weighted ensemble</div></div>`;
   $("#badges").innerHTML = html;
 }
 
 function chartBars(days) {
+  const vis = visible();
   const vmax = Math.max(1,
-    ...sources.map((s) => days.map((d) => DATA.forecasts[s.id][d] || 0)).flat());
+    ...vis.map((s) => days.map((d) => F(s.id, d) || 0)).flat());
   return `<div class="days">` + days.map((d) => {
-    const bars = sources.map((s) => {
-      const v = DATA.forecasts[s.id][d] ?? 0;
+    const bars = vis.map((s) => {
+      const v = F(s.id, d) ?? 0;
       const h = Math.max(0.5, 100 * v / vmax);
       const em = v >= 0.5 ? `<em>${v.toFixed(0)}</em>` : "";
       return `<div class="bar" title="${s.name}: ${v.toFixed(1)}cm"
@@ -272,10 +351,10 @@ function chartBars(days) {
 function chartSvg(days, cumulative) {
   const W = 960, H = 240, PL = 34, PT = 12, PB = 26;
   const PR = cumulative ? 132 : 34;  // room for end-labels on cumulative
-  const series = sources.map((s) => {
+  const series = visible().map((s) => {
     let run = 0;
     return { ...s, pts: days.map((d) => {
-      const v = DATA.forecasts[s.id][d] ?? 0;
+      const v = F(s.id, d) ?? 0;
       return cumulative ? (run += v) : v;
     }) };
   });
@@ -320,13 +399,44 @@ function chartSvg(days, cumulative) {
   return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${lines}${endLabels}${labels}</svg>`;
 }
 
+function chartRange(days) {
+  const W = 960, H = 240, PL = 34, PR = 34, PT = 12, PB = 26;
+  const stats = days.map((d) => dayStats(d) || { d, med: 0, lo: 0, hi: 0 });
+  const vmax = Math.max(1, ...stats.map((s) => s.hi));
+  const x = (i) => PL + i * (W - PL - PR) / Math.max(1, days.length - 1);
+  const y = (v) => H - PB - (H - PT - PB) * v / vmax;
+  let g = "";
+  for (let t = 0; t <= 4; t++) {
+    const v = vmax * t / 4;
+    g += `<line class="grid" x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}"/>
+      <text x="${PL - 6}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(0)}</text>`;
+  }
+  const col = (sources.find((s) => s.id === "ensemble") || {}).color || "var(--accent)";
+  const top = stats.map((s, i) => `${i ? "L" : "M"}${x(i)},${y(s.hi)}`).join("");
+  const bot = stats.map((_, i) => {
+    const s = stats[stats.length - 1 - i];
+    return `L${x(stats.length - 1 - i)},${y(s.lo)}`;
+  }).join("");
+  const band = `<path d="${top}${bot}Z" fill="${col}" fill-opacity="0.14"
+    stroke="${col}" stroke-opacity="0.35" stroke-width="1"/>`;
+  const medPath = stats.map((s, i) => `${i ? "L" : "M"}${x(i)},${y(s.med)}`).join("");
+  const medLine = `<path d="${medPath}" fill="none" stroke="${col}" stroke-width="2.4"/>`
+    + stats.map((s, i) =>
+      `<circle cx="${x(i)}" cy="${y(s.med)}" r="3.2" fill="${col}">
+       <title>${s.d}: median ${s.med.toFixed(1)}cm · range ${s.lo.toFixed(0)}–${s.hi.toFixed(0)}cm</title></circle>`).join("");
+  const labels = days.map((d, i) =>
+    `<text x="${x(i)}" y="${H - PB + 16}" text-anchor="middle">${fmtDay(d)}</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${band}${medLine}${labels}</svg>`;
+}
+
 function chartTable(days) {
+  const vis = visible();
   const head = days.map((d) => `<th>${fmtDay(d)}</th>`).join("");
   const maxByDay = days.map((d) => Math.max(
-    ...sources.filter((s) => s.id !== "ensemble")
-      .map((s) => DATA.forecasts[s.id][d] ?? -1)));
-  const rows = sources.map((s) => "<tr><td>" + s.name + "</td>" + days.map((d, i) => {
-    const v = DATA.forecasts[s.id][d];
+    ...vis.filter((s) => s.id !== "ensemble")
+      .map((s) => F(s.id, d) ?? -1)));
+  const rows = vis.map((s) => "<tr><td>" + s.name + "</td>" + days.map((d, i) => {
+    const v = F(s.id, d);
     const cls = v != null && s.id !== "ensemble" && v === maxByDay[i] && v > 0 ? ' class="max"' : "";
     return `<td${cls}>${v == null ? "—" : v.toFixed(1)}</td>`;
   }).join("") + "</tr>").join("");
@@ -335,14 +445,34 @@ function chartTable(days) {
 
 function panelBody(kind, days) {
   if (kind === "bars") return chartBars(days);
+  if (kind === "range") return chartRange(days);
   if (kind === "table") return chartTable(days);
   return chartSvg(days, kind === "cumulative");
+}
+
+function toggleSource(id) {
+  const i = state.disabled.indexOf(id);
+  if (i < 0) {
+    // never let the last provider be switched off
+    if (id !== "ensemble" && providers.filter((s) => isOn(s.id)).length <= 1) return;
+    state.disabled.push(id);
+  } else state.disabled.splice(i, 1);
+  localStorage.setItem("disabledSources", JSON.stringify(state.disabled));
+  refresh();
+}
+
+function refresh() {
+  computeEnsemble(); renderBadges(); renderMain(); renderWeights();
 }
 
 function renderMain() {
   const days = horizonDates();
   $("#legend").innerHTML = sources.map((s) =>
-    `<span><i style="background:${s.color}"></i>${s.name}</span>`).join("");
+    `<button class="lgd${isOn(s.id) ? "" : " off"}" data-src="${s.id}"
+      title="Click to toggle ${s.name} ${s.id === "ensemble" ? "off the charts" : "in/out of charts and ensemble"}">
+     <i style="background:${s.color}"></i>${s.name}</button>`).join("");
+  document.querySelectorAll("#legend .lgd").forEach((b) =>
+    b.onclick = () => toggleSource(b.dataset.src));
   const active = PANEL_ORDER.filter((k) => state.panels.includes(k));
   $("#main").innerHTML = active.length
     ? active.map((k) =>
@@ -353,6 +483,30 @@ function renderMain() {
     b.classList.toggle("on", state.panels.includes(b.dataset.chart)));
   document.querySelectorAll("[data-h]").forEach((b) =>
     b.classList.toggle("on", +b.dataset.h === state.horizon));
+}
+
+function saveWeights() {
+  localStorage.setItem("sourceWeights", JSON.stringify(state.weights));
+}
+
+function renderWeights() {
+  $("#advBtn").classList.toggle("on", state.showAdv);
+  $("#advanced").style.display = state.showAdv ? "block" : "none";
+  if (!state.showAdv) return;
+  $("#wrows").innerHTML = providers.map((s) => `
+    <div class="wrow${isOn(s.id) ? "" : " off"}">
+      <span><i style="background:${s.color}"></i>${s.name}</span>
+      <input type="range" min="0" max="100" step="5" value="${weightOf(s.id)}"
+        data-w="${s.id}" aria-label="${s.name} ensemble weight"
+        ${isOn(s.id) ? "" : "disabled"}>
+      <b>${weightOf(s.id)}</b>
+    </div>`).join("");
+  document.querySelectorAll("[data-w]").forEach((r) => r.oninput = () => {
+    state.weights[r.dataset.w] = +r.value;
+    saveWeights();
+    r.nextElementSibling.textContent = r.value;
+    computeEnsemble(); renderBadges(); renderMain();
+  });
 }
 
 function renderActuals() {
@@ -445,6 +599,17 @@ function init() {
     localStorage.setItem("horizon", state.horizon);
     renderMain(); renderBadges();
   });
+  $("#advBtn").onclick = () => {
+    state.showAdv = !state.showAdv;
+    localStorage.setItem("showAdv", state.showAdv ? "1" : "0");
+    renderWeights();
+  };
+  $("#wEqual").onclick = () => { state.weights = {}; saveWeights(); refresh(); };
+  $("#wAcc").onclick = () => {
+    providers.forEach((s) =>
+      state.weights[s.id] = Math.round(DATA.accuracy[s.id] ?? 50));
+    saveWeights(); refresh();
+  };
   // source dropdown for forecast entry
   $("#fSource").innerHTML = sources.filter((s) => s.id !== "ensemble")
     .map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
@@ -485,7 +650,8 @@ function init() {
     a.download = "manual.json";
     a.click();
   };
-  renderBadges(); renderMain(); renderActuals(); renderForecasts();
+  computeEnsemble();
+  renderBadges(); renderMain(); renderWeights(); renderActuals(); renderForecasts();
 }
 init();
 """
@@ -566,6 +732,7 @@ def render(out: Path | None = None) -> Path:
     <span class="spacer"></span>
     <span class="seg" title="Toggle views — stack as many as you like">
       <button data-chart="bars">Bars</button>
+      <button data-chart="range">Range</button>
       <button data-chart="cumulative">Cumulative</button>
       <button data-chart="lines">Lines</button>
       <button data-chart="table">Table</button>
@@ -573,8 +740,23 @@ def render(out: Path | None = None) -> Path:
     <span class="seg">
       <button data-h="5">5d</button><button data-h="7">7d</button><button data-h="10">10d</button>
     </span>
+    <button type="button" class="ghost" id="advBtn"
+      title="Custom per-forecaster weights for the ensemble median">Weights</button>
   </div>
   <div class="legend" id="legend"></div>
+  <div id="advanced" style="display:none">
+    <div class="advhead">
+      <h2>Ensemble weights</h2>
+      <span class="spacer"></span>
+      <button type="button" class="ghost" id="wEqual">Equal</button>
+      <button type="button" class="ghost" id="wAcc">By accuracy</button>
+    </div>
+    <div id="wrows"></div>
+    <footer>The ensemble is the weighted median of the forecasters toggled on
+    above — a weight of 0 (or clicking a name in the legend) drops that
+    forecaster; "By accuracy" seeds weights from the season rankings.
+    Settings live in this browser only.</footer>
+  </div>
   <div id="main"></div>
 </div>
 <div class="card"><h2 style="margin-bottom:12px">Accuracy rankings — 24h lead, season to date</h2>
