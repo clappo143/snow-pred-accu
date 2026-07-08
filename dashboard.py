@@ -23,6 +23,7 @@ PROVIDER_COLORS = {
     "mountainwatch": "#44546A",
     "janesweather": "#2B4BD8",
     "snowatch": "#17698A",
+    "openmeteo": "#E8820C",
     "ensemble": "#2FA05A",
 }
 PROVIDER_NAMES = {
@@ -32,6 +33,7 @@ PROVIDER_NAMES = {
     "mountainwatch": "Mountainwatch",
     "janesweather": "Jane's Weather",
     "snowatch": "Snowatch",
+    "openmeteo": "Open-Meteo",
     "ensemble": "Ensemble",
 }
 

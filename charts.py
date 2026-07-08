@@ -19,6 +19,7 @@ COLORS = {
     "mountainwatch": "#44546A",
     "janesweather": "#2B4BD8",
     "snowatch": "#17698A",
+    "openmeteo": "#E8820C",
     "ensemble": "#00B050",
 }
 

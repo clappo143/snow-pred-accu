@@ -1,3 +1,13 @@
-from . import bom, janesweather, mountainwatch, snowatch, snowforecast, yrno
+from . import (
+    bom,
+    janesweather,
+    mountainwatch,
+    openmeteo,
+    snowatch,
+    snowforecast,
+    yrno,
+)
 
-FORECASTERS = [yrno, bom, snowforecast, mountainwatch, janesweather, snowatch]
+FORECASTERS = [
+    yrno, bom, snowforecast, mountainwatch, janesweather, snowatch, openmeteo,
+]
