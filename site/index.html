@@ -53,6 +53,10 @@ h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em;
 .seg button { border: 0; background: transparent; color: var(--muted);
   font: 600 12px/1 system-ui; padding: 7px 11px; cursor: pointer; }
 .seg button.on { background: var(--accent); color: var(--card); }
+.panel { margin-bottom: 20px; }
+.panel:last-child { margin-bottom: 0; }
+.panel-tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--muted); font-weight: 650; margin-bottom: 6px; }
 .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12.5px;
   color: var(--muted); margin-bottom: 14px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px;
@@ -87,7 +91,7 @@ td.max { color: var(--accent); font-weight: 650; }
 .scroll { overflow-x: auto; }
 footer { color: var(--muted); font-size: 12px; margin-top: 10px; }
 .manual form { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
-.manual input { background: var(--bg); border: 1px solid var(--line);
+.manual input, .manual select { background: var(--bg); border: 1px solid var(--line);
   color: var(--ink); border-radius: 6px; padding: 7px 10px; font: inherit; }
 .manual button, .ghost { background: var(--accent); color: var(--card); border: 0;
   border-radius: 6px; padding: 7px 14px; font: 600 13px system-ui; cursor: pointer; }
@@ -118,11 +122,11 @@ button:focus-visible, input:focus-visible, .swatch:focus-visible {
   <div class="cardhead">
     <h2>Forecast snowfall (cm)</h2>
     <span class="spacer"></span>
-    <span class="seg">
+    <span class="seg" title="Toggle views — stack as many as you like">
       <button data-chart="bars">Bars</button>
-      <button data-chart="lines">Lines</button>
       <button data-chart="cumulative">Cumulative</button>
-      <button id="viewTable">Table</button>
+      <button data-chart="lines">Lines</button>
+      <button data-chart="table">Table</button>
     </span>
     <span class="seg">
       <button data-h="5">5d</button><button data-h="7">7d</button><button data-h="10">10d</button>
@@ -140,18 +144,38 @@ button:focus-visible, input:focus-visible, .swatch:focus-visible {
     <table><tr><th>Date</th><th>Snow (cm)</th><th>Source</th></tr>
     <tbody id="actualRows"></tbody></table>
   </div>
-  <h2 style="margin-top:18px">Manual entry — backfill the 2026 season</h2>
-  <form id="manualForm">
-    <input type="date" id="mDate" required>
-    <input type="number" id="mCm" min="0" max="150" step="1" placeholder="cm" required
-      style="width:80px">
-    <button type="submit">Add</button>
-    <button type="button" class="ghost" id="exportBtn">Export JSON</button>
+  <div id="chips" style="margin-top:8px"></div>
+</div>
+<div class="card manual">
+  <div class="cardhead">
+    <h2>Manual backfill</h2>
+    <span class="spacer"></span>
+    <span class="seg">
+      <button data-entry="forecast" class="on">Forecast</button>
+      <button data-entry="actual">Actual</button>
+    </span>
+    <button type="button" class="ghost" id="exportBtn">Export manual.json</button>
+  </div>
+  <form id="forecastForm">
+    <select id="fSource" required></select>
+    <input type="date" id="fDate" required aria-label="target date">
+    <input type="number" id="fCm" min="0" max="200" step="0.1" placeholder="cm"
+      required style="width:80px">
+    <button type="submit">Add prediction</button>
   </form>
-  <div id="chips"></div>
-  <footer>Manual entries live in this browser only until exported — drop the
-  file at <code>data/manual_actuals.json</code> in the repo and the morning run
-  merges them (feed data always wins on conflicts).</footer>
+  <form id="actualForm" style="display:none">
+    <input type="date" id="mDate" required aria-label="date">
+    <input type="number" id="mCm" min="0" max="200" step="1" placeholder="cm" required
+      style="width:80px">
+    <button type="submit">Add actual</button>
+  </form>
+  <div id="fchips"></div>
+  <div id="alignBox" style="margin-top:12px"></div>
+  <footer>Transcribe historical predictions (e.g. from the ski.com.au thread) as
+  24h-lead calls — each is scored against the reported actual for that date.
+  Entries live in this browser until exported; drop the file at
+  <code>data/manual.json</code> and the morning run merges it (feed data always
+  wins on conflicts).</footer>
 </div>
 <footer>Ground truth: Perisher resort report via OnTheSnow per-date history.
 Snapshots nightly ~6pm AEST; scoring against 24h snowfall to 7am.</footer>
@@ -161,12 +185,15 @@ const DATA = {"snapshot": "2026-07-09", "generated": "2026-07-09", "sources": [{
 const PALETTES = [{"id": "glacier", "label": "Glacier", "bg": "#F2F5F9", "accent": "#3E8FD8"}, {"id": "clay", "label": "Clay", "bg": "#F0EEE6", "accent": "#CC785C"}, {"id": "aurora", "label": "Aurora", "bg": "#F1F6F5", "accent": "#0E9488"}, {"id": "corduroy", "label": "Corduroy", "bg": "#FDF3E7", "accent": "#C2410C"}];
 
 const $ = (s) => document.querySelector(s);
+const PANEL_ORDER = ["bars", "cumulative", "lines", "table"];
+const PANEL_LABEL = { bars: "Daily bars", cumulative: "Cumulative",
+  lines: "Daily lines", table: "Table" };
 const state = {
   palette: localStorage.getItem("palette") || "glacier",
-  chart: localStorage.getItem("chart") || "bars",
+  panels: JSON.parse(localStorage.getItem("panels") || '["bars","cumulative"]'),
   horizon: +(localStorage.getItem("horizon") || 5),
-  view: "chart",
   manual: JSON.parse(localStorage.getItem("manualActuals") || "{}"),
+  mforecasts: JSON.parse(localStorage.getItem("manualForecasts") || "[]"),
 };
 const fmtDay = (iso) => new Date(iso + "T12:00").toLocaleDateString("en-AU",
   { weekday: "short", day: "numeric" });
@@ -243,7 +270,8 @@ function chartBars(days) {
 }
 
 function chartSvg(days, cumulative) {
-  const W = 960, H = 230, P = 34;
+  const W = 960, H = 240, PL = 34, PT = 12, PB = 26;
+  const PR = cumulative ? 132 : 34;  // room for end-labels on cumulative
   const series = sources.map((s) => {
     let run = 0;
     return { ...s, pts: days.map((d) => {
@@ -252,23 +280,44 @@ function chartSvg(days, cumulative) {
     }) };
   });
   const vmax = Math.max(1, ...series.map((s) => s.pts).flat());
-  const x = (i) => P + i * (W - 2 * P) / Math.max(1, days.length - 1);
-  const y = (v) => H - P - (H - 2 * P) * v / vmax;
+  const x = (i) => PL + i * (W - PL - PR) / Math.max(1, days.length - 1);
+  const y = (v) => H - PB - (H - PT - PB) * v / vmax;
   let g = "";
   for (let t = 0; t <= 4; t++) {
     const v = vmax * t / 4;
-    g += `<line class="grid" x1="${P}" x2="${W - P}" y1="${y(v)}" y2="${y(v)}"/>
-      <text x="${P - 6}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(0)}</text>`;
+    g += `<line class="grid" x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}"/>
+      <text x="${PL - 6}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(0)}</text>`;
   }
+  const lastX = x(days.length - 1);
   const lines = series.map((s) => {
     const path = s.pts.map((v, i) => `${i ? "L" : "M"}${x(i)},${y(v)}`).join("");
     const end = s.pts[s.pts.length - 1];
     return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2.2"/>
-      <circle cx="${x(s.pts.length - 1)}" cy="${y(end)}" r="3.4" fill="${s.color}"/>`;
+      <circle cx="${lastX}" cy="${y(end)}" r="3.4" fill="${s.color}"/>`;
   }).join("");
+  // direct end-labels for cumulative: place at each line's endpoint, then
+  // nudge apart vertically so they don't collide.
+  let endLabels = "";
+  if (cumulative) {
+    const lab = series.map((s) => ({
+      color: s.color, name: s.name,
+      total: s.pts[s.pts.length - 1],
+      yEnd: y(s.pts[s.pts.length - 1]),
+    })).sort((a, b) => a.yEnd - b.yEnd);
+    const GAP = 14;
+    for (let i = 1; i < lab.length; i++)
+      if (lab[i].yEnd - lab[i - 1].yEnd < GAP)
+        lab[i].yEnd = lab[i - 1].yEnd + GAP;
+    endLabels = lab.map((l) =>
+      `<line class="grid" x1="${lastX}" y1="${l.yEnd}" x2="${lastX + 8}" y2="${l.yEnd}"
+        stroke="${l.color}"/>
+       <text x="${lastX + 12}" y="${l.yEnd + 3.5}" text-anchor="start"
+        style="fill:${l.color};font-weight:700">${l.name} ${l.total.toFixed(0)}</text>`
+    ).join("");
+  }
   const labels = days.map((d, i) =>
-    `<text x="${x(i)}" y="${H - P + 16}" text-anchor="middle">${fmtDay(d)}</text>`).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${lines}${labels}</svg>`;
+    `<text x="${x(i)}" y="${H - PB + 16}" text-anchor="middle">${fmtDay(d)}</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${lines}${endLabels}${labels}</svg>`;
 }
 
 function chartTable(days) {
@@ -284,17 +333,24 @@ function chartTable(days) {
   return `<div class="scroll"><table><tr><th>Source</th>${head}</tr>${rows}</table></div>`;
 }
 
+function panelBody(kind, days) {
+  if (kind === "bars") return chartBars(days);
+  if (kind === "table") return chartTable(days);
+  return chartSvg(days, kind === "cumulative");
+}
+
 function renderMain() {
   const days = horizonDates();
   $("#legend").innerHTML = sources.map((s) =>
     `<span><i style="background:${s.color}"></i>${s.name}</span>`).join("");
-  $("#main").innerHTML =
-    state.view === "table" ? chartTable(days)
-    : state.chart === "bars" ? chartBars(days)
-    : chartSvg(days, state.chart === "cumulative");
+  const active = PANEL_ORDER.filter((k) => state.panels.includes(k));
+  $("#main").innerHTML = active.length
+    ? active.map((k) =>
+        `<div class="panel"><div class="panel-tag">${PANEL_LABEL[k]}</div>
+         ${panelBody(k, days)}</div>`).join("")
+    : `<p class="empty">Pick at least one view above.</p>`;
   document.querySelectorAll("[data-chart]").forEach((b) =>
-    b.classList.toggle("on", b.dataset.chart === state.chart && state.view === "chart"));
-  $("#viewTable").classList.toggle("on", state.view === "table");
+    b.classList.toggle("on", state.panels.includes(b.dataset.chart)));
   document.querySelectorAll("[data-h]").forEach((b) =>
     b.classList.toggle("on", +b.dataset.h === state.horizon));
 }
@@ -321,6 +377,55 @@ function removeManual(d) {
   renderActuals(); renderBadges();
 }
 
+function saveForecasts() {
+  localStorage.setItem("manualForecasts", JSON.stringify(state.mforecasts));
+}
+function removeForecast(i) {
+  state.mforecasts.splice(i, 1); saveForecasts(); renderForecasts();
+}
+
+// actual known for a date, whether from the feed or a manual entry
+function actualFor(d) {
+  if (d in DATA.actuals) return DATA.actuals[d];
+  if (d in state.manual) return state.manual[d];
+  return null;
+}
+
+function renderForecasts() {
+  const named = (id) => (sources.find((s) => s.id === id) || {}).name || id;
+  const color = (id) => (sources.find((s) => s.id === id) || {}).color || "var(--accent)";
+  $("#fchips").innerHTML = state.mforecasts.map((f, i) =>
+    `<span class="chip"><i style="width:8px;height:8px;border-radius:2px;
+      display:inline-block;background:${color(f.source)}"></i>
+     ${named(f.source)} · ${f.target_date} · ${f.cm}cm
+     <button aria-label="remove" onclick="removeForecast(${i})">×</button></span>`).join("");
+  // alignment preview: manual forecasts whose target date has a known actual
+  const scored = state.mforecasts
+    .map((f) => ({ ...f, actual: actualFor(f.target_date) }))
+    .filter((f) => f.actual != null)
+    .sort((a, b) => a.target_date.localeCompare(b.target_date));
+  if (!scored.length) {
+    $("#alignBox").innerHTML =
+      `<p class="empty">Add a forecast whose date already has a reported actual
+       to see the error here.</p>`;
+    return;
+  }
+  const rows = scored.map((f) => {
+    const err = f.cm - f.actual;
+    return `<tr><td>${named(f.source)}</td><td>${f.target_date}</td>
+      <td>${f.cm.toFixed(1)}</td><td>${f.actual.toFixed(1)}</td>
+      <td style="color:${Math.abs(err) < 2 ? "var(--accent)" : "var(--ink)"}">
+        ${err >= 0 ? "+" : ""}${err.toFixed(1)}</td></tr>`;
+  }).join("");
+  const mae = (scored.reduce((t, f) => t + Math.abs(f.cm - f.actual), 0)
+    / scored.length).toFixed(1);
+  $("#alignBox").innerHTML =
+    `<div class="scroll"><table><tr><th>Source</th><th>Target</th>
+     <th>Forecast</th><th>Actual</th><th>Error</th></tr>${rows}</table></div>
+     <footer>Mean absolute error across ${scored.length} manual call(s): ${mae}cm.
+     Export and merge to fold these into the season rankings.</footer>`;
+}
+
 function init() {
   document.documentElement.dataset.palette = state.palette;
   $("#swatches").innerHTML = PALETTES.map((p) =>
@@ -328,19 +433,30 @@ function init() {
      title="${p.label}" aria-label="${p.label} palette"
      style="background:linear-gradient(135deg,${p.bg} 50%,${p.accent} 50%)"
      onclick="setPalette('${p.id}')"></button>`).join("");
+  // chart panels are toggles: click to add/remove a stacked view
   document.querySelectorAll("[data-chart]").forEach((b) => b.onclick = () => {
-    state.view = "chart"; state.chart = b.dataset.chart;
-    localStorage.setItem("chart", state.chart); renderMain();
+    const k = b.dataset.chart, i = state.panels.indexOf(k);
+    if (i < 0) state.panels.push(k); else state.panels.splice(i, 1);
+    localStorage.setItem("panels", JSON.stringify(state.panels));
+    renderMain();
   });
-  $("#viewTable").onclick = () => {
-    state.view = state.view === "table" ? "chart" : "table"; renderMain();
-  };
   document.querySelectorAll("[data-h]").forEach((b) => b.onclick = () => {
     state.horizon = +b.dataset.h;
     localStorage.setItem("horizon", state.horizon);
     renderMain(); renderBadges();
   });
-  $("#manualForm").onsubmit = (e) => {
+  // source dropdown for forecast entry
+  $("#fSource").innerHTML = sources.filter((s) => s.id !== "ensemble")
+    .map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
+  // entry-type switch
+  document.querySelectorAll("[data-entry]").forEach((b) => b.onclick = () => {
+    const t = b.dataset.entry;
+    document.querySelectorAll("[data-entry]").forEach((x) =>
+      x.classList.toggle("on", x === b));
+    $("#actualForm").style.display = t === "actual" ? "flex" : "none";
+    $("#forecastForm").style.display = t === "forecast" ? "flex" : "none";
+  });
+  $("#actualForm").onsubmit = (e) => {
     e.preventDefault();
     const d = $("#mDate").value, v = parseFloat($("#mCm").value);
     if (!d || isNaN(v) || v < 0) return;
@@ -348,17 +464,28 @@ function init() {
     state.manual[d] = v;
     localStorage.setItem("manualActuals", JSON.stringify(state.manual));
     $("#mDate").value = ""; $("#mCm").value = "";
-    renderActuals(); renderBadges();
+    renderActuals(); renderBadges(); renderForecasts();
+  };
+  $("#forecastForm").onsubmit = (e) => {
+    e.preventDefault();
+    const source = $("#fSource").value, d = $("#fDate").value,
+      v = parseFloat($("#fCm").value);
+    if (!source || !d || isNaN(v) || v < 0) return;
+    state.mforecasts.push({ source, target_date: d, cm: v });
+    saveForecasts();
+    $("#fDate").value = ""; $("#fCm").value = "";
+    renderForecasts();
   };
   $("#exportBtn").onclick = () => {
-    const blob = new Blob([JSON.stringify(state.manual, null, 1)],
+    const bundle = { actuals: state.manual, forecasts: state.mforecasts };
+    const blob = new Blob([JSON.stringify(bundle, null, 1)],
       { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "manual_actuals.json";
+    a.download = "manual.json";
     a.click();
   };
-  renderBadges(); renderMain(); renderActuals();
+  renderBadges(); renderMain(); renderActuals(); renderForecasts();
 }
 init();
 

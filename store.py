@@ -50,25 +50,43 @@ def save_actual(con: sqlite3.Connection, date: dt.date, cm: float, source: str) 
     con.commit()
 
 
-def merge_manual_actuals(con: sqlite3.Connection) -> int:
-    """Backfill from data/manual_actuals.json ({"YYYY-MM-DD": cm}).
+def merge_manual(con: sqlite3.Connection) -> tuple[int, int]:
+    """Backfill from data/manual.json, a bundle the dashboard exports:
 
-    Manual entries never override feed data — they only fill missing dates
-    (e.g. season history from before tracking started).
+        {
+          "actuals":   {"YYYY-MM-DD": cm, ...},
+          "forecasts": [{"source": ..., "target_date": "YYYY-MM-DD", "cm": ...}, ...]
+        }
+
+    Manual rows never override feed data (INSERT OR IGNORE) — they only fill
+    gaps, e.g. historical predictions transcribed from the forum. A manual
+    forecast is treated as a 24h-lead call: issued_date = target_date − 1, so
+    it slots straight into the existing scoring join.
     """
+    import datetime as _dt
     import json
 
-    path = DB_PATH.parent / "manual_actuals.json"
+    path = DB_PATH.parent / "manual.json"
     if not path.exists():
-        return 0
-    entries = json.loads(path.read_text())
-    n = 0
-    for date, cm in entries.items():
-        cur = con.execute(
+        return (0, 0)
+    bundle = json.loads(path.read_text())
+
+    na = 0
+    for date, cm in (bundle.get("actuals") or {}).items():
+        na += con.execute(
             "INSERT OR IGNORE INTO actuals VALUES (?,?,?)", (date, float(cm), "manual")
-        )
-        n += cur.rowcount
+        ).rowcount
+
+    nf = 0
+    for row in bundle.get("forecasts") or []:
+        target = _dt.date.fromisoformat(row["target_date"])
+        issued = (target - _dt.timedelta(days=1)).isoformat()
+        nf += con.execute(
+            "INSERT OR IGNORE INTO forecasts VALUES (?,?,?,?)",
+            (row["source"], issued, target.isoformat(), float(row["cm"])),
+        ).rowcount
+
     con.commit()
-    if n:
-        print(f"[ok] manual actuals: {n} date(s) backfilled")
-    return n
+    if na or nf:
+        print(f"[ok] manual backfill: {na} actual(s), {nf} forecast(s)")
+    return (na, nf)
