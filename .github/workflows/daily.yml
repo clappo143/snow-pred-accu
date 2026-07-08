@@ -1,0 +1,37 @@
+name: daily snow tracking
+
+on:
+  schedule:
+    # 6pm AEST = 08:00 UTC (evening forecast snapshot)
+    - cron: "0 8 * * *"
+    # 7:45am AEST = 21:45 UTC previous day (morning actuals + scoring)
+    - cron: "45 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: pick run type by AEST hour
+        id: mode
+        run: |
+          H=$(TZ=Australia/Sydney date +%H)
+          if [ "$H" -lt 12 ]; then echo "script=run_morning.py" >> "$GITHUB_OUTPUT";
+          else echo "script=run_evening.py" >> "$GITHUB_OUTPUT"; fi
+      - run: python ${{ steps.mode.outputs.script }}
+      - name: commit data & charts
+        if: always()
+        run: |
+          git config user.name "snow-bot"
+          git config user.email "actions@github.com"
+          git add data charts
+          git diff --cached --quiet || git commit -m "data: $(TZ=Australia/Sydney date '+%Y-%m-%d %H:%M') run"
+          git push
