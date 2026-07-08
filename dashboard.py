@@ -1,12 +1,14 @@
-"""Render site/index.html — a self-contained dashboard — from the DB.
+"""Render site/index.html — a self-contained dashboard app — from the DB.
 
-Design: cold-climate utilitarian. Ice-tinted grounds (light = overcast
-snow day, dark = alpine night), one glacial-blue accent, provider colors
-shared with charts.py. Pure HTML/CSS, no JS, no external assets.
+Single generated file, vanilla JS, no external assets. Four switchable
+palettes (each designed for light and dark), three chart modes, a table
+view, forecast-event badges, and a manual-entry panel whose export feeds
+data/manual_actuals.json for season backfill.
 """
 from __future__ import annotations
 
 import datetime as dt
+import json
 from pathlib import Path
 
 import store
@@ -33,61 +35,108 @@ PROVIDER_NAMES = {
     "ensemble": "Ensemble",
 }
 
+# palette -> mode -> tokens. "clay" is the Anthropic-inspired scheme:
+# ivory ground, book-cloth coral accent, warm near-black ink.
+PALETTES = {
+    "glacier": {
+        "label": "Glacier",
+        "light": dict(bg="#F2F5F9", card="#FFFFFF", ink="#1B2733", muted="#5D6C7B",
+                      line="#DCE4EC", accent="#3E8FD8", chip="#E7EEF5"),
+        "dark": dict(bg="#10161E", card="#18212C", ink="#E8EEF4", muted="#8DA0B3",
+                     line="#26313E", accent="#5FA8E8", chip="#1F2A37"),
+    },
+    "clay": {
+        "label": "Clay",
+        "light": dict(bg="#F0EEE6", card="#FAF9F5", ink="#191919", muted="#6E6A5E",
+                      line="#E0DCD1", accent="#CC785C", chip="#E8E4D9"),
+        "dark": dict(bg="#1F1E1B", card="#282723", ink="#F0EEE6", muted="#A8A294",
+                     line="#3A382F", accent="#D4A27F", chip="#31302A"),
+    },
+    "aurora": {
+        "label": "Aurora",
+        "light": dict(bg="#F1F6F5", card="#FFFFFF", ink="#122B29", muted="#527370",
+                      line="#D8E5E3", accent="#0E9488", chip="#E2EEEC"),
+        "dark": dict(bg="#0C1514", card="#132020", ink="#DCEDEA", muted="#7FA39E",
+                     line="#1E3230", accent="#2DD4BF", chip="#162624"),
+    },
+    "corduroy": {
+        "label": "Corduroy",
+        "light": dict(bg="#FDF3E7", card="#FFFBF4", ink="#33261B", muted="#8A7360",
+                      line="#EEDFC9", accent="#C2410C", chip="#F6E8D4"),
+        "dark": dict(bg="#1C1410", card="#251B15", ink="#F3E9DD", muted="#B39A83",
+                     line="#3A2C21", accent="#F97316", chip="#2E221A"),
+    },
+}
+
+
+def _palette_css() -> str:
+    def block(t: dict) -> str:
+        return (f"--bg:{t['bg']};--card:{t['card']};--ink:{t['ink']};"
+                f"--muted:{t['muted']};--line:{t['line']};--accent:{t['accent']};"
+                f"--chip:{t['chip']};")
+    css = ""
+    for pid, p in PALETTES.items():
+        sel = f':root[data-palette="{pid}"]'
+        css += f"{sel}{{{block(p['light'])}}}\n"
+        css += f"@media (prefers-color-scheme: dark){{{sel}{{{block(p['dark'])}}}}}\n"
+        css += f'{sel}[data-theme="dark"]{{{block(p["dark"])}}}\n'
+        css += f'{sel}[data-theme="light"]{{{block(p["light"])}}}\n'
+    return css
+
+
 CSS = """
-:root {
-  --bg: #F2F5F9; --card: #FFFFFF; --ink: #1B2733; --muted: #5D6C7B;
-  --line: #DCE4EC; --accent: #3E8FD8; --actual: #1B2733;
-}
-@media (prefers-color-scheme: dark) { :root {
-  --bg: #10161E; --card: #18212C; --ink: #E8EEF4; --muted: #8DA0B3;
-  --line: #26313E; --accent: #5FA8E8; --actual: #E8EEF4;
-} }
-:root[data-theme="dark"] {
-  --bg: #10161E; --card: #18212C; --ink: #E8EEF4; --muted: #8DA0B3;
-  --line: #26313E; --accent: #5FA8E8; --actual: #E8EEF4;
-}
-:root[data-theme="light"] {
-  --bg: #F2F5F9; --card: #FFFFFF; --ink: #1B2733; --muted: #5D6C7B;
-  --line: #DCE4EC; --accent: #3E8FD8; --actual: #1B2733;
-}
 * { box-sizing: border-box; }
-body {
-  margin: 0; background: var(--bg); color: var(--ink);
+body { margin: 0; background: var(--bg); color: var(--ink);
   font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-main { max-width: 1060px; margin: 0 auto; padding: 32px 20px 64px; }
+  transition: background 0.25s, color 0.25s; }
+main { max-width: 1080px; margin: 0 auto; padding: 28px 20px 64px; }
 header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px;
-  border-bottom: 2px solid var(--ink); padding-bottom: 14px; }
-h1 { font-size: 26px; margin: 0; letter-spacing: -0.02em; }
+  border-bottom: 2px solid var(--ink); padding-bottom: 12px; }
+h1 { font-size: 25px; margin: 0; letter-spacing: -0.02em; }
 h1 span { color: var(--accent); }
 .sub { color: var(--muted); font-size: 13px; }
-h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em;
-  color: var(--muted); margin: 0 0 14px; font-weight: 600; }
-.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px; margin: 24px 0; }
-.tile { background: var(--card); border: 1px solid var(--line);
-  border-radius: 6px; padding: 14px 16px; }
-.tile b { display: block; font-size: 26px; font-weight: 650;
+.spacer { flex: 1; }
+.swatches { display: flex; gap: 6px; align-items: center; }
+.swatch { width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+  border: 2px solid transparent; padding: 0; }
+.swatch.on { border-color: var(--ink); }
+h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--muted); margin: 0; font-weight: 650; }
+.badges { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+.badge { background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 10px 14px; min-width: 150px; }
+.badge small { display: block; color: var(--muted); font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.07em; }
+.badge b { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.badge .range { font-size: 12px; color: var(--muted);
   font-variant-numeric: tabular-nums; }
-.tile small { color: var(--muted); font-size: 12px; text-transform: uppercase;
-  letter-spacing: 0.06em; }
-.card { background: var(--card); border: 1px solid var(--line);
-  border-radius: 6px; padding: 20px; margin: 0 0 20px; }
-.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px;
-  color: var(--muted); margin-bottom: 16px; }
-.legend i { display: inline-block; width: 10px; height: 10px;
-  border-radius: 2px; margin-right: 5px; }
-.days { display: grid; grid-auto-flow: column; gap: 18px;
-  align-items: end; height: 190px; padding-top: 8px; }
+.badge.event { border-left: 4px solid var(--accent); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  padding: 18px 20px; margin: 0 0 18px; }
+.cardhead { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  margin-bottom: 14px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px;
+  overflow: hidden; }
+.seg button { border: 0; background: transparent; color: var(--muted);
+  font: 600 12px/1 system-ui; padding: 7px 11px; cursor: pointer; }
+.seg button.on { background: var(--accent); color: var(--card); }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12.5px;
+  color: var(--muted); margin-bottom: 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px;
+  margin-right: 5px; }
+.days { display: grid; grid-auto-flow: column; gap: 14px; align-items: end;
+  height: 200px; padding-top: 10px; }
 .day { display: flex; flex-direction: column; height: 100%; }
-.bars { flex: 1; display: flex; align-items: flex-end; gap: 3px;
+.bars { flex: 1; display: flex; align-items: flex-end; gap: 2px;
   border-bottom: 1px solid var(--line); }
 .bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 1px; position: relative; }
-.bar em { position: absolute; top: -17px; left: 50%; transform: translateX(-50%);
-  font: 600 10.5px/1 system-ui; font-style: normal;
-  font-variant-numeric: tabular-nums; color: var(--muted); white-space: nowrap; }
+.bar em { position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+  font: 600 10px/1 system-ui; font-style: normal; color: var(--muted);
+  font-variant-numeric: tabular-nums; }
 .day > small { text-align: center; padding-top: 6px; color: var(--muted);
-  font-size: 12px; }
+  font-size: 11.5px; white-space: nowrap; }
+svg text { fill: var(--muted); font: 600 10.5px system-ui; }
+svg .grid { stroke: var(--line); stroke-width: 1; }
 .rank { display: grid; grid-template-columns: 130px 1fr 52px; gap: 10px;
   align-items: center; margin: 8px 0; font-size: 13.5px; }
 .rank .track { background: var(--bg); border-radius: 4px; height: 18px;
@@ -99,25 +148,235 @@ table { width: 100%; border-collapse: collapse; font-size: 13.5px;
 th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--line); }
 th:first-child, td:first-child { text-align: left; }
 th { color: var(--muted); font-size: 11.5px; text-transform: uppercase;
-  letter-spacing: 0.06em; font-weight: 600; }
+  letter-spacing: 0.06em; font-weight: 650; }
+td.max { color: var(--accent); font-weight: 650; }
 .empty { color: var(--muted); font-size: 13.5px; font-style: italic; }
 .scroll { overflow-x: auto; }
-footer { color: var(--muted); font-size: 12px; margin-top: 8px; }
-footer a { color: var(--accent); }
+footer { color: var(--muted); font-size: 12px; margin-top: 10px; }
+.manual form { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.manual input { background: var(--bg); border: 1px solid var(--line);
+  color: var(--ink); border-radius: 6px; padding: 7px 10px; font: inherit; }
+.manual button, .ghost { background: var(--accent); color: var(--card); border: 0;
+  border-radius: 6px; padding: 7px 14px; font: 600 13px system-ui; cursor: pointer; }
+.ghost { background: transparent; color: var(--accent);
+  border: 1px solid var(--accent); }
+.chip { display: inline-flex; gap: 6px; align-items: center; background: var(--chip);
+  border-radius: 999px; padding: 3px 10px; font-size: 12px; margin: 2px;
+  font-variant-numeric: tabular-nums; }
+.chip button { border: 0; background: none; color: var(--muted); cursor: pointer;
+  font-size: 13px; padding: 0; }
+.spark { display: flex; align-items: flex-end; gap: 2px; height: 42px; }
+.spark i { flex: 1; background: var(--accent); border-radius: 1px 1px 0 0;
+  min-height: 2px; opacity: 0.85; }
+.spark i.manual { opacity: 0.4; }
+button:focus-visible, input:focus-visible, .swatch:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { body { transition: none; } }
 """
 
+JS = r"""
+const $ = (s) => document.querySelector(s);
+const state = {
+  palette: localStorage.getItem("palette") || "glacier",
+  chart: localStorage.getItem("chart") || "bars",
+  horizon: +(localStorage.getItem("horizon") || 5),
+  view: "chart",
+  manual: JSON.parse(localStorage.getItem("manualActuals") || "{}"),
+};
+const fmtDay = (iso) => new Date(iso + "T12:00").toLocaleDateString("en-AU",
+  { weekday: "short", day: "numeric" });
+const sources = DATA.sources.filter((s) => s.id in DATA.forecasts);
 
-def _bar_group(day_label: str, values: list[tuple[str, float]], vmax: float) -> str:
-    bars = ""
-    for source, cm in values:
-        h = 0 if vmax == 0 else round(100 * cm / vmax, 1)
-        label = f"<em>{cm:.0f}</em>" if cm >= 0.5 else ""
-        bars += (
-            f'<div class="bar" title="{PROVIDER_NAMES.get(source, source)}: {cm:.1f}cm"'
-            f' style="height:{max(h, 0.5)}%;background:'
-            f'{PROVIDER_COLORS.get(source, "var(--actual)")}">{label}</div>'
-        )
-    return f'<div class="day"><div class="bars">{bars}</div><small>{day_label}</small></div>'
+function setPalette(p) {
+  state.palette = p;
+  localStorage.setItem("palette", p);
+  document.documentElement.dataset.palette = p;
+  document.querySelectorAll(".swatch").forEach((el) =>
+    el.classList.toggle("on", el.dataset.p === p));
+}
+
+function horizonDates() {
+  const out = [];
+  for (let i = 1; i <= state.horizon; i++) {
+    const d = new Date(DATA.snapshot + "T12:00");
+    d.setDate(d.getDate() + i);
+    out.push(d.toISOString().slice(0, 10));
+  }
+  return out;
+}
+
+function median(a) {
+  const s = [...a].sort((x, y) => x - y), m = s.length >> 1;
+  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+function renderBadges() {
+  const days = horizonDates();
+  let event = null, peak = null;
+  for (const d of days) {
+    const vals = sources.filter((s) => s.id !== "ensemble")
+      .map((s) => DATA.forecasts[s.id][d]).filter((v) => v != null);
+    if (!vals.length) continue;
+    const med = median(vals), stat = { d, med,
+      lo: Math.min(...vals), hi: Math.max(...vals) };
+    if (!event && med >= 1) event = stat;
+    if (!peak || stat.med > peak.med) peak = stat;
+  }
+  const seasonTotal = Object.entries({ ...state.manual, ...DATA.actuals })
+    .reduce((t, [, v]) => t + v, 0);
+  let html = "";
+  html += event
+    ? `<div class="badge event"><small>Next snowfall event</small><b>${fmtDay(event.d)}</b>
+       <div class="range">median ${event.med.toFixed(1)}cm · range ${event.lo.toFixed(0)}–${event.hi.toFixed(0)}cm</div></div>`
+    : `<div class="badge event"><small>Next snowfall event</small><b>None sighted</b>
+       <div class="range">no provider median ≥ 1cm in ${state.horizon} days</div></div>`;
+  if (peak && (!event || peak.d !== event.d) && peak.med >= 1)
+    html += `<div class="badge"><small>Biggest day ahead</small><b>${fmtDay(peak.d)}</b>
+      <div class="range">median ${peak.med.toFixed(1)}cm · range ${peak.lo.toFixed(0)}–${peak.hi.toFixed(0)}cm</div></div>`;
+  html += `<div class="badge"><small>Season snowfall</small><b>${seasonTotal.toFixed(0)}cm</b>
+    <div class="range">${Object.keys(state.manual).length ? "incl. manual entries" : "resort-reported"}</div></div>`;
+  html += `<div class="badge"><small>Days scored</small><b>${DATA.scored_days}</b>
+    <div class="range">24h-lead comparisons</div></div>`;
+  html += `<div class="badge"><small>Forecasters</small><b>${sources.length - 1}</b>
+    <div class="range">+ weighted ensemble</div></div>`;
+  $("#badges").innerHTML = html;
+}
+
+function chartBars(days) {
+  const vmax = Math.max(1,
+    ...sources.map((s) => days.map((d) => DATA.forecasts[s.id][d] || 0)).flat());
+  return `<div class="days">` + days.map((d) => {
+    const bars = sources.map((s) => {
+      const v = DATA.forecasts[s.id][d] ?? 0;
+      const h = Math.max(0.5, 100 * v / vmax);
+      const em = v >= 0.5 ? `<em>${v.toFixed(0)}</em>` : "";
+      return `<div class="bar" title="${s.name}: ${v.toFixed(1)}cm"
+        style="height:${h}%;background:${s.color}">${em}</div>`;
+    }).join("");
+    return `<div class="day"><div class="bars">${bars}</div><small>${fmtDay(d)}</small></div>`;
+  }).join("") + `</div>`;
+}
+
+function chartSvg(days, cumulative) {
+  const W = 960, H = 230, P = 34;
+  const series = sources.map((s) => {
+    let run = 0;
+    return { ...s, pts: days.map((d) => {
+      const v = DATA.forecasts[s.id][d] ?? 0;
+      return cumulative ? (run += v) : v;
+    }) };
+  });
+  const vmax = Math.max(1, ...series.map((s) => s.pts).flat());
+  const x = (i) => P + i * (W - 2 * P) / Math.max(1, days.length - 1);
+  const y = (v) => H - P - (H - 2 * P) * v / vmax;
+  let g = "";
+  for (let t = 0; t <= 4; t++) {
+    const v = vmax * t / 4;
+    g += `<line class="grid" x1="${P}" x2="${W - P}" y1="${y(v)}" y2="${y(v)}"/>
+      <text x="${P - 6}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(0)}</text>`;
+  }
+  const lines = series.map((s) => {
+    const path = s.pts.map((v, i) => `${i ? "L" : "M"}${x(i)},${y(v)}`).join("");
+    const end = s.pts[s.pts.length - 1];
+    return `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2.2"/>
+      <circle cx="${x(s.pts.length - 1)}" cy="${y(end)}" r="3.4" fill="${s.color}"/>`;
+  }).join("");
+  const labels = days.map((d, i) =>
+    `<text x="${x(i)}" y="${H - P + 16}" text-anchor="middle">${fmtDay(d)}</text>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${lines}${labels}</svg>`;
+}
+
+function chartTable(days) {
+  const head = days.map((d) => `<th>${fmtDay(d)}</th>`).join("");
+  const maxByDay = days.map((d) => Math.max(
+    ...sources.filter((s) => s.id !== "ensemble")
+      .map((s) => DATA.forecasts[s.id][d] ?? -1)));
+  const rows = sources.map((s) => "<tr><td>" + s.name + "</td>" + days.map((d, i) => {
+    const v = DATA.forecasts[s.id][d];
+    const cls = v != null && s.id !== "ensemble" && v === maxByDay[i] && v > 0 ? ' class="max"' : "";
+    return `<td${cls}>${v == null ? "—" : v.toFixed(1)}</td>`;
+  }).join("") + "</tr>").join("");
+  return `<div class="scroll"><table><tr><th>Source</th>${head}</tr>${rows}</table></div>`;
+}
+
+function renderMain() {
+  const days = horizonDates();
+  $("#legend").innerHTML = sources.map((s) =>
+    `<span><i style="background:${s.color}"></i>${s.name}</span>`).join("");
+  $("#main").innerHTML =
+    state.view === "table" ? chartTable(days)
+    : state.chart === "bars" ? chartBars(days)
+    : chartSvg(days, state.chart === "cumulative");
+  document.querySelectorAll("[data-chart]").forEach((b) =>
+    b.classList.toggle("on", b.dataset.chart === state.chart && state.view === "chart"));
+  $("#viewTable").classList.toggle("on", state.view === "table");
+  document.querySelectorAll("[data-h]").forEach((b) =>
+    b.classList.toggle("on", +b.dataset.h === state.horizon));
+}
+
+function renderActuals() {
+  const merged = { ...state.manual, ...DATA.actuals };
+  const dates = Object.keys(merged).sort();
+  if (!dates.length) { $("#spark").innerHTML = ""; $("#actualRows").innerHTML = ""; return; }
+  const vmax = Math.max(1, ...Object.values(merged));
+  $("#spark").innerHTML = dates.map((d) =>
+    `<i class="${d in DATA.actuals ? "" : "manual"}" title="${d}: ${merged[d]}cm"
+     style="height:${Math.max(4, 100 * merged[d] / vmax)}%"></i>`).join("");
+  $("#actualRows").innerHTML = dates.slice().reverse().map((d) =>
+    `<tr><td>${d}</td><td>${merged[d].toFixed(0)}</td>
+     <td>${d in DATA.actuals ? "resort report" : "manual ✎"}</td></tr>`).join("");
+  $("#chips").innerHTML = Object.keys(state.manual).sort().map((d) =>
+    `<span class="chip">${d} · ${state.manual[d]}cm
+     <button aria-label="remove" onclick="removeManual('${d}')">×</button></span>`).join("");
+}
+
+function removeManual(d) {
+  delete state.manual[d];
+  localStorage.setItem("manualActuals", JSON.stringify(state.manual));
+  renderActuals(); renderBadges();
+}
+
+function init() {
+  document.documentElement.dataset.palette = state.palette;
+  $("#swatches").innerHTML = PALETTES.map((p) =>
+    `<button class="swatch${p.id === state.palette ? " on" : ""}" data-p="${p.id}"
+     title="${p.label}" aria-label="${p.label} palette"
+     style="background:linear-gradient(135deg,${p.bg} 50%,${p.accent} 50%)"
+     onclick="setPalette('${p.id}')"></button>`).join("");
+  document.querySelectorAll("[data-chart]").forEach((b) => b.onclick = () => {
+    state.view = "chart"; state.chart = b.dataset.chart;
+    localStorage.setItem("chart", state.chart); renderMain();
+  });
+  $("#viewTable").onclick = () => {
+    state.view = state.view === "table" ? "chart" : "table"; renderMain();
+  };
+  document.querySelectorAll("[data-h]").forEach((b) => b.onclick = () => {
+    state.horizon = +b.dataset.h;
+    localStorage.setItem("horizon", state.horizon);
+    renderMain(); renderBadges();
+  });
+  $("#manualForm").onsubmit = (e) => {
+    e.preventDefault();
+    const d = $("#mDate").value, v = parseFloat($("#mCm").value);
+    if (!d || isNaN(v) || v < 0) return;
+    if (d in DATA.actuals) { alert("That date already has a resort-reported value."); return; }
+    state.manual[d] = v;
+    localStorage.setItem("manualActuals", JSON.stringify(state.manual));
+    $("#mDate").value = ""; $("#mCm").value = "";
+    renderActuals(); renderBadges();
+  };
+  $("#exportBtn").onclick = () => {
+    const blob = new Blob([JSON.stringify(state.manual, null, 1)],
+      { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "manual_actuals.json";
+    a.click();
+  };
+  renderBadges(); renderMain(); renderActuals();
+}
+init();
+"""
 
 
 def render(out: Path | None = None) -> Path:
@@ -130,48 +389,42 @@ def render(out: Path | None = None) -> Path:
         "SELECT source, target_date, snow_cm FROM forecasts WHERE issued_date=?",
         (snapshot,),
     ):
-        forecasts.setdefault(s, {})[d] = cm
+        forecasts.setdefault(s, {})[d] = round(cm, 2)
 
-    actuals = con.execute("SELECT date, snow_cm FROM actuals ORDER BY date").fetchall()
+    actuals = dict(
+        con.execute("SELECT date, snow_cm FROM actuals ORDER BY date").fetchall()
+    )
     acc = accuracy(con)
-    scoreable = daily_errors(con)
-    season_total = sum(cm for _, cm in actuals)
-    newest_report = actuals[-1][0] if actuals else "—"
+    scored = len({d for _, d, _, _ in daily_errors(con)})
 
-    sources = [s for s in PROVIDER_COLORS if s in forecasts]
-    days = [
-        (dt.date.fromisoformat(snapshot) + dt.timedelta(days=i)).isoformat()
-        for i in range(1, 6)
+    data = {
+        "snapshot": snapshot,
+        "generated": today,
+        "sources": [
+            {"id": k, "name": PROVIDER_NAMES[k], "color": PROVIDER_COLORS[k]}
+            for k in PROVIDER_COLORS
+        ],
+        "forecasts": forecasts,
+        "actuals": actuals,
+        "accuracy": acc,
+        "scored_days": scored,
+    }
+    palettes_js = [
+        {"id": pid, "label": p["label"], "bg": p["light"]["bg"],
+         "accent": p["light"]["accent"]}
+        for pid, p in PALETTES.items()
     ]
-    vmax = max(
-        (forecasts[s].get(d, 0) for s in sources for d in days), default=0
-    ) or 1
-
-    legend = "".join(
-        f'<span><i style="background:{PROVIDER_COLORS[s]}"></i>{PROVIDER_NAMES[s]}</span>'
-        for s in sources
-    )
-    groups = "".join(
-        _bar_group(
-            dt.date.fromisoformat(d).strftime("%a %d"),
-            [(s, forecasts[s].get(d, 0.0)) for s in sources],
-            vmax,
-        )
-        for d in days
-    )
 
     if acc:
-        ranks = "".join(
+        acc_html = "".join(
             f'<div class="rank"><span>{PROVIDER_NAMES.get(s, s)}</span>'
             f'<div class="track"><div class="fill" style="width:{v:.0f}%;'
             f'background:{PROVIDER_COLORS.get(s, "var(--accent)")}"></div></div>'
             f"<b>{v:.0f}%</b></div>"
             for s, v in sorted(acc.items(), key=lambda kv: -kv[1])
-        )
-        acc_html = ranks + (
-            f'<footer>Scored on {len({d for _, d, _, _ in scoreable})} day(s) of '
-            f"24h-lead forecasts; accuracy = 100 × max(0, 1 − MAE / mean(max(actual, "
-            f"{FLOOR_CM:.0f}cm))).</footer>"
+        ) + (
+            f"<footer>accuracy = 100 × max(0, 1 − MAE / mean(max(actual, "
+            f"{FLOOR_CM:.0f}cm))) on 24h-lead forecasts.</footer>"
         )
     else:
         acc_html = (
@@ -179,48 +432,69 @@ def render(out: Path | None = None) -> Path:
             "evening snapshot has a reported actual to be judged against.</p>"
         )
 
-    actual_rows = "".join(
-        f"<tr><td>{d}</td><td>{cm:.0f}</td></tr>" for d, cm in actuals[::-1]
-    )
-    fc_head = "".join(f"<th>{dt.date.fromisoformat(d).strftime('%a %d')}</th>" for d in days)
-    fc_rows = "".join(
-        f"<tr><td>{PROVIDER_NAMES.get(s, s)}</td>"
-        + "".join(
-            f"<td>{forecasts[s][d]:.1f}</td>" if d in forecasts[s] else "<td>—</td>"
-            for d in days
-        )
-        + "</tr>"
-        for s in sources
-    )
-
-    html = f"""<title>Perisher forecast accuracy</title>
+    html = f"""<meta charset="utf-8">
+<title>Perisher forecast accuracy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<style>{CSS}</style>
+<style>{_palette_css()}{CSS}</style>
 <main>
-<header><h1>Perisher <span>forecast accuracy</span></h1>
-<span class="sub">snapshot {snapshot} · generated {today}</span></header>
-<div class="tiles">
-<div class="tile"><b>{season_total:.0f}cm</b><small>season snowfall</small></div>
-<div class="tile"><b>{newest_report}</b><small>newest resort report</small></div>
-<div class="tile"><b>{len(sources)}</b><small>forecasters tracked</small></div>
-<div class="tile"><b>{len({d for _, d, _, _ in scoreable})}</b><small>days scored</small></div>
+<header>
+  <h1>Perisher <span>forecast accuracy</span></h1>
+  <span class="sub">snapshot {snapshot} · generated {today}</span>
+  <span class="spacer"></span>
+  <div class="swatches" id="swatches"></div>
+</header>
+<div class="badges" id="badges"></div>
+<div class="card">
+  <div class="cardhead">
+    <h2>Forecast snowfall (cm)</h2>
+    <span class="spacer"></span>
+    <span class="seg">
+      <button data-chart="bars">Bars</button>
+      <button data-chart="lines">Lines</button>
+      <button data-chart="cumulative">Cumulative</button>
+      <button id="viewTable">Table</button>
+    </span>
+    <span class="seg">
+      <button data-h="5">5d</button><button data-h="7">7d</button><button data-h="10">10d</button>
+    </span>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div id="main"></div>
 </div>
-<div class="card"><h2>Next 5 days — forecast snowfall (cm)</h2>
-<div class="legend">{legend}</div>
-<div class="days">{groups}</div></div>
-<div class="card"><h2>Accuracy rankings — 24h lead, season to date</h2>
+<div class="card"><h2 style="margin-bottom:12px">Accuracy rankings — 24h lead, season to date</h2>
 {acc_html}</div>
-<div class="card"><h2>Forecast table (cm)</h2>
-<div class="scroll"><table><tr><th>Source</th>{fc_head}</tr>{fc_rows}</table></div></div>
-<div class="card"><h2>Reported daily snowfall — Perisher resort report</h2>
-<div class="scroll"><table><tr><th>Date</th><th>Snow (cm)</th></tr>{actual_rows}</table></div>
-<footer>Ground truth: OnTheSnow <code>recent[]</code> per-date history
-(resort-reported, includes 0cm days; backfilled as the feed updates).</footer></div>
+<div class="card manual">
+  <h2>Reported daily snowfall</h2>
+  <div class="spark" id="spark" style="margin:12px 0"></div>
+  <div class="scroll" style="max-height:220px;overflow-y:auto">
+    <table><tr><th>Date</th><th>Snow (cm)</th><th>Source</th></tr>
+    <tbody id="actualRows"></tbody></table>
+  </div>
+  <h2 style="margin-top:18px">Manual entry — backfill the 2026 season</h2>
+  <form id="manualForm">
+    <input type="date" id="mDate" required>
+    <input type="number" id="mCm" min="0" max="150" step="1" placeholder="cm" required
+      style="width:80px">
+    <button type="submit">Add</button>
+    <button type="button" class="ghost" id="exportBtn">Export JSON</button>
+  </form>
+  <div id="chips"></div>
+  <footer>Manual entries live in this browser only until exported — drop the
+  file at <code>data/manual_actuals.json</code> in the repo and the morning run
+  merges them (feed data always wins on conflicts).</footer>
+</div>
+<footer>Ground truth: Perisher resort report via OnTheSnow per-date history.
+Snapshots nightly ~6pm AEST; scoring against 24h snowfall to 7am.</footer>
 </main>
+<script>
+const DATA = {json.dumps(data)};
+const PALETTES = {json.dumps(palettes_js)};
+{JS}
+</script>
 """
     out = out or SITE / "index.html"
     out.parent.mkdir(exist_ok=True)
-    out.write_text(html)
+    out.write_text(html, encoding="utf-8")
     return out
 
 

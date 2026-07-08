@@ -21,6 +21,7 @@ def main() -> int:
         newest = max(history)
         print(f"[ok] actuals: {len(history)} days upserted, "
               f"newest {newest} = {history[newest]}cm")
+        store.merge_manual_actuals(con)
     except Exception:
         print("[FAIL] actuals", file=sys.stderr)
         traceback.print_exc()
