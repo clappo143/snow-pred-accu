@@ -1,4 +1,4 @@
-"""Render site/index.html — a self-contained dashboard app — from the DB.
+"""Render docs/index.html — a self-contained dashboard app — from the DB.
 
 Single generated file, vanilla JS, no external assets. Four switchable
 palettes (each designed for light and dark), three chart modes, a table
@@ -14,7 +14,7 @@ from pathlib import Path
 import store
 from score import FLOOR_CM, accuracy, daily_errors
 
-SITE = Path(__file__).parent / "site"
+SITE = Path(__file__).parent / "docs"  # GitHub Pages only serves / or /docs
 
 PROVIDER_COLORS = {
     "yrno": "#5B9BD5",

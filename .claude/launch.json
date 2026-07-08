@@ -4,7 +4,7 @@
     {
       "name": "dashboard",
       "runtimeExecutable": "sh",
-      "runtimeArgs": ["-c", "python3 -m http.server \"$PORT\" --directory site"],
+      "runtimeArgs": ["-c", "python3 -m http.server \"$PORT\" --directory docs"],
       "autoPort": true
     }
   ]
