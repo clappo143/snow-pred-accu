@@ -17,6 +17,8 @@ COLORS = {
     "bom": "#2E75B6",
     "snowforecast": "#C00000",
     "mountainwatch": "#44546A",
+    "janesweather": "#2B4BD8",
+    "snowatch": "#17698A",
     "ensemble": "#00B050",
 }
 
