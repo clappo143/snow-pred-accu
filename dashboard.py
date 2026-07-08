@@ -231,8 +231,7 @@ function renderBadges() {
     if (!event && med >= 1) event = stat;
     if (!peak || stat.med > peak.med) peak = stat;
   }
-  const seasonTotal = Object.entries({ ...state.manual, ...DATA.actuals })
-    .reduce((t, [, v]) => t + v, 0);
+  const st = DATA.status || {};
   let html = "";
   html += event
     ? `<div class="badge event"><small>Next snowfall event</small><b>${fmtDay(event.d)}</b>
@@ -242,8 +241,12 @@ function renderBadges() {
   if (peak && (!event || peak.d !== event.d) && peak.med >= 1)
     html += `<div class="badge"><small>Biggest day ahead</small><b>${fmtDay(peak.d)}</b>
       <div class="range">median ${peak.med.toFixed(1)}cm · range ${peak.lo.toFixed(0)}–${peak.hi.toFixed(0)}cm</div></div>`;
-  html += `<div class="badge"><small>Season snowfall</small><b>${seasonTotal.toFixed(0)}cm</b>
-    <div class="range">${Object.keys(state.manual).length ? "incl. manual entries" : "resort-reported"}</div></div>`;
+  if (st.natural_depth != null)
+    html += `<div class="badge"><small>Natural snow depth</small><b>${st.natural_depth.toFixed(0)}cm</b>
+      <div class="range">Perisher official · ${st.date || ""}</div></div>`;
+  if (st.snow_7day != null)
+    html += `<div class="badge"><small>New snow, 7 days</small><b>${st.snow_7day.toFixed(0)}cm</b>
+      <div class="range">Perisher official 24h-to-7am</div></div>`;
   html += `<div class="badge"><small>Days scored</small><b>${DATA.scored_days}</b>
     <div class="range">24h-lead comparisons</div></div>`;
   html += `<div class="badge"><small>Forecasters</small><b>${sources.length - 1}</b>
@@ -506,6 +509,9 @@ def render(out: Path | None = None) -> Path:
     acc = accuracy(con)
     scored = len({d for _, d, _, _ in daily_errors(con)})
 
+    status_path = store.DB_PATH.parent / "resort_status.json"
+    status = json.loads(status_path.read_text()) if status_path.exists() else {}
+
     data = {
         "snapshot": snapshot,
         "generated": today,
@@ -517,6 +523,7 @@ def render(out: Path | None = None) -> Path:
         "actuals": actuals,
         "accuracy": acc,
         "scored_days": scored,
+        "status": status,
     }
     palettes_js = [
         {"id": pid, "label": p["label"], "bg": p["light"]["bg"],
@@ -612,8 +619,9 @@ def render(out: Path | None = None) -> Path:
   <code>data/manual.json</code> and the morning run merges it (feed data always
   wins on conflicts).</footer>
 </div>
-<footer>Ground truth: Perisher resort report via OnTheSnow per-date history.
-Snapshots nightly ~6pm AEST; scoring against 24h snowfall to 7am.</footer>
+<footer>Ground truth: Perisher's official 24h-to-7am snow report (accurate,
+unlagged). Forecasts snapshotted nightly ~6pm AEST; scored the next morning
+against that day's reported snowfall.</footer>
 </main>
 <script>
 const DATA = {json.dumps(data)};
