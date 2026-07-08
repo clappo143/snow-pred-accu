@@ -15,9 +15,12 @@ def main() -> int:
     con = store.connect()
     date = today()
     try:
-        cm = actuals_onthesnow.collect()
-        store.save_actual(con, date, cm, actuals_onthesnow.SOURCE)
-        print(f"[ok] actual for {date}: {cm}cm")
+        history = actuals_onthesnow.collect()
+        for d, cm in sorted(history.items()):
+            store.save_actual(con, d, cm, actuals_onthesnow.SOURCE)
+        newest = max(history)
+        print(f"[ok] actuals: {len(history)} days upserted, "
+              f"newest {newest} = {history[newest]}cm")
     except Exception:
         print("[FAIL] actuals", file=sys.stderr)
         traceback.print_exc()
@@ -34,6 +37,9 @@ def main() -> int:
         print("chart:", next_days_chart(con, date))
     except ValueError as e:
         print(f"charts skipped: {e}")
+
+    from dashboard import render
+    print("dashboard:", render())
     return 0
 
 
