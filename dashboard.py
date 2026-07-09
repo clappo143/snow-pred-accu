@@ -1,8 +1,11 @@
 """Render docs/index.html — a self-contained dashboard app — from the DB.
 
-Single generated file, vanilla JS, no external assets. Four switchable
-palettes (each designed for light and dark), stackable chart views (bars,
-range band, cumulative, lines, table), forecast-event badges, and a
+Single generated file, vanilla JS; the only external asset is the Google
+Fonts stylesheet (Fraunces + Archivo), with system fallbacks so the page
+still reads fine offline. Seven switchable palettes (each designed for light
+and dark), stackable chart views (bars, range band, cumulative, lines,
+table), a hero panel that reads the next snow event — consensus dot-strip,
+outlier call-out — hover tooltips with per-day provider breakdowns, and a
 manual-entry panel whose export feeds data/manual.json for season backfill.
 
 The ensemble shown on the page is computed client-side as a weighted median
@@ -80,6 +83,27 @@ PALETTES = {
         "dark": dict(bg="#1C1410", card="#251B15", ink="#F3E9DD", muted="#B39A83",
                      line="#3A2C21", accent="#F97316", chip="#2E221A"),
     },
+    "alpenglow": {
+        "label": "Alpenglow",
+        "light": dict(bg="#F6F0F1", card="#FFFDFD", ink="#2A2126", muted="#7C6A72",
+                      line="#E9DBDE", accent="#B95A6C", chip="#F0E3E6"),
+        "dark": dict(bg="#191216", card="#231A1F", ink="#F2E8EB", muted="#A98F98",
+                     line="#382B32", accent="#E08D9B", chip="#2C2127"),
+    },
+    "wattle": {
+        "label": "Wattle",
+        "light": dict(bg="#F7F4E9", card="#FFFDF5", ink="#26231A", muted="#79715A",
+                      line="#E7E0C9", accent="#96780A", chip="#EFE9D4"),
+        "dark": dict(bg="#171509", card="#211E11", ink="#F1EDDE", muted="#A79F84",
+                     line="#37331F", accent="#DCB53B", chip="#2A2716"),
+    },
+    "piste": {
+        "label": "Piste",
+        "light": dict(bg="#F4F4F2", card="#FFFFFF", ink="#17181A", muted="#61656B",
+                      line="#E1E2DF", accent="#C13540", chip="#EBECE8"),
+        "dark": dict(bg="#121314", card="#1B1D1F", ink="#ECEDEE", muted="#93989F",
+                     line="#2B2E31", accent="#E05560", chip="#232629"),
+    },
 }
 
 
@@ -99,61 +123,136 @@ def _palette_css() -> str:
 
 
 CSS = """
+:root { color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { color-scheme: dark; } }
+:root[data-theme="dark"] { color-scheme: dark; }
+:root[data-theme="light"] { color-scheme: light; }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink);
-  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
-  transition: background 0.25s, color 0.25s; }
-main { max-width: 1080px; margin: 0 auto; padding: 28px 20px 64px; }
-header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px;
-  border-bottom: 2px solid var(--ink); padding-bottom: 12px; }
-h1 { font-size: 25px; margin: 0; letter-spacing: -0.02em; }
-h1 span { color: var(--accent); }
-.sub { color: var(--muted); font-size: 13px; }
+  font: 15px/1.55 "Archivo", "Avenir Next", "Segoe UI", sans-serif;
+  transition: background 0.3s, color 0.3s;
+  -webkit-font-smoothing: antialiased; }
+main { max-width: 1100px; margin: 0 auto; padding: 36px 24px 56px; }
+header { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; }
+.masthead { flex: 1 1 320px; }
+h1 { font-family: "Fraunces", Georgia, serif; font-weight: 600;
+  font-size: clamp(27px, 4.5vw, 36px); line-height: 1.08; margin: 0;
+  letter-spacing: -0.015em; }
+h1 span { color: var(--accent); font-style: italic; }
+.sub { color: var(--muted); font-size: 13.5px; margin: 7px 0 0; max-width: 62ch; }
+.headtools { display: flex; flex-direction: column; align-items: flex-end;
+  gap: 10px; margin-left: auto; }
+.stamp { color: var(--muted); font-size: 11px; margin: 0;
+  text-transform: uppercase; letter-spacing: 0.09em; font-weight: 600;
+  font-variant-numeric: tabular-nums; text-align: right; }
 .spacer { flex: 1; }
-.swatches { display: flex; gap: 6px; align-items: center; }
-.swatch { width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
-  border: 2px solid transparent; padding: 0; }
-.swatch.on { border-color: var(--ink); }
-h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em;
+.select-wrap { position: relative; display: inline-block; }
+.select-wrap::after { content: "▾"; position: absolute; right: 13px; top: 50%;
+  transform: translateY(-50%); pointer-events: none; color: var(--muted);
+  font-size: 11px; }
+.palette-select { appearance: none; -webkit-appearance: none;
+  background: var(--chip); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 999px; padding: 7px 34px 7px 15px; cursor: pointer;
+  font: 600 12px "Archivo", sans-serif; transition: border-color 0.18s; }
+.palette-select:hover { border-color: var(--muted); }
+.ridge { display: block; width: 100%; height: 34px; margin: 14px 0 24px;
+  color: var(--line); }
+h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.11em;
   color: var(--muted); margin: 0; font-weight: 650; }
-.badges { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
-.badge { background: var(--card); border: 1px solid var(--line); border-radius: 8px;
-  padding: 10px 14px; min-width: 150px; }
-.badge small { display: block; color: var(--muted); font-size: 11px;
-  text-transform: uppercase; letter-spacing: 0.07em; }
-.badge b { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; }
-.badge .range { font-size: 12px; color: var(--muted);
+.hero { display: grid; gap: 12px; margin: 0 0 20px;
+  grid-template-columns: minmax(320px, 1.3fr) 1fr; align-items: stretch; }
+@media (max-width: 800px) { .hero { grid-template-columns: 1fr; } }
+.herocard { border-radius: 14px; padding: 18px 20px;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: var(--card);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 4%, transparent),
+    0 10px 28px -20px color-mix(in srgb, var(--ink) 22%, transparent);
+  display: flex; flex-direction: column; gap: 5px; }
+.herocard small, .stat small { display: block; color: var(--muted);
+  font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.11em;
+  font-weight: 600; margin-bottom: 4px; }
+.herocard small { color: var(--accent); }
+.heroline { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.heroline b { font-size: 24px; font-weight: 650; line-height: 1.15;
+  letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.heroline .cum { font-size: 14.5px; font-weight: 650; color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  padding: 3px 11px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+.herocard .range { font-size: 12.5px; color: var(--muted);
   font-variant-numeric: tabular-nums; }
-.badge.event { border-left: 4px solid var(--accent); }
-.card { background: var(--card); border: 1px solid var(--line); border-radius: 8px;
-  padding: 18px 20px; margin: 0 0 18px; }
+.insight { font-size: 13px; margin-top: 1px; }
+.insight b { font-weight: 650; }
+.strip { margin-top: 8px; }
+.strip-track { position: relative; height: 30px; }
+.strip-track::before { content: ""; position: absolute; left: 0; right: 0;
+  top: 50%; height: 1px; background: var(--line); }
+.strip-dot { position: absolute; top: 50%; width: 11px; height: 11px;
+  border-radius: 50%; transform: translate(-50%, -50%);
+  border: 1.5px solid var(--card); }
+.strip-med { position: absolute; top: 4px; bottom: 4px; width: 2px;
+  background: var(--accent); transform: translateX(-50%); border-radius: 1px; }
+.strip-scale { display: flex; justify-content: space-between; font-size: 10.5px;
+  color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 2px; }
+.statgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.stat { background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 13px 15px; }
+.stat:last-child:nth-child(odd) { grid-column: span 2; }
+.stat b { font-size: 21px; font-weight: 650; line-height: 1.1;
+  letter-spacing: -0.015em; font-variant-numeric: tabular-nums; }
+.stat .range { font-size: 11.5px; color: var(--muted); margin-top: 4px;
+  font-variant-numeric: tabular-nums; }
+#tip { position: fixed; left: 0; top: 0; z-index: 10; pointer-events: none;
+  background: var(--card); color: var(--ink); border: 1px solid var(--line);
+  border-radius: 10px; padding: 9px 12px; font-size: 12px; max-width: 260px;
+  box-shadow: 0 6px 24px -8px color-mix(in srgb, var(--ink) 35%, transparent);
+  opacity: 0; transition: opacity 0.12s; }
+#tip.on { opacity: 1; }
+#tip h4 { margin: 0 0 6px; font: 650 10.5px "Archivo", sans-serif;
+  text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); }
+#tip .trow { display: flex; align-items: center; gap: 7px; margin: 2px 0;
+  min-width: 150px; font-variant-numeric: tabular-nums; }
+#tip .trow i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+#tip .trow b { margin-left: auto; font-weight: 650; padding-left: 12px; }
+.card { background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; padding: 20px 22px; margin: 0 0 16px;
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 4%, transparent),
+    0 10px 28px -20px color-mix(in srgb, var(--ink) 22%, transparent); }
 .cardhead { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-  margin-bottom: 14px; }
-.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px;
-  overflow: hidden; }
+  margin-bottom: 16px; }
+.seg { display: inline-flex; background: var(--chip); border: 1px solid var(--line);
+  border-radius: 999px; padding: 3px; gap: 2px; }
 .seg button { border: 0; background: transparent; color: var(--muted);
-  font: 600 12px/1 system-ui; padding: 7px 11px; cursor: pointer; }
-.seg button.on { background: var(--accent); color: var(--card); }
-.panel { margin-bottom: 20px; }
+  font: 600 12px/1 "Archivo", sans-serif; padding: 6px 12px; cursor: pointer;
+  border-radius: 999px; transition: background 0.18s, color 0.18s; }
+.seg button:hover { color: var(--ink); }
+.seg button.on { background: var(--card); color: var(--ink);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 16%, transparent); }
+.panel { margin-bottom: 22px; animation: fadeup 0.4s ease backwards; }
 .panel:last-child { margin-bottom: 0; }
-.panel-tag { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.07em;
-  color: var(--muted); font-weight: 650; margin-bottom: 6px; }
-.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12.5px;
-  color: var(--muted); margin-bottom: 14px; }
-.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px;
-  margin-right: 5px; }
-.legend button.lgd { display: inline-flex; align-items: center; border: 0;
-  background: none; color: var(--muted); font: inherit; font-size: 12.5px;
-  cursor: pointer; padding: 0; }
-.lgd.off { opacity: 0.35; text-decoration: line-through; }
-#advanced { border: 1px dashed var(--line); border-radius: 6px;
-  padding: 12px 14px; margin-bottom: 14px; }
+@keyframes fadeup { from { opacity: 0; transform: translateY(6px); } }
+.panel-tag { display: flex; align-items: center; gap: 10px; font-size: 10.5px;
+  text-transform: uppercase; letter-spacing: 0.11em; color: var(--muted);
+  font-weight: 650; margin-bottom: 8px; white-space: nowrap; }
+.panel-tag::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.ens-note { font-size: 12px; color: var(--muted); margin-bottom: 11px; }
+.ens-note b { color: var(--ink); font-weight: 650;
+  font-variant-numeric: tabular-nums; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.legend button.lgd { display: inline-flex; align-items: center; gap: 7px;
+  border: 1px solid var(--line); background: var(--chip); color: var(--ink);
+  font: 500 12px "Archivo", sans-serif; cursor: pointer; padding: 5px 12px;
+  border-radius: 999px; transition: border-color 0.18s, opacity 0.18s; }
+.legend button.lgd:hover { border-color: var(--muted); }
+.legend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.lgd.off { opacity: 0.4; border-style: dashed; background: transparent; }
+#advanced { background: var(--chip); border-radius: 10px;
+  padding: 14px 16px; margin-bottom: 16px; }
 .advhead { display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
   margin-bottom: 8px; }
 .wrow { display: grid; grid-template-columns: 150px 1fr 36px; gap: 10px;
   align-items: center; font-size: 13px; margin: 6px 0; }
-.wrow span i { display: inline-block; width: 10px; height: 10px;
-  border-radius: 2px; margin-right: 6px; }
+.wrow span i { display: inline-block; width: 9px; height: 9px;
+  border-radius: 50%; margin-right: 7px; }
 .wrow.off { opacity: 0.4; }
 .wrow b { text-align: right; font-variant-numeric: tabular-nums; }
 .wrow input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
@@ -162,59 +261,117 @@ h2 { font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.08em;
 .day { display: flex; flex-direction: column; height: 100%; }
 .bars { flex: 1; display: flex; align-items: flex-end; gap: 2px;
   border-bottom: 1px solid var(--line); }
-.bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 1px; position: relative; }
+.bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 1px; position: relative;
+  transition: filter 0.15s; }
+.day:hover .bar { filter: saturate(1.15) brightness(1.08); }
 .bar em { position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
-  font: 600 10px/1 system-ui; font-style: normal; color: var(--muted);
+  font: 600 10px/1 "Archivo", sans-serif; font-style: normal; color: var(--muted);
   font-variant-numeric: tabular-nums; }
 .day > small { text-align: center; padding-top: 6px; color: var(--muted);
   font-size: 11.5px; white-space: nowrap; }
-svg text { fill: var(--muted); font: 600 10.5px system-ui; }
+svg text { fill: var(--muted); font: 600 10.5px "Archivo", sans-serif; }
 svg .grid { stroke: var(--line); stroke-width: 1; }
-.rank { display: grid; grid-template-columns: 130px 1fr 52px; gap: 10px;
-  align-items: center; margin: 8px 0; font-size: 13.5px; }
-.rank .track { background: var(--bg); border-radius: 4px; height: 18px;
-  border: 1px solid var(--line); }
-.rank .fill { height: 100%; border-radius: 3px; }
-.rank b { text-align: right; font-variant-numeric: tabular-nums; }
+.rank { display: grid; grid-template-columns: 150px 1fr 56px; gap: 12px;
+  align-items: center; margin: 10px 0; font-size: 13.5px; }
+.rank .track { background: var(--chip); border-radius: 999px; height: 10px;
+  overflow: hidden; }
+.rank .fill { height: 100%; border-radius: 999px; }
+.rank b { text-align: right; font-variant-numeric: tabular-nums;
+  font-family: "Fraunces", Georgia, serif; font-size: 15.5px; }
 table { width: 100%; border-collapse: collapse; font-size: 13.5px;
   font-variant-numeric: tabular-nums; }
 th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--line); }
 th:first-child, td:first-child { text-align: left; }
-th { color: var(--muted); font-size: 11.5px; text-transform: uppercase;
-  letter-spacing: 0.06em; font-weight: 650; }
+th { color: var(--muted); font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.09em; font-weight: 650; }
 td.max { color: var(--accent); font-weight: 650; }
+tr:hover td { background: color-mix(in srgb, var(--chip) 55%, transparent); }
 .empty { color: var(--muted); font-size: 13.5px; font-style: italic; }
 .scroll { overflow-x: auto; }
-footer { color: var(--muted); font-size: 12px; margin-top: 10px; }
+footer { color: var(--muted); font-size: 12px; margin-top: 12px;
+  line-height: 1.55; }
+.colophon { text-align: center; margin-top: 32px; max-width: 70ch;
+  margin-left: auto; margin-right: auto; }
 .manual form { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
 .manual input, .manual select { background: var(--bg); border: 1px solid var(--line);
-  color: var(--ink); border-radius: 6px; padding: 7px 10px; font: inherit; }
-.manual button, .ghost { background: var(--accent); color: var(--card); border: 0;
-  border-radius: 6px; padding: 7px 14px; font: 600 13px system-ui; cursor: pointer; }
-.ghost { background: transparent; color: var(--accent);
-  border: 1px solid var(--accent); }
-.ghost.on { background: var(--accent); color: var(--card); }
+  color: var(--ink); border-radius: 8px; padding: 8px 12px; font: inherit;
+  font-size: 13.5px; }
+.manual input:focus, .manual select:focus { border-color: var(--accent);
+  outline: none; }
+.manual button[type="submit"] { background: var(--accent); color: var(--card);
+  border: 0; border-radius: 999px; padding: 8px 16px;
+  font: 600 13px "Archivo", sans-serif; cursor: pointer; }
+.ghost { background: transparent; color: var(--muted);
+  border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px;
+  font: 600 12px "Archivo", sans-serif; cursor: pointer;
+  transition: color 0.18s, border-color 0.18s, background 0.18s; }
+.ghost:hover { color: var(--accent); border-color: var(--accent); }
+.ghost.on { background: var(--accent); border-color: var(--accent);
+  color: var(--card); }
 .chip { display: inline-flex; gap: 6px; align-items: center; background: var(--chip);
-  border-radius: 999px; padding: 3px 10px; font-size: 12px; margin: 2px;
-  font-variant-numeric: tabular-nums; }
+  border: 1px solid transparent; border-radius: 999px; padding: 4px 11px;
+  font-size: 12px; margin: 2px; font-variant-numeric: tabular-nums; }
 .chip button { border: 0; background: none; color: var(--muted); cursor: pointer;
   font-size: 13px; padding: 0; }
-.chip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; }
-.chip.stale { border: 1.5px solid #E8820C; font-weight: 650; }
+.chip i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+.chip.stale { border-color: #E8820C; font-weight: 650; }
 .freshlink { color: var(--accent); font-size: 12.5px; text-decoration: none;
   font-weight: 600; white-space: nowrap; }
 .freshlink:hover { text-decoration: underline; }
 .spark { display: flex; align-items: flex-end; gap: 2px; height: 42px; }
-.spark i { flex: 1; background: var(--accent); border-radius: 1px 1px 0 0;
-  min-height: 2px; opacity: 0.85; }
+.spark i { flex: 1; max-width: 14px; background: var(--accent);
+  border-radius: 2px 2px 0 0; min-height: 2px; opacity: 0.85; }
 .spark i.manual { opacity: 0.4; }
-button:focus-visible, input:focus-visible, .swatch:focus-visible {
-  outline: 2px solid var(--accent); outline-offset: 2px; }
-@media (prefers-reduced-motion: reduce) { body { transition: none; } }
+details.fold { background: var(--card); border: 1px solid var(--line);
+  border-radius: 14px; margin: 0 0 16px; }
+details.fold > summary { cursor: pointer; padding: 17px 22px; list-style: none;
+  display: flex; align-items: baseline; gap: 12px; }
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary::after { content: "+"; margin-left: auto;
+  color: var(--muted); font: 400 17px/1 "Archivo", sans-serif; align-self: center;
+  transition: transform 0.2s; }
+details.fold[open] > summary::after { transform: rotate(45deg); }
+details.fold .foldbody { padding: 0 22px 20px; }
+.hint { color: var(--muted); font-size: 12px; }
+details.fine { margin-top: 12px; font-size: 12px; color: var(--muted); }
+details.fine summary { cursor: pointer; font-weight: 600; }
+details.fine summary:hover { color: var(--accent); }
+details.fine p { margin: 8px 0 0; line-height: 1.55; }
+button:focus-visible, input:focus-visible, .swatch:focus-visible,
+summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; } }
 """
 
 JS = r"""
 const $ = (s) => document.querySelector(s);
+
+// --- shared tooltip: elements carry data-tip="<index into TIPS>" ---------
+const TIPS = [];
+const tipRef = (html) => { TIPS.push(html); return `data-tip="${TIPS.length - 1}"`; };
+const tip = Object.assign(document.createElement("div"), { id: "tip" });
+document.body.appendChild(tip);
+document.addEventListener("mousemove", (e) => {
+  const t = e.target.closest ? e.target.closest("[data-tip]") : null;
+  if (!t) { tip.classList.remove("on"); return; }
+  tip.innerHTML = TIPS[+t.dataset.tip] || "";
+  tip.classList.add("on");
+  const pad = 14, r = tip.getBoundingClientRect();
+  let x = e.clientX + pad, y = e.clientY + pad;
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - pad;
+  if (y + r.height > innerHeight - 8) y = e.clientY - r.height - pad;
+  tip.style.left = x + "px"; tip.style.top = y + "px";
+});
+document.addEventListener("scroll", () => tip.classList.remove("on"), true);
+
+// per-day breakdown across visible sources, biggest call first
+function dayTipHtml(d) {
+  const rows = visible().map((s) => ({ s, v: F(s.id, d) }))
+    .filter((r) => r.v != null).sort((a, b) => b.v - a.v)
+    .map((r) => `<div class="trow"><i style="background:${r.s.color}"></i>` +
+      `${r.s.name}<b>${r.v.toFixed(1)}cm</b></div>`).join("");
+  return `<h4>${fmtDay(d)}</h4>${rows || "no data"}`;
+}
 const PANEL_ORDER = ["bars", "range", "cumulative", "lines", "table"];
 const PANEL_LABEL = { bars: "Daily bars", range: "Range band — provider spread with ensemble median",
   cumulative: "Cumulative", lines: "Daily lines", table: "Table" };
@@ -281,8 +438,8 @@ function setPalette(p) {
   state.palette = p;
   localStorage.setItem("palette", p);
   document.documentElement.dataset.palette = p;
-  document.querySelectorAll(".swatch").forEach((el) =>
-    el.classList.toggle("on", el.dataset.p === p));
+  const sel = $("#paletteSelect");
+  if (sel) sel.value = p;
 }
 
 function horizonDates() {
@@ -300,6 +457,50 @@ function median(a) {
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
 }
 
+// per-provider cumulative totals over a window of dates
+function windowTotals(win) {
+  return providers.filter((s) => isOn(s.id)).map((s) => {
+    let t = 0, any = false;
+    win.forEach((d) => {
+      const v = DATA.forecasts[s.id][d];
+      if (v != null) { t += v; any = true; }
+    });
+    return any ? { s, t } : null;
+  }).filter(Boolean);
+}
+
+// dot strip: each provider's event total on a 0..max scale, median marked
+function stripHtml(tot, med) {
+  if (tot.length < 2) return "";
+  const max = Math.max(1, med, ...tot.map((r) => r.t)) * 1.08;
+  const dots = tot.map((r) =>
+    `<i class="strip-dot" style="left:${(100 * r.t / max).toFixed(1)}%;background:${r.s.color}"
+      ${tipRef(`<h4>${r.s.name}</h4><div class="trow">event total<b>${r.t.toFixed(0)}cm</b></div>`)}></i>`).join("");
+  return `<div class="strip">
+    <div class="strip-track">
+      <span class="strip-med" style="left:${(100 * med / max).toFixed(1)}%"
+        ${tipRef(`<div class="trow">ensemble median<b>${med.toFixed(0)}cm</b></div>`)}></span>${dots}
+    </div>
+    <div class="strip-scale"><span>0</span><span>${max.toFixed(0)}cm</span></div></div>`;
+}
+
+// one-line read on how much the forecasters agree, and who's the outlier
+function insightText(tot, med) {
+  if (tot.length < 2) return "";
+  const lo = Math.min(...tot.map((r) => r.t)), hi = Math.max(...tot.map((r) => r.t));
+  const out = tot.map((r) => ({ ...r, dev: r.t - med }))
+    .sort((a, b) => Math.abs(b.dev) - Math.abs(a.dev))[0];
+  if (Math.abs(out.dev) > Math.max(10, med * 0.75))
+    return `Consensus sits near <b>${med.toFixed(0)}cm</b> — the outlier is
+      <b>${out.s.name}</b> at ${out.t.toFixed(0)}cm
+      (${out.dev > 0 ? "+" : "−"}${Math.abs(out.dev).toFixed(0)}cm vs the median).`;
+  if (hi - lo <= Math.max(6, med * 0.5))
+    return `Tight consensus — every forecaster lands within
+      <b>${lo.toFixed(0)}–${hi.toFixed(0)}cm</b>.`;
+  return `Moderate spread — calls run <b>${lo.toFixed(0)}–${hi.toFixed(0)}cm</b>
+    around a ${med.toFixed(0)}cm median, with no single outlier.`;
+}
+
 function renderBadges() {
   const days = horizonDates();
   const stats = days.map(dayStats);
@@ -307,40 +508,52 @@ function renderBadges() {
   let peak = null;
   for (const s of stats) if (s && (!peak || s.med > peak.med)) peak = s;
   const st = DATA.status || {};
-  let html = "";
+
+  let hero;
   if (first >= 0) {
-    const day = stats[first];
     // the event is the run of consecutive snow days starting at the first one
     let end = first;
     while (end + 1 < stats.length && stats[end + 1] && stats[end + 1].med >= 1) end++;
+    const win = days.slice(first, end + 1);
     const run = stats.slice(first, end + 1);
     const cum = run.reduce((t, s) =>
       ({ med: t.med + s.med, lo: t.lo + s.lo, hi: t.hi + s.hi }),
       { med: 0, lo: 0, hi: 0 });
-    html += `<div class="badge event"><small>Next snow day</small><b>${fmtDay(day.d)}</b>
-      <div class="range">median ${day.med.toFixed(1)}cm · range ${day.lo.toFixed(0)}–${day.hi.toFixed(0)}cm</div></div>`;
-    html += `<div class="badge event"><small>Next snow event · ${run.length} day${run.length > 1 ? "s" : ""}</small>
-      <b>${run.length > 1 ? fmtDay(day.d) + " – " + fmtDay(run[end - first].d) : fmtDay(day.d)}</b>
-      <div class="range">cumulative median ${cum.med.toFixed(0)}cm · range ${cum.lo.toFixed(0)}–${cum.hi.toFixed(0)}cm</div></div>`;
+    const span = run.length > 1
+      ? `${fmtDay(win[0])} – ${fmtDay(win[win.length - 1])}` : fmtDay(win[0]);
+    const tot = windowTotals(win);
+    const tLo = tot.length ? Math.min(...tot.map((r) => r.t)) : cum.lo;
+    const tHi = tot.length ? Math.max(...tot.map((r) => r.t)) : cum.hi;
+    const peakIn = peak && win.includes(peak.d)
+      ? `biggest day ${fmtDay(peak.d)} (median ${peak.med.toFixed(0)}cm) · ` : "";
+    hero = `<small>Next snow event · ${run.length} day${run.length > 1 ? "s" : ""}</small>
+      <div class="heroline"><b>${span}</b><span class="cum">~${cum.med.toFixed(0)}cm</span></div>
+      <div class="range">${peakIn}forecaster totals ${tLo.toFixed(0)}–${tHi.toFixed(0)}cm</div>
+      ${stripHtml(tot, cum.med)}
+      <div class="insight">${insightText(tot, cum.med)}</div>`;
   } else {
-    html += `<div class="badge event"><small>Next snow day</small><b>None sighted</b>
-      <div class="range">no ensemble median ≥ 1cm in ${state.horizon} days</div></div>`;
+    hero = `<small>Next snow event</small>
+      <div class="heroline"><b>None sighted</b></div>
+      <div class="range">no ensemble median ≥ 1cm in the next ${state.horizon} days</div>
+      <div class="insight">A quiet spell — the hero panel wakes up when any
+        consensus day reaches 1cm.</div>`;
   }
-  if (peak && peak.med >= 1 && (first < 0 || peak.d !== stats[first].d))
-    html += `<div class="badge"><small>Biggest day ahead</small><b>${fmtDay(peak.d)}</b>
-      <div class="range">median ${peak.med.toFixed(1)}cm · range ${peak.lo.toFixed(0)}–${peak.hi.toFixed(0)}cm</div></div>`;
+
+  const tiles = [];
+  if (peak && peak.med >= 1)
+    tiles.push(`<div class="stat"><small>Biggest day ahead</small><b>${fmtDay(peak.d)}</b>
+      <div class="range">median ${peak.med.toFixed(1)}cm · range ${peak.lo.toFixed(0)}–${peak.hi.toFixed(0)}cm</div></div>`);
   if (st.natural_depth != null)
-    html += `<div class="badge"><small>Natural snow depth</small><b>${st.natural_depth.toFixed(0)}cm</b>
-      <div class="range">Perisher official · ${st.date || ""}</div></div>`;
+    tiles.push(`<div class="stat"><small>Natural snow depth</small><b>${st.natural_depth.toFixed(0)}cm</b>
+      <div class="range">Perisher official · ${st.date || ""}</div></div>`);
   if (st.snow_7day != null)
-    html += `<div class="badge"><small>New snow, 7 days</small><b>${st.snow_7day.toFixed(0)}cm</b>
-      <div class="range">Perisher official 24h-to-7am</div></div>`;
-  html += `<div class="badge"><small>Days scored</small><b>${DATA.scored_days}</b>
-    <div class="range">24h-lead comparisons</div></div>`;
-  const nOn = providers.filter((s) => isOn(s.id)).length;
-  html += `<div class="badge"><small>Forecasters</small><b>${nOn}${nOn < providers.length ? " / " + providers.length : ""}</b>
-    <div class="range">in the weighted ensemble</div></div>`;
-  $("#badges").innerHTML = html;
+    tiles.push(`<div class="stat"><small>New snow, 7 days</small><b>${st.snow_7day.toFixed(0)}cm</b>
+      <div class="range">Perisher official 24h-to-7am</div></div>`);
+  tiles.push(`<div class="stat"><small>Days scored</small><b>${DATA.scored_days}</b>
+    <div class="range">24h-lead comparisons</div></div>`);
+
+  $("#hero").innerHTML = `<div class="herocard">${hero}</div>
+    <div class="statgrid">${tiles.join("")}</div>`;
 }
 
 function daysAgo(iso) {
@@ -374,10 +587,11 @@ function chartBars(days) {
       const v = F(s.id, d) ?? 0;
       const h = Math.max(0.5, 100 * v / vmax);
       const em = v >= 0.5 ? `<em>${v.toFixed(0)}</em>` : "";
-      return `<div class="bar" title="${s.name}: ${v.toFixed(1)}cm"
+      return `<div class="bar"
         style="height:${h}%;background:${s.color}">${em}</div>`;
     }).join("");
-    return `<div class="day"><div class="bars">${bars}</div><small>${fmtDay(d)}</small></div>`;
+    return `<div class="day" ${tipRef(dayTipHtml(d))}>
+      <div class="bars">${bars}</div><small>${fmtDay(d)}</small></div>`;
   }).join("") + `</div>`;
 }
 
@@ -429,7 +643,11 @@ function chartSvg(days, cumulative) {
   }
   const labels = days.map((d, i) =>
     `<text x="${x(i)}" y="${H - PB + 16}" text-anchor="middle">${fmtDay(d)}</text>`).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${lines}${endLabels}${labels}</svg>`;
+  const cw = (W - PL - PR) / Math.max(1, days.length - 1);
+  const hov = days.map((d, i) =>
+    `<rect x="${x(i) - cw / 2}" y="0" width="${cw}" height="${H}"
+      fill="transparent" ${tipRef(dayTipHtml(d))}/>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${lines}${endLabels}${labels}${hov}</svg>`;
 }
 
 function chartRange(days) {
@@ -455,11 +673,16 @@ function chartRange(days) {
   const medPath = stats.map((s, i) => `${i ? "L" : "M"}${x(i)},${y(s.med)}`).join("");
   const medLine = `<path d="${medPath}" fill="none" stroke="${col}" stroke-width="2.4"/>`
     + stats.map((s, i) =>
-      `<circle cx="${x(i)}" cy="${y(s.med)}" r="3.2" fill="${col}">
-       <title>${s.d}: median ${s.med.toFixed(1)}cm · range ${s.lo.toFixed(0)}–${s.hi.toFixed(0)}cm</title></circle>`).join("");
+      `<circle cx="${x(i)}" cy="${y(s.med)}" r="3.2" fill="${col}"/>`).join("");
   const labels = days.map((d, i) =>
     `<text x="${x(i)}" y="${H - PB + 16}" text-anchor="middle">${fmtDay(d)}</text>`).join("");
-  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${band}${medLine}${labels}</svg>`;
+  const cw = (W - PL - PR) / Math.max(1, days.length - 1);
+  const hov = stats.map((s, i) =>
+    `<rect x="${x(i) - cw / 2}" y="0" width="${cw}" height="${H}" fill="transparent"
+      ${tipRef(`<h4>${fmtDay(s.d)}</h4>
+        <div class="trow">ensemble median<b>${s.med.toFixed(1)}cm</b></div>
+        <div class="trow">provider range<b>${s.lo.toFixed(0)}–${s.hi.toFixed(0)}cm</b></div>`)}/>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${band}${medLine}${labels}${hov}</svg>`;
 }
 
 function chartTable(days) {
@@ -500,6 +723,10 @@ function refresh() {
 
 function renderMain() {
   const days = horizonDates();
+  const nOn = providers.filter((s) => isOn(s.id)).length;
+  $("#ensNote").innerHTML =
+    `<b>${nOn}${nOn < providers.length ? " of " + providers.length : ""}</b> ` +
+    `forecasters feeding the ensemble — click a name to toggle it in or out.`;
   $("#legend").innerHTML = sources.map((s) =>
     `<button class="lgd${isOn(s.id) ? "" : " off"}" data-src="${s.id}"
       title="Click to toggle ${s.name} ${s.id === "ensemble" ? "off the charts" : "in/out of charts and ensemble"}">
@@ -615,11 +842,10 @@ function renderForecasts() {
 
 function init() {
   document.documentElement.dataset.palette = state.palette;
-  $("#swatches").innerHTML = PALETTES.map((p) =>
-    `<button class="swatch${p.id === state.palette ? " on" : ""}" data-p="${p.id}"
-     title="${p.label}" aria-label="${p.label} palette"
-     style="background:linear-gradient(135deg,${p.bg} 50%,${p.accent} 50%)"
-     onclick="setPalette('${p.id}')"></button>`).join("");
+  const psel = $("#paletteSelect");
+  psel.innerHTML = PALETTES.map((p) =>
+    `<option value="${p.id}"${p.id === state.palette ? " selected" : ""}>${p.label}</option>`).join("");
+  psel.onchange = () => setPalette(psel.value);
   // chart panels are toggles: click to add/remove a stacked view
   document.querySelectorAll("[data-chart]").forEach((b) => b.onclick = () => {
     const k = b.dataset.chart, i = state.panels.indexOf(k);
@@ -758,15 +984,34 @@ def render(out: Path | None = None) -> Path:
     html = f"""<meta charset="utf-8">
 <title>Perisher forecast accuracy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&display=swap">
 <style>{_palette_css()}{CSS}</style>
 <main>
 <header>
-  <h1>Perisher <span>forecast accuracy</span></h1>
-  <span class="sub">snapshot {snapshot} · generated {today}</span>
-  <span class="spacer"></span>
-  <div class="swatches" id="swatches"></div>
+  <div class="masthead">
+    <h1>Perisher <span>forecast accuracy</span></h1>
+    <p class="sub">Nightly forecast snapshots from seven services, scored each
+    morning against the resort's official report.</p>
+  </div>
+  <div class="headtools">
+    <p class="stamp">snapshot {snapshot} · generated {today}</p>
+    <div class="select-wrap">
+      <select id="paletteSelect" aria-label="Colour palette"></select>
+    </div>
+  </div>
 </header>
-<div class="badges" id="badges"></div>
+<svg class="ridge" viewBox="0 0 1100 40" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 38 L90 22 L150 30 L260 8 L330 26 L420 14 L520 34 L610 10
+    L700 28 L800 18 L890 32 L980 12 L1100 30"
+    fill="none" stroke="currentColor" stroke-width="1.5"
+    vector-effect="non-scaling-stroke"/>
+  <circle cx="260" cy="8" r="2.5" fill="var(--accent)"/>
+  <circle cx="610" cy="10" r="2.5" fill="var(--accent)"/>
+  <circle cx="980" cy="12" r="2.5" fill="var(--accent)"/>
+</svg>
+<div class="hero" id="hero"></div>
 <div class="card">
   <div class="cardhead">
     <h2>Forecast snowfall (cm)</h2>
@@ -784,6 +1029,7 @@ def render(out: Path | None = None) -> Path:
     <button type="button" class="ghost" id="advBtn"
       title="Custom per-forecaster weights for the ensemble median">Weights</button>
   </div>
+  <div class="ens-note" id="ensNote"></div>
   <div class="legend" id="legend"></div>
   <div id="advanced" style="display:none">
     <div class="advhead">
@@ -803,11 +1049,12 @@ def render(out: Path | None = None) -> Path:
 <div class="card">
   <div class="cardhead"><h2>Data freshness</h2></div>
   <div id="freshness" style="line-height:2.4"></div>
-  <footer>Snowatch runs on a self-hosted runner — Cloudflare blocks GitHub's
+  <details class="fine"><summary>Why might a source lag?</summary>
+  <p>Snowatch runs on a self-hosted runner — Cloudflare blocks GitHub's
   cloud runner IPs. If it shows 2+ days old, the runner has likely been
   offline; it'll catch up automatically next time it's online. (The Actions
   link only lets the repo owner trigger a run early — GitHub requires write
-  access for that, so it's not a public control.)</footer>
+  access for that, so it's not a public control.)</p></details>
 </div>
 <div class="card"><h2 style="margin-bottom:12px">Accuracy rankings — 24h lead, season to date</h2>
 {acc_html}</div>
@@ -820,14 +1067,16 @@ def render(out: Path | None = None) -> Path:
   </div>
   <div id="chips" style="margin-top:8px"></div>
 </div>
-<div class="card manual">
+<details class="fold manual">
+  <summary><h2>Manual backfill</h2>
+    <span class="hint">repo owner only — transcribe forecasts &amp; actuals from forum threads</span></summary>
+  <div class="foldbody">
   <div class="cardhead">
-    <h2>Manual backfill</h2>
-    <span class="spacer"></span>
     <span class="seg">
       <button data-entry="forecast" class="on">Forecast</button>
       <button data-entry="actual">Actual</button>
     </span>
+    <span class="spacer"></span>
     <button type="button" class="ghost" id="exportBtn">Export manual.json</button>
   </div>
   <form id="forecastForm">
@@ -850,10 +1099,13 @@ def render(out: Path | None = None) -> Path:
   Entries live in this browser until exported; drop the file at
   <code>data/manual.json</code> and the morning run merges it (feed data always
   wins on conflicts).</footer>
-</div>
-<footer>Ground truth: Perisher's official 24h-to-7am snow report (accurate,
-unlagged). Forecasts snapshotted nightly ~6pm AEST; scored the next morning
-against that day's reported snowfall.</footer>
+  </div>
+</details>
+<footer class="colophon">Ground truth: Perisher's official 24h-to-7am snow
+report (accurate, unlagged). Forecasts snapshotted nightly ~6pm AEST; scored
+the next morning against that day's reported snowfall.<br>
+An attempted automated reproduction of <b>Star_Hawk</b>'s daily forecast
+comparisons on the ski.com.au forums. Built by Clappo, with Claude.</footer>
 </main>
 <script>
 const DATA = {json.dumps(data)};
