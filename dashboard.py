@@ -360,7 +360,9 @@ function renderFreshness() {
       <i style="background:${s.color}"></i>${s.name} · ${label}</span>`;
   }).join("");
   $("#freshness").innerHTML = rows +
-    `<a class="freshlink" href="${DATA.actionsUrl}" target="_blank" rel="noopener">Run workflow now →</a>`;
+    `<a class="freshlink" href="${DATA.actionsUrl}" target="_blank" rel="noopener"
+      title="Opens the Actions history — triggering a run needs repo write access, so this is a plain link, not a public button">
+      View pipeline runs →</a>`;
 }
 
 function chartBars(days) {
@@ -802,8 +804,10 @@ def render(out: Path | None = None) -> Path:
   <div class="cardhead"><h2>Data freshness</h2></div>
   <div id="freshness" style="line-height:2.4"></div>
   <footer>Snowatch runs on a self-hosted runner — Cloudflare blocks GitHub's
-  cloud runner IPs. If it shows 2+ days old, the runner has likely been offline;
-  it'll catch up next time it's online, or trigger it early with the link above.</footer>
+  cloud runner IPs. If it shows 2+ days old, the runner has likely been
+  offline; it'll catch up automatically next time it's online. (The Actions
+  link only lets the repo owner trigger a run early — GitHub requires write
+  access for that, so it's not a public control.)</footer>
 </div>
 <div class="card"><h2 style="margin-bottom:12px">Accuracy rankings — 24h lead, season to date</h2>
 {acc_html}</div>
