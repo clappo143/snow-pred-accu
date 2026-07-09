@@ -17,8 +17,11 @@ def collect() -> dict[dt.date, float]:
     data = get(URL).json()["data"]["forecast"]["summary"]
     out: dict[dt.date, float] = {}
     for day in data:
+        total = day.get("dailySnowTotal")
+        if total is None:
+            continue  # beyond this model run's coverage
         date = dt.date.fromisoformat(day["valid"][:10])
-        out[date] = round(float(day["dailySnowTotal"]), 2)
+        out[date] = round(float(total), 2)
     if not out:
         raise ValueError("empty summary")
     return out
