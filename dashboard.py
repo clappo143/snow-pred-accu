@@ -21,6 +21,7 @@ import store
 from score import FLOOR_CM, accuracy, daily_errors
 
 SITE = Path(__file__).parent / "docs"  # GitHub Pages only serves / or /docs
+ACTIONS_URL = "https://github.com/clappo143/snow-pred-accu/actions/workflows/daily.yml"
 
 PROVIDER_COLORS = {
     "yrno": "#5B9BD5",
@@ -193,6 +194,11 @@ footer { color: var(--muted); font-size: 12px; margin-top: 10px; }
   font-variant-numeric: tabular-nums; }
 .chip button { border: 0; background: none; color: var(--muted); cursor: pointer;
   font-size: 13px; padding: 0; }
+.chip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; }
+.chip.stale { border: 1.5px solid #E8820C; font-weight: 650; }
+.freshlink { color: var(--accent); font-size: 12.5px; text-decoration: none;
+  font-weight: 600; white-space: nowrap; }
+.freshlink:hover { text-decoration: underline; }
 .spark { display: flex; align-items: flex-end; gap: 2px; height: 42px; }
 .spark i { flex: 1; background: var(--accent); border-radius: 1px 1px 0 0;
   min-height: 2px; opacity: 0.85; }
@@ -330,6 +336,26 @@ function renderBadges() {
   html += `<div class="badge"><small>Forecasters</small><b>${nOn}${nOn < providers.length ? " / " + providers.length : ""}</b>
     <div class="range">in the weighted ensemble</div></div>`;
   $("#badges").innerHTML = html;
+}
+
+function daysAgo(iso) {
+  const a = new Date(iso + "T00:00"), b = new Date(DATA.generated + "T00:00");
+  return Math.round((b - a) / 86400000);
+}
+
+function renderFreshness() {
+  const fresh = DATA.freshness || {};
+  const rows = providers.map((s) => {
+    const last = fresh[s.id];
+    const age = last == null ? null : daysAgo(last);
+    const stale = age == null || age >= 2;
+    const label = age == null ? "no data yet"
+      : age <= 0 ? "today" : age === 1 ? "1 day ago" : `${age} days ago`;
+    return `<span class="chip${stale ? " stale" : ""}" title="${s.name}: last captured ${last || "never"}">
+      <i style="background:${s.color}"></i>${s.name} · ${label}</span>`;
+  }).join("");
+  $("#freshness").innerHTML = rows +
+    `<a class="freshlink" href="${DATA.actionsUrl}" target="_blank" rel="noopener">Run workflow now →</a>`;
 }
 
 function chartBars(days) {
@@ -652,6 +678,7 @@ function init() {
   };
   computeEnsemble();
   renderBadges(); renderMain(); renderWeights(); renderActuals(); renderForecasts();
+  renderFreshness();
 }
 init();
 """
@@ -678,6 +705,11 @@ def render(out: Path | None = None) -> Path:
     status_path = store.DB_PATH.parent / "resort_status.json"
     status = json.loads(status_path.read_text()) if status_path.exists() else {}
 
+    freshness = dict(con.execute(
+        "SELECT source, max(issued_date) FROM forecasts "
+        "WHERE source != 'ensemble' GROUP BY source"
+    ).fetchall())
+
     data = {
         "snapshot": snapshot,
         "generated": today,
@@ -690,6 +722,8 @@ def render(out: Path | None = None) -> Path:
         "accuracy": acc,
         "scored_days": scored,
         "status": status,
+        "freshness": freshness,
+        "actionsUrl": ACTIONS_URL,
     }
     palettes_js = [
         {"id": pid, "label": p["label"], "bg": p["light"]["bg"],
@@ -758,6 +792,13 @@ def render(out: Path | None = None) -> Path:
     Settings live in this browser only.</footer>
   </div>
   <div id="main"></div>
+</div>
+<div class="card">
+  <div class="cardhead"><h2>Data freshness</h2></div>
+  <div id="freshness" style="line-height:2.4"></div>
+  <footer>Snowatch runs on a self-hosted runner (James's Mac) — Cloudflare blocks
+  GitHub's cloud runner IPs. If it shows 2+ days old, the Mac has likely been off;
+  it'll catch up next time it's on, or trigger it early with the link above.</footer>
 </div>
 <div class="card"><h2 style="margin-bottom:12px">Accuracy rankings — 24h lead, season to date</h2>
 {acc_html}</div>

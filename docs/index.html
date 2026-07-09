@@ -118,6 +118,11 @@ footer { color: var(--muted); font-size: 12px; margin-top: 10px; }
   font-variant-numeric: tabular-nums; }
 .chip button { border: 0; background: none; color: var(--muted); cursor: pointer;
   font-size: 13px; padding: 0; }
+.chip i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; }
+.chip.stale { border: 1.5px solid #E8820C; font-weight: 650; }
+.freshlink { color: var(--accent); font-size: 12.5px; text-decoration: none;
+  font-weight: 600; white-space: nowrap; }
+.freshlink:hover { text-decoration: underline; }
 .spark { display: flex; align-items: flex-end; gap: 2px; height: 42px; }
 .spark i { flex: 1; background: var(--accent); border-radius: 1px 1px 0 0;
   min-height: 2px; opacity: 0.85; }
@@ -167,6 +172,13 @@ button:focus-visible, input:focus-visible, .swatch:focus-visible {
   </div>
   <div id="main"></div>
 </div>
+<div class="card">
+  <div class="cardhead"><h2>Data freshness</h2></div>
+  <div id="freshness" style="line-height:2.4"></div>
+  <footer>Snowatch runs on a self-hosted runner (James's Mac) — Cloudflare blocks
+  GitHub's cloud runner IPs. If it shows 2+ days old, the Mac has likely been off;
+  it'll catch up next time it's on, or trigger it early with the link above.</footer>
+</div>
 <div class="card"><h2 style="margin-bottom:12px">Accuracy rankings — 24h lead, season to date</h2>
 <p class="empty">No scoreable days yet — rankings appear once an evening snapshot has a reported actual to be judged against.</p></div>
 <div class="card manual">
@@ -214,7 +226,7 @@ unlagged). Forecasts snapshotted nightly ~6pm AEST; scored the next morning
 against that day's reported snowfall.</footer>
 </main>
 <script>
-const DATA = {"snapshot": "2026-07-09", "generated": "2026-07-09", "sources": [{"id": "yrno", "name": "YR.no", "color": "#5B9BD5"}, {"id": "bom", "name": "BOM", "color": "#2E75B6"}, {"id": "snowforecast", "name": "Snow-Forecast", "color": "#C00000"}, {"id": "mountainwatch", "name": "Mountainwatch", "color": "#44546A"}, {"id": "janesweather", "name": "Jane's Weather", "color": "#2B4BD8"}, {"id": "snowatch", "name": "Snowatch", "color": "#17698A"}, {"id": "openmeteo", "name": "Open-Meteo", "color": "#E8820C"}, {"id": "ensemble", "name": "Ensemble", "color": "#2FA05A"}], "forecasts": {"snowforecast": {"2026-07-08": 0.0, "2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 7.0, "2026-07-12": 2.0, "2026-07-13": 3.0, "2026-07-14": 3.0}, "snowatch": {"2026-07-08": 0.0, "2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 4.0, "2026-07-12": 5.0, "2026-07-13": 2.0, "2026-07-14": 3.5, "2026-07-15": 1.5, "2026-07-16": 0.0, "2026-07-17": 0.0, "2026-07-18": 0.0, "2026-07-19": 0.0, "2026-07-20": 0.5, "2026-07-21": 4.5, "2026-07-22": 3.0, "2026-07-23": 3.0}, "yrno": {"2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 3.0, "2026-07-12": 21.3, "2026-07-13": 14.6, "2026-07-14": 0.7, "2026-07-15": 0.0, "2026-07-16": 0.0, "2026-07-17": 0.0, "2026-07-18": 0.0}, "bom": {"2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 0.0, "2026-07-12": 15.0, "2026-07-13": 11.5, "2026-07-14": 0.0, "2026-07-15": 0.0, "2026-07-16": 0.0, "2026-07-17": 0.0}, "mountainwatch": {"2026-07-08": 0.0, "2026-07-09": 0.0, "2026-07-10": 1.4, "2026-07-11": 23.5, "2026-07-12": 15.6, "2026-07-13": 4.7, "2026-07-14": 0.0}, "janesweather": {"2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 1.57, "2026-07-12": 16.36, "2026-07-13": 8.37, "2026-07-14": 5.93, "2026-07-15": 0.83, "2026-07-16": 0.2, "2026-07-17": 0.22, "2026-07-18": 0.0}, "openmeteo": {"2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 0.07, "2026-07-12": 10.43, "2026-07-13": 2.38, "2026-07-14": 1.82, "2026-07-15": 0.0, "2026-07-16": 0.0, "2026-07-17": 0.0, "2026-07-18": 0.0, "2026-07-19": 0.0}, "ensemble": {"2026-07-08": 0.0, "2026-07-09": 0.0, "2026-07-10": 0.2, "2026-07-11": 5.59, "2026-07-12": 12.24, "2026-07-13": 6.65, "2026-07-14": 2.14, "2026-07-15": 0.47, "2026-07-16": 0.04, "2026-07-17": 0.04, "2026-07-18": 0.0, "2026-07-19": 0.0, "2026-07-20": 0.5, "2026-07-21": 4.5, "2026-07-22": 3.0, "2026-07-23": 3.0}}, "actuals": {"2026-07-09": 0.0}, "accuracy": {}, "scored_days": 0, "status": {"date": "2026-07-09", "snow_24h": 0.0, "snow_7day": 32.0, "natural_depth": 34.3}};
+const DATA = {"snapshot": "2026-07-09", "generated": "2026-07-09", "sources": [{"id": "yrno", "name": "YR.no", "color": "#5B9BD5"}, {"id": "bom", "name": "BOM", "color": "#2E75B6"}, {"id": "snowforecast", "name": "Snow-Forecast", "color": "#C00000"}, {"id": "mountainwatch", "name": "Mountainwatch", "color": "#44546A"}, {"id": "janesweather", "name": "Jane's Weather", "color": "#2B4BD8"}, {"id": "snowatch", "name": "Snowatch", "color": "#17698A"}, {"id": "openmeteo", "name": "Open-Meteo", "color": "#E8820C"}, {"id": "ensemble", "name": "Ensemble", "color": "#2FA05A"}], "forecasts": {"snowforecast": {"2026-07-08": 0.0, "2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 7.0, "2026-07-12": 2.0, "2026-07-13": 3.0, "2026-07-14": 3.0}, "snowatch": {"2026-07-08": 0.0, "2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 4.0, "2026-07-12": 5.0, "2026-07-13": 2.0, "2026-07-14": 3.5, "2026-07-15": 1.5, "2026-07-16": 0.0, "2026-07-17": 0.0, "2026-07-18": 0.0, "2026-07-19": 0.0, "2026-07-20": 0.5, "2026-07-21": 4.5, "2026-07-22": 3.0, "2026-07-23": 3.0}, "yrno": {"2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 3.0, "2026-07-12": 21.3, "2026-07-13": 14.6, "2026-07-14": 0.7, "2026-07-15": 0.0, "2026-07-16": 0.0, "2026-07-17": 0.0, "2026-07-18": 0.0}, "bom": {"2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 0.0, "2026-07-12": 15.0, "2026-07-13": 11.5, "2026-07-14": 0.0, "2026-07-15": 0.0, "2026-07-16": 0.0, "2026-07-17": 0.0}, "mountainwatch": {"2026-07-08": 0.0, "2026-07-09": 0.0, "2026-07-10": 1.4, "2026-07-11": 23.5, "2026-07-12": 15.6, "2026-07-13": 4.7, "2026-07-14": 0.0}, "janesweather": {"2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 1.57, "2026-07-12": 16.36, "2026-07-13": 8.37, "2026-07-14": 5.93, "2026-07-15": 0.83, "2026-07-16": 0.2, "2026-07-17": 0.22, "2026-07-18": 0.0}, "openmeteo": {"2026-07-09": 0.0, "2026-07-10": 0.0, "2026-07-11": 0.07, "2026-07-12": 10.43, "2026-07-13": 2.38, "2026-07-14": 1.82, "2026-07-15": 0.0, "2026-07-16": 0.0, "2026-07-17": 0.0, "2026-07-18": 0.0, "2026-07-19": 0.0}, "ensemble": {"2026-07-08": 0.0, "2026-07-09": 0.0, "2026-07-10": 0.2, "2026-07-11": 5.59, "2026-07-12": 12.24, "2026-07-13": 6.65, "2026-07-14": 2.14, "2026-07-15": 0.47, "2026-07-16": 0.04, "2026-07-17": 0.04, "2026-07-18": 0.0, "2026-07-19": 0.0, "2026-07-20": 0.5, "2026-07-21": 4.5, "2026-07-22": 3.0, "2026-07-23": 3.0}}, "actuals": {"2026-07-09": 0.0}, "accuracy": {}, "scored_days": 0, "status": {"date": "2026-07-09", "snow_24h": 0.0, "snow_7day": 32.0, "natural_depth": 34.3}, "freshness": {"bom": "2026-07-09", "janesweather": "2026-07-09", "mountainwatch": "2026-07-09", "openmeteo": "2026-07-09", "snowatch": "2026-07-09", "snowforecast": "2026-07-09", "yrno": "2026-07-09"}, "actionsUrl": "https://github.com/clappo143/snow-pred-accu/actions/workflows/daily.yml"};
 const PALETTES = [{"id": "glacier", "label": "Glacier", "bg": "#F2F5F9", "accent": "#3E8FD8"}, {"id": "clay", "label": "Clay", "bg": "#F0EEE6", "accent": "#CC785C"}, {"id": "aurora", "label": "Aurora", "bg": "#F1F6F5", "accent": "#0E9488"}, {"id": "corduroy", "label": "Corduroy", "bg": "#FDF3E7", "accent": "#C2410C"}];
 
 const $ = (s) => document.querySelector(s);
@@ -344,6 +356,26 @@ function renderBadges() {
   html += `<div class="badge"><small>Forecasters</small><b>${nOn}${nOn < providers.length ? " / " + providers.length : ""}</b>
     <div class="range">in the weighted ensemble</div></div>`;
   $("#badges").innerHTML = html;
+}
+
+function daysAgo(iso) {
+  const a = new Date(iso + "T00:00"), b = new Date(DATA.generated + "T00:00");
+  return Math.round((b - a) / 86400000);
+}
+
+function renderFreshness() {
+  const fresh = DATA.freshness || {};
+  const rows = providers.map((s) => {
+    const last = fresh[s.id];
+    const age = last == null ? null : daysAgo(last);
+    const stale = age == null || age >= 2;
+    const label = age == null ? "no data yet"
+      : age <= 0 ? "today" : age === 1 ? "1 day ago" : `${age} days ago`;
+    return `<span class="chip${stale ? " stale" : ""}" title="${s.name}: last captured ${last || "never"}">
+      <i style="background:${s.color}"></i>${s.name} · ${label}</span>`;
+  }).join("");
+  $("#freshness").innerHTML = rows +
+    `<a class="freshlink" href="${DATA.actionsUrl}" target="_blank" rel="noopener">Run workflow now →</a>`;
 }
 
 function chartBars(days) {
@@ -666,6 +698,7 @@ function init() {
   };
   computeEnsemble();
   renderBadges(); renderMain(); renderWeights(); renderActuals(); renderForecasts();
+  renderFreshness();
 }
 init();
 

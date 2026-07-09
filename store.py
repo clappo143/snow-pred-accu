@@ -30,6 +30,24 @@ def connect() -> sqlite3.Connection:
     return con
 
 
+def load_forecasts_for_issued(
+    con: sqlite3.Connection, issued: dt.date, exclude: tuple[str, ...] = ("ensemble",)
+) -> dict[str, dict[dt.date, float]]:
+    """Every source's forecast rows for one snapshot date, regardless of
+    which script invocation collected them (used to rebuild the ensemble
+    when collectors run in separate jobs at different times)."""
+    out: dict[str, dict[dt.date, float]] = {}
+    rows = con.execute(
+        "SELECT source, target_date, snow_cm FROM forecasts WHERE issued_date=?",
+        (issued.isoformat(),),
+    ).fetchall()
+    for source, target, cm in rows:
+        if source in exclude:
+            continue
+        out.setdefault(source, {})[dt.date.fromisoformat(target)] = cm
+    return out
+
+
 def save_forecasts(
     con: sqlite3.Connection,
     source: str,

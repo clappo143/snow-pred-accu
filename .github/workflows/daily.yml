@@ -12,7 +12,9 @@ permissions:
   contents: write
 
 jobs:
-  run:
+  # Everything except Snowatch: reliable GitHub-hosted cloud runners, never
+  # blocked on James's Mac being on.
+  cloud:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,13 +27,54 @@ jobs:
         run: |
           H=$(TZ=Australia/Sydney date +%H)
           if [ "$H" -lt 12 ]; then echo "script=run_morning.py" >> "$GITHUB_OUTPUT";
-          else echo "script=run_evening.py" >> "$GITHUB_OUTPUT"; fi
+          else echo "script=run_evening.py --skip snowatch" >> "$GITHUB_OUTPUT"; fi
       - run: python ${{ steps.mode.outputs.script }}
-      - name: commit data & charts
+      - name: render dashboard
+        if: always()
+        run: python dashboard.py
+      - name: commit & push
         if: always()
         run: |
           git config user.name "snow-bot"
           git config user.email "actions@github.com"
-          git add data charts docs
-          git diff --cached --quiet || git commit -m "data: $(TZ=Australia/Sydney date '+%Y-%m-%d %H:%M') run"
-          git push
+          for attempt in 1 2 3; do
+            git add data charts docs
+            git diff --cached --quiet && { echo "nothing to commit"; break; }
+            git commit -m "data: $(TZ=Australia/Sydney date '+%Y-%m-%d %H:%M') run (cloud)"
+            git push && break
+            echo "push rejected (attempt $attempt) — resyncing and redoing the run"
+            git fetch origin main
+            git reset --hard origin/main
+            python ${{ steps.mode.outputs.script }}
+            python dashboard.py
+          done
+
+  # Snowatch only: Cloudflare blocks GitHub's published Actions IP ranges
+  # (confirmed 2026-07-09), so this runs on James's own Mac via a self-hosted
+  # runner instead. If the Mac is off, GitHub simply queues this job — no
+  # custom retry needed — and it runs whenever the runner is next online.
+  snowatch-home:
+    runs-on: [self-hosted, snow-pred-accu]
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip3 install -r requirements.txt
+      - run: python3 run_evening.py --only snowatch
+      - name: render dashboard
+        if: always()
+        run: python3 dashboard.py
+      - name: commit & push
+        if: always()
+        run: |
+          git config user.name "snow-bot"
+          git config user.email "actions@github.com"
+          for attempt in 1 2 3; do
+            git add data charts docs
+            git diff --cached --quiet && { echo "nothing to commit"; break; }
+            git commit -m "data: $(TZ=Australia/Sydney date '+%Y-%m-%d %H:%M') run (snowatch-home)"
+            git push && break
+            echo "push rejected (attempt $attempt) — resyncing and redoing the run"
+            git fetch origin main
+            git reset --hard origin/main
+            python3 run_evening.py --only snowatch
+            python3 dashboard.py
+          done
