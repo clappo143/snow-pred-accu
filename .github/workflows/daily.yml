@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   # Everything except Snowatch: reliable GitHub-hosted cloud runners, never
-  # blocked on James's Mac being on.
+  # dependent on the self-hosted runner being online.
   cloud:
     runs-on: ubuntu-latest
     steps:
@@ -50,9 +50,9 @@ jobs:
           done
 
   # Snowatch only: Cloudflare blocks GitHub's published Actions IP ranges
-  # (confirmed 2026-07-09), so this runs on James's own Mac via a self-hosted
-  # runner instead. If the Mac is off, GitHub simply queues this job — no
-  # custom retry needed — and it runs whenever the runner is next online.
+  # (confirmed 2026-07-09), so this runs on a self-hosted runner instead. If
+  # the runner is offline, GitHub simply queues this job — no custom retry
+  # needed — and it runs whenever the runner is next online.
   snowatch-home:
     runs-on: [self-hosted, snow-pred-accu]
     steps:

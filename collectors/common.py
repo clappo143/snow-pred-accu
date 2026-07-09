@@ -7,7 +7,7 @@ from zoneinfo import ZoneInfo
 import requests
 
 TZ = ZoneInfo("Australia/Sydney")
-UA = "snow-pred-accu/0.1 (personal forecast-accuracy tracker; james@clapham-intel.com)"
+UA = "snow-pred-accu/0.1 (+https://github.com/clappo143/snow-pred-accu)"
 BROWSER_UA = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"

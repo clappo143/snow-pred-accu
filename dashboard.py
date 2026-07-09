@@ -20,8 +20,13 @@ from pathlib import Path
 import store
 from score import FLOOR_CM, accuracy, daily_errors
 
+import os
+
 SITE = Path(__file__).parent / "docs"  # GitHub Pages only serves / or /docs
-ACTIONS_URL = "https://github.com/clappo143/snow-pred-accu/actions/workflows/daily.yml"
+# GITHUB_REPOSITORY ("owner/repo") is set automatically in Actions, so a fork
+# gets a correct link to its own Actions page without any edit.
+_REPO = os.environ.get("GITHUB_REPOSITORY", "clappo143/snow-pred-accu")
+ACTIONS_URL = f"https://github.com/{_REPO}/actions/workflows/daily.yml"
 
 PROVIDER_COLORS = {
     "yrno": "#5B9BD5",
@@ -796,9 +801,9 @@ def render(out: Path | None = None) -> Path:
 <div class="card">
   <div class="cardhead"><h2>Data freshness</h2></div>
   <div id="freshness" style="line-height:2.4"></div>
-  <footer>Snowatch runs on a self-hosted runner (James's Mac) — Cloudflare blocks
-  GitHub's cloud runner IPs. If it shows 2+ days old, the Mac has likely been off;
-  it'll catch up next time it's on, or trigger it early with the link above.</footer>
+  <footer>Snowatch runs on a self-hosted runner — Cloudflare blocks GitHub's
+  cloud runner IPs. If it shows 2+ days old, the runner has likely been offline;
+  it'll catch up next time it's online, or trigger it early with the link above.</footer>
 </div>
 <div class="card"><h2 style="margin-bottom:12px">Accuracy rankings — 24h lead, season to date</h2>
 {acc_html}</div>
