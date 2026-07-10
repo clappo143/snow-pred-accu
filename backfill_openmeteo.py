@@ -2,12 +2,13 @@
 
 Open-Meteo's Historical Forecast API serves the model forecasts it archived
 each day (a genuine ~1-day-lead prediction, not a reanalysis of observations).
-We write each day as a 24h-lead forecast row (issued_date = target − 1) under
-source 'openmeteo', so it slots straight into the existing scoring join and
-earns a real season-long accuracy record wherever we hold an actual.
+We write each day as a night-before forecast row (issued_date = target − 1,
+run='pm') under source 'openmeteo', so it slots straight into the scoring
+join and earns a real season-long accuracy record wherever we hold an actual.
 
-Usage:  python backfill_openmeteo.py [START] [END]      (dates YYYY-MM-DD)
-Defaults: START=2026-06-01, END=yesterday (AEST).
+Usage:  python backfill_openmeteo.py [START] [END] [RESORT]
+        (dates YYYY-MM-DD; RESORT an id from resorts.py or 'all')
+Defaults: START=2026-06-01, END=yesterday (AEST), RESORT=all.
 
 Caveat worth remembering: Open-Meteo daily totals are local midnight-midnight,
 while the resort report is ~7am-7am, so storm days can sit ±1 day off the
@@ -20,15 +21,15 @@ import sys
 
 import store
 from collectors.common import TZ, get
+from resorts import RESORTS, Resort
 
 SOURCE = "openmeteo"
-ELEV = 1720
 
 
-def fetch(start: dt.date, end: dt.date) -> dict[dt.date, float]:
+def fetch(resort: Resort, start: dt.date, end: dt.date) -> dict[dt.date, float]:
     url = (
         "https://historical-forecast-api.open-meteo.com/v1/forecast"
-        f"?latitude=-36.4058&longitude=148.4117&elevation={ELEV}"
+        f"?latitude={resort.lat}&longitude={resort.lon}&elevation={resort.alt}"
         f"&start_date={start}&end_date={end}"
         "&daily=snowfall_sum&timezone=Australia%2FSydney"
     )
@@ -46,18 +47,23 @@ def main(argv: list[str]) -> int:
         if len(argv) > 1
         else dt.datetime.now(TZ).date() - dt.timedelta(days=1)
     )
-    series = fetch(start, end)
+    which = argv[2] if len(argv) > 2 else "all"
+    targets = list(RESORTS.values()) if which == "all" else [RESORTS[which]]
+
     con = store.connect()
-    inserted = 0
-    for target, cm in series.items():
-        issued = target - dt.timedelta(days=1)
-        inserted += con.execute(
-            "INSERT OR IGNORE INTO forecasts VALUES (?,?,?,?)",
-            (SOURCE, issued.isoformat(), target.isoformat(), cm),
-        ).rowcount
-    con.commit()
-    print(f"[ok] openmeteo backfill: {len(series)} days {start}..{end}, "
-          f"{inserted} new row(s) (existing rows preserved)")
+    for resort in targets:
+        series = fetch(resort, start, end)
+        inserted = 0
+        for target, cm in series.items():
+            issued = target - dt.timedelta(days=1)
+            inserted += con.execute(
+                "INSERT OR IGNORE INTO forecasts VALUES (?,?,?,?,?,?)",
+                (resort.id, SOURCE, issued.isoformat(), "pm",
+                 target.isoformat(), cm),
+            ).rowcount
+        con.commit()
+        print(f"[ok] openmeteo backfill {resort.id}: {len(series)} days "
+              f"{start}..{end}, {inserted} new row(s) (existing preserved)")
     return 0
 
 

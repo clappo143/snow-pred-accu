@@ -9,10 +9,12 @@ from __future__ import annotations
 import datetime as dt
 import re
 
+from resorts import Resort
+
 from .common import get, today
 
 SOURCE = "mountainwatch"
-URL = "https://www.mountainwatch.com/australia/perisher/weather/"
+URL = "https://www.mountainwatch.com/australia/{slug}/weather/"
 
 _DAY_LABEL = re.compile(
     r">\s*(?:Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day\s+(\d{1,2})\s*<"
@@ -27,8 +29,8 @@ def _resolve_date(day_of_month: int, start: dt.date) -> dt.date:
     raise ValueError(f"cannot resolve day-of-month {day_of_month}")
 
 
-def collect() -> dict[dt.date, float]:
-    html = get(URL).text
+def collect(resort: Resort) -> dict[dt.date, float]:
+    html = get(URL.format(slug=resort.mountainwatch_slug)).text
     values = re.findall(r"Snow:\s*([\d.]+)\s*cm", html)
     doms = _DAY_LABEL.findall(html)
     if not values:

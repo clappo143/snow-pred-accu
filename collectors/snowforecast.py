@@ -8,10 +8,12 @@ from __future__ import annotations
 import datetime as dt
 import re
 
+from resorts import Resort
+
 from .common import get, today
 
 SOURCE = "snowforecast"
-URL = "https://www.snow-forecast.com/resorts/Perisher-Blue/6day/mid"
+URL = "https://www.snow-forecast.com/resorts/{slug}/6day/mid"
 
 
 def _row_cells(html: str, row: str) -> list[str]:
@@ -35,8 +37,8 @@ def _resolve_date(day_of_month: int, start: dt.date) -> dt.date:
     raise ValueError(f"cannot resolve day-of-month {day_of_month}")
 
 
-def collect() -> dict[dt.date, float]:
-    html = get(URL).text
+def collect(resort: Resort) -> dict[dt.date, float]:
+    html = get(URL.format(slug=resort.snowforecast_slug)).text
     i = html.find('data-row="days"')
     seg = html[i : i + html[i:].find("</tr>")]
     days = re.findall(r'colspan="(\d+)"[^>]*data-value="([^"]+)"', seg)

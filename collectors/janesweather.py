@@ -7,14 +7,17 @@ from __future__ import annotations
 
 import datetime as dt
 
-from .common import LAT, LON, get
+from resorts import Resort
+
+from .common import get
 
 SOURCE = "janesweather"
-URL = f"https://janesweather.com/api/v1/forecast-edge?lat={LAT}&lng={LON}&model=ml"
+URL = "https://janesweather.com/api/v1/forecast-edge?lat={lat}&lng={lon}&model=ml"
 
 
-def collect() -> dict[dt.date, float]:
-    data = get(URL).json()["data"]["forecast"]["summary"]
+def collect(resort: Resort) -> dict[dt.date, float]:
+    url = URL.format(lat=resort.lat, lon=resort.lon)
+    data = get(url).json()["data"]["forecast"]["summary"]
     out: dict[dt.date, float] = {}
     for day in data:
         total = day.get("dailySnowTotal")

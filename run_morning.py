@@ -1,66 +1,116 @@
-"""Morning run (~7:45am AEST): record reported 24h snowfall, score, chart.
+"""Morning run (~7:45am AEST), per resort:
 
-Ground truth is Perisher's own 24h-to-7am figure (accurate, unlagged). If
-that scrape fails we fall back to OnTheSnow's newest day, which is a rougher
-proxy — its per-day attribution disagreed with Perisher's official totals.
+1. Record the reported 24h-to-7am snowfall. Ground truth is the resort's
+   own report where one is scrapeable (Perisher, Hotham, Falls Creek —
+   accurate, unlagged); OnTheSnow's resort-reported history is the primary
+   source for Thredbo and Mt Buller, and the gap-filling fallback
+   everywhere else (it never overwrites official history).
+2. Snapshot every forecaster again (run='am'). Providers like Snowatch
+   issue at 6-7am, so this captures the genuine "morning of" call for the
+   24h window that just began at 7am — the evening snapshot alone was up to
+   12h stale for them.
+3. Score, chart (Perisher PNGs — the dashboard covers every resort),
+   regenerate the dashboard.
+
+Usage mirrors run_evening.py: --skip/--only filter the forecaster snapshot
+(the cloud job passes --skip snowatch; the self-hosted runner captures
+Snowatch itself via run_evening.py --only snowatch in the same slot).
 """
 from __future__ import annotations
 
+import argparse
 import json
 import sys
 import traceback
 
 import store
 from charts import accuracy_chart, history_chart, next_days_chart
-from collectors import actuals_onthesnow, actuals_perisher
-from collectors.common import today
-from score import accuracy
+from collectors import actuals_official, actuals_onthesnow
+from collectors.common import run_now, today
+from resorts import RESORTS, Resort
+from run_evening import pick_collectors, snapshot_forecasts
+from score import HEADLINE, accuracy
 from store import DB_PATH
 
 
-def _record_actual(con) -> bool:
+def _record_actual(con, resort: Resort) -> dict | None:
+    """Store today's actual for one resort; returns its status blob."""
+    if resort.official_kind:
+        try:
+            rep = actuals_official.collect(resort)
+            store.save_actual(con, resort.id, rep["date"], rep["snow_24h"],
+                              actuals_official.SOURCE)
+            print(f"[ok] {resort.id} official: {rep['date']} "
+                  f"24h={rep['snow_24h']}cm, 7d={rep['snow_7day']}cm, "
+                  f"depth={rep['natural_depth']}cm")
+            return {
+                "date": rep["date"].isoformat(),
+                "snow_24h": rep["snow_24h"],
+                "snow_7day": rep["snow_7day"],
+                "natural_depth": rep["natural_depth"],
+            }
+        except Exception:
+            print(f"[warn] {resort.id} official scrape failed; "
+                  "trying OnTheSnow fallback", file=sys.stderr)
+            traceback.print_exc()
     try:
-        rep = actuals_perisher.collect()
-        store.save_actual(con, rep["date"], rep["snow_24h"], actuals_perisher.SOURCE)
-        (DB_PATH.parent / "resort_status.json").write_text(json.dumps({
-            "date": rep["date"].isoformat(),
-            "snow_24h": rep["snow_24h"],
-            "snow_7day": rep["snow_7day"],
-            "natural_depth": rep["natural_depth"],
-        }, indent=1))
-        print(f"[ok] Perisher official: {rep['date']} 24h={rep['snow_24h']}cm, "
-              f"7d={rep['snow_7day']}cm, depth={rep['natural_depth']}cm")
-        return True
-    except Exception:
-        print("[warn] Perisher scrape failed; trying OnTheSnow fallback",
-              file=sys.stderr)
-        traceback.print_exc()
-    try:
-        history = actuals_onthesnow.collect()
+        history = actuals_onthesnow.collect(resort)
+        # primary source for resorts without an official page (full upsert);
+        # gap-filling only where official history exists
+        replace = not resort.official_kind
+        for date, cm in history.items():
+            store.save_actual(con, resort.id, date, cm,
+                              actuals_onthesnow.SOURCE, replace=replace)
         newest = max(history)
-        store.save_actual(con, newest, history[newest], actuals_onthesnow.SOURCE)
-        print(f"[ok] fallback actual (OnTheSnow): {newest} = {history[newest]}cm")
-        return True
+        role = "primary" if replace else "fallback"
+        print(f"[ok] {resort.id} actual ({role} OnTheSnow): "
+              f"{newest} = {history[newest]}cm ({len(history)} days upserted)")
+        return {"date": newest.isoformat(), "snow_24h": history[newest],
+                "snow_7day": None, "natural_depth": None}
     except Exception:
-        print("[FAIL] no actual recorded", file=sys.stderr)
+        print(f"[FAIL] {resort.id}: no actual recorded", file=sys.stderr)
         traceback.print_exc()
-        return False
+        return None
 
 
-def main() -> int:
+def main(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--only", help="comma-separated source names to run")
+    parser.add_argument("--skip", help="comma-separated source names to skip")
+    args = parser.parse_args(argv)
+
     con = store.connect()
     date = today()
-    if not _record_actual(con):
-        return 1
+
+    status: dict[str, dict] = {}
+    actual_failures = []
+    for resort in RESORTS.values():
+        blob = _record_actual(con, resort)
+        if blob is None:
+            actual_failures.append(resort.id)
+        else:
+            status[resort.id] = blob
+    (DB_PATH.parent / "resort_status.json").write_text(
+        json.dumps(status, indent=1))
+
     store.merge_manual(con)
 
-    acc = accuracy(con)
-    for s, v in sorted(acc.items(), key=lambda kv: -kv[1]):
-        print(f"  {s:15s} {v:5.1f}%")
+    # morning forecast snapshot (run='am') — the "morning of" call
+    mods = pick_collectors(args.only, args.skip)
+    forecast_failures = snapshot_forecasts(con, mods, date, run_now())
+
+    run, lead = HEADLINE
+    for resort in RESORTS.values():
+        acc = accuracy(con, resort.id, run, lead)
+        if acc:
+            print(f"accuracy ({resort.id}, night-before):")
+            for s, v in sorted(acc.items(), key=lambda kv: -kv[1]):
+                print(f"  {s:15s} {v:5.1f}%")
 
     try:
-        if acc:
-            print("chart:", accuracy_chart(acc))
+        perisher_acc = accuracy(con, "perisher", run, lead)
+        if perisher_acc:
+            print("chart:", accuracy_chart(perisher_acc))
             print("chart:", history_chart(con))
         print("chart:", next_days_chart(con, date))
     except ValueError as e:
@@ -68,8 +118,14 @@ def main() -> int:
 
     from dashboard import render
     print("dashboard:", render())
+
+    if actual_failures or forecast_failures:
+        print(f"FAILURES — actuals: {', '.join(actual_failures) or 'none'}; "
+              f"forecasts: {', '.join(forecast_failures) or 'none'}",
+              file=sys.stderr)
+        return 1
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

@@ -22,7 +22,9 @@ import json
 from pathlib import Path
 
 import store
-from score import FLOOR_CM, accuracy, daily_errors
+from collectors.common import TZ
+from resorts import RESORTS
+from score import FLOOR_CM, HEADLINE, accuracy, accuracy_by_lead, pairs
 
 import os
 
@@ -157,6 +159,10 @@ h1 { font-family: "Fraunces", Georgia, serif; font-weight: 600;
   font-size: clamp(27px, 4.5vw, 36px); line-height: 1.08; margin: 0;
   letter-spacing: -0.015em; }
 h1 span { color: var(--accent); font-style: italic; }
+h1 b { font-weight: 600; }
+.resortbar { margin-top: 14px; }
+.resortbar .seg { flex-wrap: wrap; }
+.resortbar .seg button { padding: 7px 14px; }
 .sub { color: var(--muted); font-size: 13.5px; margin: 7px 0 0; max-width: 62ch; }
 .headtools { display: flex; flex-direction: column; align-items: flex-end;
   gap: 10px; margin-left: auto; }
@@ -428,6 +434,8 @@ const PANEL_LABEL = { bars: "Daily bars", range: "Range band — provider spread
 const state = {
   palette: localStorage.getItem("palette") || "glacier",
   theme: localStorage.getItem("theme") || "dark",   // dark by default
+  resort: localStorage.getItem("resort") || "perisher",
+  leadKey: localStorage.getItem("leadKey") || "pm:1", // night before
   panels: JSON.parse(localStorage.getItem("panels") || '["bars","cumulative"]'),
   horizon: +(localStorage.getItem("horizon") || 5),
   disabled: JSON.parse(localStorage.getItem("disabledSources") || "[]"),
@@ -436,11 +444,25 @@ const state = {
   manual: JSON.parse(localStorage.getItem("manualActuals") || "{}"),
   mforecasts: JSON.parse(localStorage.getItem("manualForecasts") || "[]"),
 };
+if (!(state.resort in DATA.resorts)) state.resort = "perisher";
+// pre-multi-resort localStorage: flat {date: cm} becomes Perisher's
+if (Object.values(state.manual).some((v) => typeof v === "number"))
+  state.manual = { perisher: state.manual };
 const fmtDay = (iso) => new Date(iso + "T12:00").toLocaleDateString("en-AU",
   { weekday: "short", day: "numeric" });
-const sources = DATA.sources.filter((s) =>
-  s.id === "ensemble" || s.id in DATA.forecasts);
-const providers = sources.filter((s) => s.id !== "ensemble");
+const plus1 = (iso) => {
+  const t = new Date(iso + "T12:00"); t.setDate(t.getDate() + 1);
+  return t.toISOString().slice(0, 10);
+};
+// R is the active resort's data blob; sources/providers follow it
+let R, sources, providers;
+function bindResort() {
+  R = DATA.resorts[state.resort];
+  sources = DATA.sources.filter((s) =>
+    s.id === "ensemble" || s.id in R.forecasts);
+  providers = sources.filter((s) => s.id !== "ensemble");
+}
+bindResort();
 const isOn = (id) => !state.disabled.includes(id);
 const weightOf = (id) => state.weights[id] ?? 50;
 const visible = () => sources.filter((s) => isOn(s.id));
@@ -475,20 +497,20 @@ function computeEnsemble() {
   ENS = {};
   const act = providers.filter((s) => isOn(s.id) && weightOf(s.id) > 0);
   const dates = new Set();
-  act.forEach((s) => Object.keys(DATA.forecasts[s.id]).forEach((d) => dates.add(d)));
+  act.forEach((s) => Object.keys(R.forecasts[s.id]).forEach((d) => dates.add(d)));
   for (const d of dates) {
-    const pairs = act.map((s) => [DATA.forecasts[s.id][d], weightOf(s.id)])
+    const pairs = act.map((s) => [R.forecasts[s.id][d], weightOf(s.id)])
       .filter((p) => p[0] != null);
     if (pairs.length) ENS[d] = wmedian(pairs);
   }
 }
 
-const F = (id, d) => (id === "ensemble" ? ENS[d] : DATA.forecasts[id][d]);
+const F = (id, d) => (id === "ensemble" ? ENS[d] : R.forecasts[id][d]);
 
 // per-day summary across the toggled-on providers (ensemble excluded)
 function dayStats(d) {
   const vals = providers.filter((s) => isOn(s.id))
-    .map((s) => DATA.forecasts[s.id][d]).filter((v) => v != null);
+    .map((s) => R.forecasts[s.id][d]).filter((v) => v != null);
   if (!vals.length) return null;
   return { d, med: ENS[d] ?? median(vals),
     lo: Math.min(...vals), hi: Math.max(...vals) };
@@ -519,7 +541,7 @@ function setTheme(t) {
 function horizonDates() {
   const out = [];
   for (let i = 1; i <= state.horizon; i++) {
-    const d = new Date(DATA.snapshot + "T12:00");
+    const d = new Date(R.snapshot + "T12:00");
     d.setDate(d.getDate() + i);
     out.push(d.toISOString().slice(0, 10));
   }
@@ -536,7 +558,7 @@ function windowTotals(win) {
   return providers.filter((s) => isOn(s.id)).map((s) => {
     let t = 0, any = false;
     win.forEach((d) => {
-      const v = DATA.forecasts[s.id][d];
+      const v = R.forecasts[s.id][d];
       if (v != null) { t += v; any = true; }
     });
     return any ? { s, t } : null;
@@ -598,7 +620,7 @@ function renderBadges() {
   const first = stats.findIndex((s) => s && s.med >= 1);
   let peak = null;
   for (const s of stats) if (s && (!peak || s.med > peak.med)) peak = s;
-  const st = DATA.status || {};
+  const st = R.status || {};
 
   let hero;
   if (first >= 0) {
@@ -636,12 +658,12 @@ function renderBadges() {
       <div class="range">median ${peak.med.toFixed(1)}cm · range ${peak.lo.toFixed(0)}–${peak.hi.toFixed(0)}cm</div></div>`);
   if (st.natural_depth != null)
     tiles.push(`<div class="stat"><small>Natural snow depth</small><b>${st.natural_depth.toFixed(0)}cm</b>
-      <div class="range">Perisher official · ${st.date || ""}</div></div>`);
+      <div class="range">${R.label} report · ${st.date || ""}</div></div>`);
   if (st.snow_7day != null)
     tiles.push(`<div class="stat"><small>New snow, 7 days</small><b>${st.snow_7day.toFixed(0)}cm</b>
-      <div class="range">Perisher official 24h-to-7am</div></div>`);
-  tiles.push(`<div class="stat"><small>Days scored</small><b>${DATA.scored_days}</b>
-    <div class="range">24h-lead comparisons</div></div>`);
+      <div class="range">${R.label} report, 24h-to-7am</div></div>`);
+  tiles.push(`<div class="stat"><small>Days scored</small><b>${R.scored}</b>
+    <div class="range">night-before comparisons</div></div>`);
 
   $("#hero").innerHTML = `<div class="herocard">${hero}</div>
     <div class="statgrid">${tiles.join("")}</div>`;
@@ -653,7 +675,7 @@ function daysAgo(iso) {
 }
 
 function renderFreshness() {
-  const fresh = DATA.freshness || {};
+  const fresh = R.freshness || {};
   const rows = providers.map((s) => {
     const last = fresh[s.id];
     const age = last == null ? null : daysAgo(last);
@@ -667,6 +689,119 @@ function renderFreshness() {
     `<a class="freshlink" href="${DATA.actionsUrl}" target="_blank" rel="noopener"
       title="Opens the Actions history — triggering a run needs repo write access, so this is a plain link, not a public button">
       View pipeline runs →</a>`;
+}
+
+// ---- accuracy rankings: lead selector, per-lead ranks, lead-decay curve --
+// A lead is (run, lead_days): 'am' snapshots are ~7:45 captures right after
+// the providers' morning issuance, 'pm' the classic ~6pm evening snapshot.
+function leadLabel(e) {
+  if (e.run === "am" && e.lead === 0) return "Morning of";
+  if (e.run === "pm" && e.lead === 1) return "Night before";
+  const d = e.run === "pm" ? e.lead - 0.5 : e.lead;
+  return `${d}d out`;
+}
+
+function renderRankings() {
+  const byLead = R.accuracyByLead || {};
+  const avail = new Map();
+  for (const src in byLead) for (const e of byLead[src]) {
+    const k = `${e.run}:${e.lead}`;
+    if (!avail.has(k)) avail.set(k, { run: e.run, lead: e.lead, h: e.h, n: 0 });
+    avail.get(k).n += e.n;
+  }
+  const opts = [...avail.values()].sort((a, b) => a.h - b.h);
+  if (!opts.length) {
+    $("#leadSeg").innerHTML = "";
+    $("#rankings").innerHTML = `<p class="empty">No scoreable days yet for
+      ${R.label} — rankings appear once a snapshot has a next-morning report
+      to be judged against.</p>`;
+    $("#leadcurve").innerHTML = "";
+    return;
+  }
+  if (!avail.has(state.leadKey))
+    state.leadKey = avail.has("pm:1") ? "pm:1" : `${opts[0].run}:${opts[0].lead}`;
+  $("#leadSeg").innerHTML = opts.map((o) =>
+    `<button data-leadk="${o.run}:${o.lead}"
+      class="${state.leadKey === `${o.run}:${o.lead}` ? "on" : ""}"
+      title="${o.run === "am" ? "~7:45am" : "~6pm"} snapshot, ${o.h}h before the scored 24h window begins">
+      ${leadLabel(o)}</button>`).join("");
+  document.querySelectorAll("[data-leadk]").forEach((b) => b.onclick = () => {
+    state.leadKey = b.dataset.leadk;
+    localStorage.setItem("leadKey", state.leadKey);
+    renderRankings();
+  });
+  const [run, leadStr] = state.leadKey.split(":");
+  const rows = DATA.sources
+    .map((s) => ({ s, e: (byLead[s.id] || [])
+      .find((x) => x.run === run && x.lead === +leadStr) }))
+    .filter((r) => r.e)
+    .sort((a, b) => b.e.pct - a.e.pct);
+  $("#rankings").innerHTML = rows.map(({ s, e }) =>
+    `<div class="rank" ${tipRef(`<h4>${s.name} — ${leadLabel(e)}</h4>
+        <div class="trow">accuracy<b>${e.pct.toFixed(0)}%</b></div>
+        <div class="trow">days scored<b>${e.n}</b></div>`)}>
+      <span>${badgeMark(s)} ${s.name}</span>
+      <div class="track"><div class="fill" style="width:${e.pct.toFixed(0)}%;background:${s.color}"></div></div>
+      <b>${e.pct.toFixed(0)}%</b></div>`).join("") +
+    `<footer>accuracy = 100 × max(0, 1 − MAE / mean(max(actual, ${DATA.floor}cm))),
+     ${rows.length ? rows[0].e.n : 0} day(s) scored at this lead. A forecast
+     for day D is judged against the 24h-to-7am report published the morning
+     of D+1 — the report that actually measures day D. Rankings are noise
+     until real snow falls.</footer>`;
+  renderLeadCurve(byLead);
+}
+
+// accuracy vs how far ahead the snapshot was taken — who sees events early
+// vs who nails the amount at short range
+function renderLeadCurve(byLead) {
+  const series = Object.entries(byLead)
+    .map(([id, es]) => ({ s: sources.find((x) => x.id === id), es }))
+    .filter((r) => r.s && r.es.length >= 2 && isOn(r.s.id));
+  if (!series.length) { $("#leadcurve").innerHTML = ""; return; }
+  const W = 960, H = 230, PL = 42, PR = 26, PT = 14, PB = 30;
+  const maxH = Math.max(...series.map((r) => r.es[r.es.length - 1].h), 24);
+  const x = (h) => PL + (W - PL - PR) * h / maxH;
+  const y = (p) => H - PB - (H - PT - PB) * p / 100;
+  let g = "";
+  for (let t = 0; t <= 4; t++) {
+    const p = 25 * t;
+    g += `<line class="grid" x1="${PL}" x2="${W - PR}" y1="${y(p)}" y2="${y(p)}"/>
+      <text x="${PL - 6}" y="${y(p) + 3}" text-anchor="end">${p}%</text>`;
+  }
+  const ticks = new Map();
+  series.forEach((r) => r.es.forEach((e) => ticks.set(e.h, leadLabel(e))));
+  g += [...ticks.entries()].map(([h, lb]) =>
+    `<line class="vgrid" x1="${x(h)}" x2="${x(h)}" y1="${PT}" y2="${H - PB}"/>
+     <text x="${x(h)}" y="${H - PB + 16}" text-anchor="middle">${lb}</text>`).join("");
+  const lines = series.map((r) => {
+    const pts = r.es.map((e) => `${x(e.h)},${y(e.pct)}`);
+    const dots = r.es.map((e) =>
+      `<circle cx="${x(e.h)}" cy="${y(e.pct)}" r="3.6" fill="${r.s.color}"
+        ${tipRef(`<h4>${r.s.name} — ${leadLabel(e)}</h4>
+          <div class="trow">accuracy<b>${e.pct.toFixed(0)}%</b></div>
+          <div class="trow">days scored<b>${e.n}</b></div>`)}/>`).join("");
+    return `<path d="M${pts.join("L")}" fill="none" stroke="${r.s.color}"
+      stroke-width="2" stroke-opacity="0.85"/>${dots}`;
+  }).join("");
+  $("#leadcurve").innerHTML =
+    `<div class="panel-tag" style="margin-top:18px">Accuracy by lead time —
+      does anyone see events coming early?</div>
+     <svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${lines}</svg>`;
+}
+
+function setResort(rid) {
+  state.resort = rid;
+  localStorage.setItem("resort", rid);
+  bindResort();
+  $("#resortName").textContent = R.label;
+  $("#stamp").textContent =
+    `snapshot ${R.snapshot || "—"} · generated ${DATA.generated}`;
+  document.querySelectorAll("[data-resort]").forEach((b) =>
+    b.classList.toggle("on", b.dataset.resort === rid));
+  const fr = $("#fResort"), mr = $("#mResort");
+  if (fr) fr.value = rid;
+  if (mr) mr.value = rid;
+  refresh(); renderActuals(); renderForecasts(); renderFreshness(); renderRankings();
 }
 
 function chartBars(days) {
@@ -874,24 +1009,27 @@ function renderWeights() {
   });
 }
 
+const manualActuals = () => state.manual[state.resort] || {};
+
 function renderActuals() {
-  const merged = { ...state.manual, ...DATA.actuals };
+  const mine = manualActuals();
+  const merged = { ...mine, ...R.actuals };
   const dates = Object.keys(merged).sort();
+  $("#chips").innerHTML = Object.keys(mine).sort().map((d) =>
+    `<span class="chip">${d} · ${mine[d]}cm
+     <button aria-label="remove" onclick="removeManual('${d}')">×</button></span>`).join("");
   if (!dates.length) { $("#spark").innerHTML = ""; $("#actualRows").innerHTML = ""; return; }
   const vmax = Math.max(1, ...Object.values(merged));
   $("#spark").innerHTML = dates.map((d) =>
-    `<i class="${d in DATA.actuals ? "" : "manual"}" title="${d}: ${merged[d]}cm"
+    `<i class="${d in R.actuals ? "" : "manual"}" title="${d}: ${merged[d]}cm"
      style="height:${Math.max(4, 100 * merged[d] / vmax)}%"></i>`).join("");
   $("#actualRows").innerHTML = dates.slice().reverse().map((d) =>
     `<tr><td>${d}</td><td>${merged[d].toFixed(0)}</td>
-     <td>${d in DATA.actuals ? "resort report" : "manual ✎"}</td></tr>`).join("");
-  $("#chips").innerHTML = Object.keys(state.manual).sort().map((d) =>
-    `<span class="chip">${d} · ${state.manual[d]}cm
-     <button aria-label="remove" onclick="removeManual('${d}')">×</button></span>`).join("");
+     <td>${d in R.actuals ? "resort report" : "manual ✎"}</td></tr>`).join("");
 }
 
 function removeManual(d) {
-  delete state.manual[d];
+  delete (state.manual[state.resort] || {})[d];
   localStorage.setItem("manualActuals", JSON.stringify(state.manual));
   renderActuals(); renderBadges();
 }
@@ -903,35 +1041,41 @@ function removeForecast(i) {
   state.mforecasts.splice(i, 1); saveForecasts(); renderForecasts();
 }
 
-// actual known for a date, whether from the feed or a manual entry
-function actualFor(d) {
-  if (d in DATA.actuals) return DATA.actuals[d];
-  if (d in state.manual) return state.manual[d];
+// The reported actual that scores a forecast for day D: the 24h-to-7am
+// report published the morning of D+1 (see the colophon's methodology
+// note), from the feed or a manual entry — for any resort.
+function actualScoring(resortId, targetDate) {
+  const rep = plus1(targetDate);
+  const blob = DATA.resorts[resortId];
+  if (blob && rep in blob.actuals) return blob.actuals[rep];
+  const manual = state.manual[resortId] || {};
+  if (rep in manual) return manual[rep];
   return null;
 }
 
 function renderForecasts() {
-  const named = (id) => (sources.find((s) => s.id === id) || {}).name || id;
-  const color = (id) => (sources.find((s) => s.id === id) || {}).color || "var(--accent)";
+  const named = (id) => (DATA.sources.find((s) => s.id === id) || {}).name || id;
+  const color = (id) => (DATA.sources.find((s) => s.id === id) || {}).color || "var(--accent)";
+  const resortName = (rid) => (DATA.resorts[rid] || {}).label || rid;
   $("#fchips").innerHTML = state.mforecasts.map((f, i) =>
     `<span class="chip"><i style="width:8px;height:8px;border-radius:2px;
       display:inline-block;background:${color(f.source)}"></i>
-     ${named(f.source)} · ${f.target_date} · ${f.cm}cm
+     ${resortName(f.resort || "perisher")} · ${named(f.source)} · ${f.target_date} · ${f.cm}cm
      <button aria-label="remove" onclick="removeForecast(${i})">×</button></span>`).join("");
-  // alignment preview: manual forecasts whose target date has a known actual
+  // alignment preview: manual forecasts whose scoring report already exists
   const scored = state.mforecasts
-    .map((f) => ({ ...f, actual: actualFor(f.target_date) }))
+    .map((f) => ({ ...f, actual: actualScoring(f.resort || "perisher", f.target_date) }))
     .filter((f) => f.actual != null)
     .sort((a, b) => a.target_date.localeCompare(b.target_date));
   if (!scored.length) {
     $("#alignBox").innerHTML =
-      `<p class="empty">Add a forecast whose date already has a reported actual
-       to see the error here.</p>`;
+      `<p class="empty">Add a forecast for a day whose next-morning report is
+       already known to see the error here.</p>`;
     return;
   }
   const rows = scored.map((f) => {
     const err = f.cm - f.actual;
-    return `<tr><td>${named(f.source)}</td><td>${f.target_date}</td>
+    return `<tr><td>${resortName(f.resort || "perisher")}</td><td>${named(f.source)}</td><td>${f.target_date}</td>
       <td>${f.cm.toFixed(1)}</td><td>${f.actual.toFixed(1)}</td>
       <td style="color:${Math.abs(err) < 2 ? "var(--accent)" : "var(--ink)"}">
         ${err >= 0 ? "+" : ""}${err.toFixed(1)}</td></tr>`;
@@ -939,7 +1083,7 @@ function renderForecasts() {
   const mae = (scored.reduce((t, f) => t + Math.abs(f.cm - f.actual), 0)
     / scored.length).toFixed(1);
   $("#alignBox").innerHTML =
-    `<div class="scroll"><table><tr><th>Source</th><th>Target</th>
+    `<div class="scroll"><table><tr><th>Resort</th><th>Source</th><th>Target</th>
      <th>Forecast</th><th>Actual</th><th>Error</th></tr>${rows}</table></div>
      <footer>Mean absolute error across ${scored.length} manual call(s): ${mae}cm.
      Export and merge to fold these into the season rankings.</footer>`;
@@ -973,12 +1117,19 @@ function init() {
   $("#wEqual").onclick = () => { state.weights = {}; saveWeights(); refresh(); };
   $("#wAcc").onclick = () => {
     providers.forEach((s) =>
-      state.weights[s.id] = Math.round(DATA.accuracy[s.id] ?? 50));
+      state.weights[s.id] = Math.round(R.accuracy[s.id] ?? 50));
     saveWeights(); refresh();
   };
-  // source dropdown for forecast entry
-  $("#fSource").innerHTML = sources.filter((s) => s.id !== "ensemble")
+  // resort switcher
+  document.querySelectorAll("[data-resort]").forEach((b) =>
+    b.onclick = () => setResort(b.dataset.resort));
+  // source + resort dropdowns for manual entry
+  $("#fSource").innerHTML = DATA.sources.filter((s) => s.id !== "ensemble")
     .map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
+  const resortOpts = DATA.resortOrder.map((rid) =>
+    `<option value="${rid}">${DATA.resorts[rid].label}</option>`).join("");
+  $("#fResort").innerHTML = resortOpts;
+  $("#mResort").innerHTML = resortOpts;
   // entry-type switch
   document.querySelectorAll("[data-entry]").forEach((b) => b.onclick = () => {
     const t = b.dataset.entry;
@@ -989,26 +1140,31 @@ function init() {
   });
   $("#actualForm").onsubmit = (e) => {
     e.preventDefault();
-    const d = $("#mDate").value, v = parseFloat($("#mCm").value);
-    if (!d || isNaN(v) || v < 0) return;
-    if (d in DATA.actuals) { alert("That date already has a resort-reported value."); return; }
-    state.manual[d] = v;
+    const rid = $("#mResort").value, d = $("#mDate").value,
+      v = parseFloat($("#mCm").value);
+    if (!rid || !d || isNaN(v) || v < 0) return;
+    if (d in (DATA.resorts[rid] || { actuals: {} }).actuals) {
+      alert("That date already has a resort-reported value."); return;
+    }
+    (state.manual[rid] = state.manual[rid] || {})[d] = v;
     localStorage.setItem("manualActuals", JSON.stringify(state.manual));
     $("#mDate").value = ""; $("#mCm").value = "";
     renderActuals(); renderBadges(); renderForecasts();
   };
   $("#forecastForm").onsubmit = (e) => {
     e.preventDefault();
-    const source = $("#fSource").value, d = $("#fDate").value,
-      v = parseFloat($("#fCm").value);
-    if (!source || !d || isNaN(v) || v < 0) return;
-    state.mforecasts.push({ source, target_date: d, cm: v });
+    const resort = $("#fResort").value, source = $("#fSource").value,
+      d = $("#fDate").value, v = parseFloat($("#fCm").value);
+    if (!resort || !source || !d || isNaN(v) || v < 0) return;
+    state.mforecasts.push({ resort, source, target_date: d, cm: v });
     saveForecasts();
     $("#fDate").value = ""; $("#fCm").value = "";
     renderForecasts();
   };
   $("#exportBtn").onclick = () => {
-    const bundle = { actuals: state.manual, forecasts: state.mforecasts };
+    const forecasts = state.mforecasts.map((f) =>
+      ({ resort: "perisher", ...f }));
+    const bundle = { actuals: state.manual, forecasts };
     const blob = new Blob([JSON.stringify(bundle, null, 1)],
       { type: "application/json" });
     const a = document.createElement("a");
@@ -1016,54 +1172,80 @@ function init() {
     a.download = "manual.json";
     a.click();
   };
-  computeEnsemble();
-  renderBadges(); renderMain(); renderWeights(); renderActuals(); renderForecasts();
-  renderFreshness();
+  setResort(state.resort);
 }
 init();
 """
 
 
+def _resort_blob(con, rid: str, label: str, status: dict) -> dict:
+    """Everything the page needs for one resort."""
+    snapshot = con.execute(
+        "SELECT max(issued_date) FROM forecasts WHERE resort=?", (rid,)
+    ).fetchone()[0]
+
+    # per source, the newest snapshot ('pm' outranks a same-day 'am')
+    forecasts: dict[str, dict[str, float]] = {}
+    for (source,) in con.execute(
+        "SELECT DISTINCT source FROM forecasts WHERE resort=?", (rid,)
+    ):
+        issued, run = con.execute(
+            "SELECT issued_date, run FROM forecasts WHERE resort=? AND source=? "
+            "ORDER BY issued_date DESC, run DESC LIMIT 1", (rid, source),
+        ).fetchone()
+        forecasts[source] = {
+            d: round(cm, 2) for d, cm in con.execute(
+                "SELECT target_date, snow_cm FROM forecasts "
+                "WHERE resort=? AND source=? AND issued_date=? AND run=?",
+                (rid, source, issued, run),
+            )
+        }
+
+    actuals = dict(con.execute(
+        "SELECT date, snow_cm FROM actuals WHERE resort=? ORDER BY date", (rid,)
+    ).fetchall())
+    acc = accuracy(con, rid)
+    run, lead = HEADLINE
+    scored = len({d for s, r, l, d, _f, _a in pairs(con, rid)
+                  if (r, l) == (run, lead)})
+    freshness = dict(con.execute(
+        "SELECT source, max(issued_date) FROM forecasts "
+        "WHERE resort=? AND source != 'ensemble' GROUP BY source", (rid,)
+    ).fetchall())
+
+    return {
+        "label": label,
+        "snapshot": snapshot,
+        "forecasts": forecasts,
+        "actuals": actuals,
+        "accuracy": acc,
+        "accuracyByLead": accuracy_by_lead(con, rid),
+        "scored": scored,
+        "status": status.get(rid) or {},
+        "freshness": freshness,
+    }
+
+
 def render(out: Path | None = None) -> Path:
     con = store.connect()
-    today = dt.date.today().isoformat()
-
-    snapshot = con.execute("SELECT max(issued_date) FROM forecasts").fetchone()[0]
-    forecasts: dict[str, dict[str, float]] = {}
-    for s, d, cm in con.execute(
-        "SELECT source, target_date, snow_cm FROM forecasts WHERE issued_date=?",
-        (snapshot,),
-    ):
-        forecasts.setdefault(s, {})[d] = round(cm, 2)
-
-    actuals = dict(
-        con.execute("SELECT date, snow_cm FROM actuals ORDER BY date").fetchall()
-    )
-    acc = accuracy(con)
-    scored = len({d for _, d, _, _ in daily_errors(con)})
+    today = dt.datetime.now(TZ).date().isoformat()
 
     status_path = store.DB_PATH.parent / "resort_status.json"
     status = json.loads(status_path.read_text()) if status_path.exists() else {}
-
-    freshness = dict(con.execute(
-        "SELECT source, max(issued_date) FROM forecasts "
-        "WHERE source != 'ensemble' GROUP BY source"
-    ).fetchall())
+    if "snow_24h" in status:  # pre-multi-resort flat file
+        status = {"perisher": status}
 
     data = {
-        "snapshot": snapshot,
         "generated": today,
         "sources": [
             {"id": k, "name": PROVIDER_NAMES[k], "color": PROVIDER_COLORS[k],
              "logo": _logo_uri(k)}
             for k in PROVIDER_COLORS
         ],
-        "forecasts": forecasts,
-        "actuals": actuals,
-        "accuracy": acc,
-        "scored_days": scored,
-        "status": status,
-        "freshness": freshness,
+        "resortOrder": list(RESORTS),
+        "resorts": {rid: _resort_blob(con, rid, r.name, status)
+                    for rid, r in RESORTS.items()},
+        "floor": FLOOR_CM,
         "actionsUrl": ACTIONS_URL,
     }
     palettes_js = [
@@ -1072,25 +1254,13 @@ def render(out: Path | None = None) -> Path:
         for pid, p in PALETTES.items()
     ]
 
-    if acc:
-        acc_html = "".join(
-            f'<div class="rank"><span>{PROVIDER_NAMES.get(s, s)}</span>'
-            f'<div class="track"><div class="fill" style="width:{v:.0f}%;'
-            f'background:{PROVIDER_COLORS.get(s, "var(--accent)")}"></div></div>'
-            f"<b>{v:.0f}%</b></div>"
-            for s, v in sorted(acc.items(), key=lambda kv: -kv[1])
-        ) + (
-            f"<footer>accuracy = 100 × max(0, 1 − MAE / mean(max(actual, "
-            f"{FLOOR_CM:.0f}cm))) on 24h-lead forecasts.</footer>"
-        )
-    else:
-        acc_html = (
-            '<p class="empty">No scoreable days yet — rankings appear once an '
-            "evening snapshot has a reported actual to be judged against.</p>"
-        )
+    resort_seg = "".join(
+        f'<button data-resort="{rid}">{r.name}</button>'
+        for rid, r in RESORTS.items()
+    )
 
     html = f"""<meta charset="utf-8">
-<title>Perisher forecast accuracy</title>
+<title>Snow forecast accuracy — Australian resorts</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1105,12 +1275,12 @@ def render(out: Path | None = None) -> Path:
 <main>
 <header>
   <div class="masthead">
-    <h1>Perisher <span>forecast accuracy</span></h1>
-    <p class="sub">Nightly forecast snapshots from seven services, scored each
-    morning against the resort's official report.</p>
+    <h1><b id="resortName">Perisher</b> <span>forecast accuracy</span></h1>
+    <p class="sub">Forecast snapshots from seven services, morning and evening,
+    scored against each resort's reported snowfall.</p>
   </div>
   <div class="headtools">
-    <p class="stamp">snapshot {snapshot} · generated {today}</p>
+    <p class="stamp" id="stamp">generated {today}</p>
     <div class="headctl">
       <button id="themeBtn" class="iconbtn" type="button"
         aria-label="Toggle light or dark theme"></button>
@@ -1120,6 +1290,7 @@ def render(out: Path | None = None) -> Path:
     </div>
   </div>
 </header>
+<div class="resortbar"><span class="seg">{resort_seg}</span></div>
 <hr class="rule">
 <div class="hero" id="hero"></div>
 <div class="card">
@@ -1166,8 +1337,16 @@ def render(out: Path | None = None) -> Path:
   link only lets the repo owner trigger a run early — GitHub requires write
   access for that, so it's not a public control.)</p></details>
 </div>
-<div class="card"><h2 style="margin-bottom:12px">Accuracy rankings — 24h lead, season to date</h2>
-{acc_html}</div>
+<div class="card">
+  <div class="cardhead">
+    <h2>Accuracy rankings — season to date</h2>
+    <span class="spacer"></span>
+    <span class="seg" id="leadSeg"
+      title="How far ahead of the scored 24h window the snapshot was taken"></span>
+  </div>
+  <div id="rankings"></div>
+  <div id="leadcurve"></div>
+</div>
 <div class="card manual">
   <h2>Reported daily snowfall</h2>
   <div class="spark" id="spark" style="margin:12px 0"></div>
@@ -1190,6 +1369,7 @@ def render(out: Path | None = None) -> Path:
     <button type="button" class="ghost" id="exportBtn">Export manual.json</button>
   </div>
   <form id="forecastForm">
+    <select id="fResort" required aria-label="resort"></select>
     <select id="fSource" required></select>
     <input type="date" id="fDate" required aria-label="target date">
     <input type="number" id="fCm" min="0" max="200" step="0.1" placeholder="cm"
@@ -1197,7 +1377,9 @@ def render(out: Path | None = None) -> Path:
     <button type="submit">Add prediction</button>
   </form>
   <form id="actualForm" style="display:none">
-    <input type="date" id="mDate" required aria-label="date">
+    <select id="mResort" required aria-label="resort"></select>
+    <input type="date" id="mDate" required aria-label="report date"
+      title="the morning the 24h-to-7am report was published">
     <input type="number" id="mCm" min="0" max="200" step="1" placeholder="cm" required
       style="width:80px">
     <button type="submit">Add actual</button>
@@ -1205,15 +1387,20 @@ def render(out: Path | None = None) -> Path:
   <div id="fchips"></div>
   <div id="alignBox" style="margin-top:12px"></div>
   <footer>Transcribe historical predictions (e.g. from the ski.com.au thread) as
-  24h-lead calls — each is scored against the reported actual for that date.
+  night-before calls — a forecast for day D is scored against the report
+  published the morning of D+1. Actuals are entered under the report date.
   Entries live in this browser until exported; drop the file at
   <code>data/manual.json</code> and the morning run merges it (feed data always
   wins on conflicts).</footer>
   </div>
 </details>
-<footer class="colophon">Ground truth: Perisher's official 24h-to-7am snow
-report (accurate, unlagged). Forecasts snapshotted nightly ~6pm AEST; scored
-the next morning against that day's reported snowfall.<br>
+<footer class="colophon">Ground truth: official resort snow reports where
+scrapeable (Perisher, Hotham, Falls Creek — 24h to ~7am, unlagged), OnTheSnow's
+resort-reported history for Thredbo and Buller. Forecasts are snapshotted
+~7:45am and ~6pm AEST. A forecast for day D is scored against the report
+published the morning of D+1 — the report whose 24h window actually measures
+day D (snapshots taken the same evening, after most of the window had already
+happened, are excluded as hindsight).<br>
 An attempted automated reproduction of <b>Star_Hawk</b>'s daily forecast
 comparisons on the ski.com.au forums. Built by Clappo, with Claude.</footer>
 </main>

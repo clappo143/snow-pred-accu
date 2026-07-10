@@ -13,12 +13,16 @@ BROWSER_UA = (
     "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
 )
 
-# Perisher Valley
-LAT, LON, ALT = -36.405, 148.410, 1720
-
 
 def today() -> dt.date:
     return dt.datetime.now(TZ).date()
+
+
+def run_now() -> str:
+    """Which snapshot slot the clock says this is: 'am' before noon AEST
+    (the ~7:45 run, right after most providers' morning issuance), else
+    'pm' (the classic ~6pm evening snapshot)."""
+    return "am" if dt.datetime.now(TZ).hour < 12 else "pm"
 
 
 def get(url: str, ua: str = BROWSER_UA, **kw) -> requests.Response:

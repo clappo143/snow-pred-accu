@@ -1,4 +1,11 @@
-"""SQLite storage. One row per (source, snapshot date, target date)."""
+"""SQLite storage. One forecast row per (resort, source, snapshot, target date).
+
+Schema v2 (2026-07-10): adds `resort` to both tables and `run` ('am'/'pm')
+to forecasts. Every snapshot is kept — the 6pm run no longer overwrites a
+same-day morning capture — so accuracy can be scored at any lead, not just
+the classic night-before call. connect() migrates a v1 database in place
+(v1 rows become resort='perisher', run='pm').
+"""
 from __future__ import annotations
 
 import datetime as dt
@@ -9,37 +16,86 @@ DB_PATH = Path(__file__).parent / "data" / "snow.db"
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS forecasts (
+    resort      TEXT NOT NULL,
     source      TEXT NOT NULL,
     issued_date TEXT NOT NULL,   -- local date the snapshot was taken
-    target_date TEXT NOT NULL,   -- local date the forecast is for
+    run         TEXT NOT NULL,   -- 'am' (~7:45) or 'pm' (~18:00) snapshot
+    target_date TEXT NOT NULL,   -- local calendar day the forecast is for
     snow_cm     REAL NOT NULL,
-    PRIMARY KEY (source, issued_date, target_date)
+    PRIMARY KEY (resort, source, issued_date, run, target_date)
 );
 CREATE TABLE IF NOT EXISTS actuals (
-    date    TEXT PRIMARY KEY,    -- local date the 24h-to-7am period ended
+    resort  TEXT NOT NULL,
+    date    TEXT NOT NULL,       -- local date the 24h-to-7am period ended
     snow_cm REAL NOT NULL,
-    source  TEXT NOT NULL
+    source  TEXT NOT NULL,
+    PRIMARY KEY (resort, date)
 );
 """
+
+
+def _columns(con: sqlite3.Connection, table: str) -> list[str]:
+    return [r[1] for r in con.execute(f"PRAGMA table_info({table})")]
+
+
+def _migrate_v1(con: sqlite3.Connection) -> None:
+    """Upgrade a v1 database (no resort/run columns) in place. Idempotent."""
+    cols = _columns(con, "forecasts")
+    if cols and "resort" not in cols:
+        con.executescript("""
+            ALTER TABLE forecasts RENAME TO forecasts_v1;
+            CREATE TABLE forecasts (
+                resort TEXT NOT NULL, source TEXT NOT NULL,
+                issued_date TEXT NOT NULL, run TEXT NOT NULL,
+                target_date TEXT NOT NULL, snow_cm REAL NOT NULL,
+                PRIMARY KEY (resort, source, issued_date, run, target_date)
+            );
+            INSERT INTO forecasts
+                SELECT 'perisher', source, issued_date, 'pm', target_date, snow_cm
+                FROM forecasts_v1;
+            DROP TABLE forecasts_v1;
+        """)
+        print("[ok] migrated forecasts to schema v2 (resort + run columns)")
+    cols = _columns(con, "actuals")
+    if cols and "resort" not in cols:
+        con.executescript("""
+            ALTER TABLE actuals RENAME TO actuals_v1;
+            CREATE TABLE actuals (
+                resort TEXT NOT NULL, date TEXT NOT NULL,
+                snow_cm REAL NOT NULL, source TEXT NOT NULL,
+                PRIMARY KEY (resort, date)
+            );
+            INSERT INTO actuals
+                SELECT 'perisher', date, snow_cm, source FROM actuals_v1;
+            DROP TABLE actuals_v1;
+        """)
+        print("[ok] migrated actuals to schema v2 (resort column)")
+    con.commit()
 
 
 def connect() -> sqlite3.Connection:
     DB_PATH.parent.mkdir(exist_ok=True)
     con = sqlite3.connect(DB_PATH)
+    _migrate_v1(con)
     con.executescript(SCHEMA)
     return con
 
 
 def load_forecasts_for_issued(
-    con: sqlite3.Connection, issued: dt.date, exclude: tuple[str, ...] = ("ensemble",)
+    con: sqlite3.Connection,
+    resort: str,
+    issued: dt.date,
+    run: str,
+    exclude: tuple[str, ...] = ("ensemble",),
 ) -> dict[str, dict[dt.date, float]]:
-    """Every source's forecast rows for one snapshot date, regardless of
+    """Every source's forecast rows for one resort's snapshot, regardless of
     which script invocation collected them (used to rebuild the ensemble
     when collectors run in separate jobs at different times)."""
     out: dict[str, dict[dt.date, float]] = {}
     rows = con.execute(
-        "SELECT source, target_date, snow_cm FROM forecasts WHERE issued_date=?",
-        (issued.isoformat(),),
+        "SELECT source, target_date, snow_cm FROM forecasts "
+        "WHERE resort=? AND issued_date=? AND run=?",
+        (resort, issued.isoformat(), run),
     ).fetchall()
     for source, target, cm in rows:
         if source in exclude:
@@ -50,20 +106,34 @@ def load_forecasts_for_issued(
 
 def save_forecasts(
     con: sqlite3.Connection,
+    resort: str,
     source: str,
     issued: dt.date,
+    run: str,
     forecasts: dict[dt.date, float],
 ) -> None:
     con.executemany(
-        "INSERT OR REPLACE INTO forecasts VALUES (?,?,?,?)",
-        [(source, issued.isoformat(), d.isoformat(), cm) for d, cm in forecasts.items()],
+        "INSERT OR REPLACE INTO forecasts VALUES (?,?,?,?,?,?)",
+        [(resort, source, issued.isoformat(), run, d.isoformat(), cm)
+         for d, cm in forecasts.items()],
     )
     con.commit()
 
 
-def save_actual(con: sqlite3.Connection, date: dt.date, cm: float, source: str) -> None:
+def save_actual(
+    con: sqlite3.Connection,
+    resort: str,
+    date: dt.date,
+    cm: float,
+    source: str,
+    replace: bool = True,
+) -> None:
+    """replace=False only fills gaps — used when a lesser source (OnTheSnow
+    fallback) must never overwrite official-report history."""
+    op = "REPLACE" if replace else "IGNORE"
     con.execute(
-        "INSERT OR REPLACE INTO actuals VALUES (?,?,?)", (date.isoformat(), cm, source)
+        f"INSERT OR {op} INTO actuals VALUES (?,?,?,?)",
+        (resort, date.isoformat(), cm, source),
     )
     con.commit()
 
@@ -72,16 +142,20 @@ def merge_manual(con: sqlite3.Connection) -> tuple[int, int]:
     """Backfill from data/manual.json, a bundle the dashboard exports:
 
         {
-          "actuals":   {"YYYY-MM-DD": cm, ...},
-          "forecasts": [{"source": ..., "target_date": "YYYY-MM-DD", "cm": ...}, ...]
+          "actuals":   {"<resort>": {"YYYY-MM-DD": cm, ...}, ...},
+          "forecasts": [{"resort": ..., "source": ..., "target_date": ...,
+                         "cm": ...}, ...]
         }
+
+    (v1 bundles — flat actuals, no resort keys — are read as Perisher.)
 
     Manual rows never override feed data (INSERT OR IGNORE) — they only fill
     gaps, e.g. historical predictions transcribed from the forum. A manual
-    forecast is treated as a 24h-lead call: issued_date = target_date − 1, so
-    it slots straight into the existing scoring join.
+    forecast is treated as the classic night-before call: issued_date =
+    target_date − 1, run 'pm', so it slots into the existing scoring join.
+    Manual actual dates use the same convention as the feed: the date is the
+    morning the 24h-to-7am report was published.
     """
-    import datetime as _dt
     import json
 
     path = DB_PATH.parent / "manual.json"
@@ -89,19 +163,25 @@ def merge_manual(con: sqlite3.Connection) -> tuple[int, int]:
         return (0, 0)
     bundle = json.loads(path.read_text())
 
+    actuals = bundle.get("actuals") or {}
+    if actuals and not all(isinstance(v, dict) for v in actuals.values()):
+        actuals = {"perisher": actuals}  # v1 flat format
     na = 0
-    for date, cm in (bundle.get("actuals") or {}).items():
-        na += con.execute(
-            "INSERT OR IGNORE INTO actuals VALUES (?,?,?)", (date, float(cm), "manual")
-        ).rowcount
+    for resort, days in actuals.items():
+        for date, cm in days.items():
+            na += con.execute(
+                "INSERT OR IGNORE INTO actuals VALUES (?,?,?,?)",
+                (resort, date, float(cm), "manual"),
+            ).rowcount
 
     nf = 0
     for row in bundle.get("forecasts") or []:
-        target = _dt.date.fromisoformat(row["target_date"])
-        issued = (target - _dt.timedelta(days=1)).isoformat()
+        target = dt.date.fromisoformat(row["target_date"])
+        issued = (target - dt.timedelta(days=1)).isoformat()
         nf += con.execute(
-            "INSERT OR IGNORE INTO forecasts VALUES (?,?,?,?)",
-            (row["source"], issued, target.isoformat(), float(row["cm"])),
+            "INSERT OR IGNORE INTO forecasts VALUES (?,?,?,?,?,?)",
+            (row.get("resort", "perisher"), row["source"], issued, "pm",
+             target.isoformat(), float(row["cm"])),
         ).rowcount
 
     con.commit()

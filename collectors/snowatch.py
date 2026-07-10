@@ -1,19 +1,22 @@
-"""Snowatch — 15-day Perisher forecast, server-rendered.
+"""Snowatch — 15-day per-resort forecast, server-rendered.
 
 Each day is a day_header ("WEDNESDAY 8TH") followed by a SNOW line that is
 either "0cm" or a range like "2 - 7cm"; ranges become their midpoint.
-Their forecast period is 6am-6am (vs the resort report's 7am-7am) — close
-enough to score, noted here for honesty.
+Their forecast period is 6am-6am — which lines up almost exactly with the
+resort reports' 24h-to-7am window that day D is scored against (the report
+published the morning of D+1).
 """
 from __future__ import annotations
 
 import datetime as dt
 import re
 
+from resorts import Resort
+
 from .common import get, today
 
 SOURCE = "snowatch"
-URL = "https://www.snowatch.com.au/15-day-forecasts/perisher/"
+URL = "https://www.snowatch.com.au/15-day-forecasts/{slug}/"
 
 _BLOCK = re.compile(
     r"day_header'>\s*[A-Z]+\s+(\d{1,2})(?:ST|ND|RD|TH)"
@@ -30,8 +33,8 @@ def _resolve_date(day_of_month: int, start: dt.date) -> dt.date:
     raise ValueError(f"cannot resolve day-of-month {day_of_month}")
 
 
-def collect() -> dict[dt.date, float]:
-    html = get(URL).text
+def collect(resort: Resort) -> dict[dt.date, float]:
+    html = get(URL.format(slug=resort.snowatch_slug)).text
     blocks = _BLOCK.findall(html)
     if not blocks:
         raise ValueError("no day/snow blocks found")

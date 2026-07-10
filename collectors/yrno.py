@@ -7,18 +7,19 @@ from __future__ import annotations
 
 import datetime as dt
 
-from .common import ALT, LAT, LON, TZ, UA, get
+from resorts import Resort
+
+from .common import TZ, UA, get
 
 SOURCE = "yrno"
-URL = (
-    "https://api.met.no/weatherapi/locationforecast/2.0/compact"
-    f"?lat={LAT}&lon={LON}&altitude={ALT}"
-)
+URL = ("https://api.met.no/weatherapi/locationforecast/2.0/compact"
+       "?lat={lat}&lon={lon}&altitude={alt}")
 SNOW_TEMP_C = 1.0
 
 
-def collect() -> dict[dt.date, float]:
-    data = get(URL, ua=UA).json()
+def collect(resort: Resort) -> dict[dt.date, float]:
+    url = URL.format(lat=resort.lat, lon=resort.lon, alt=resort.alt)
+    data = get(url, ua=UA).json()
     out: dict[dt.date, float] = {}
     covered_until: dt.datetime | None = None
     for step in data["properties"]["timeseries"]:

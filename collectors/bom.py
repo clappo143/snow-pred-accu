@@ -8,16 +8,17 @@ from __future__ import annotations
 
 import datetime as dt
 
+from resorts import Resort
+
 from .common import TZ, get
 
 SOURCE = "bom"
-GEOHASH = "r398cm"  # Perisher Valley
-URL = f"https://api.weather.bom.gov.au/v1/locations/{GEOHASH}/forecasts/daily"
+URL = "https://api.weather.bom.gov.au/v1/locations/{geohash}/forecasts/daily"
 SNOW_TMAX_C = 2.0
 
 
-def collect() -> dict[dt.date, float]:
-    data = get(URL).json()
+def collect(resort: Resort) -> dict[dt.date, float]:
+    data = get(URL.format(geohash=resort.bom_geohash)).json()
     out: dict[dt.date, float] = {}
     for day in data["data"]:
         date = (
