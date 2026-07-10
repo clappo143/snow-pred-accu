@@ -16,6 +16,7 @@ the page ignores it for display.
 """
 from __future__ import annotations
 
+import base64
 import datetime as dt
 import json
 from pathlib import Path
@@ -31,15 +32,18 @@ SITE = Path(__file__).parent / "docs"  # GitHub Pages only serves / or /docs
 _REPO = os.environ.get("GITHUB_REPOSITORY", "clappo143/snow-pred-accu")
 ACTIONS_URL = f"https://github.com/{_REPO}/actions/workflows/daily.yml"
 
+# Categorical series palette — hues spread across the wheel (blue, teal, red,
+# violet, rose, gold, orange, green) for maximum series separation. Verified
+# min pairwise ΔE76 ≈ 28, all mid-lightness so they read on light and dark.
 PROVIDER_COLORS = {
-    "yrno": "#5B9BD5",
-    "bom": "#2E75B6",
-    "snowforecast": "#C00000",
-    "mountainwatch": "#44546A",
-    "janesweather": "#2B4BD8",
-    "snowatch": "#17698A",
-    "openmeteo": "#E8820C",
-    "ensemble": "#2FA05A",
+    "yrno": "#3B79C4",
+    "bom": "#12A2A2",
+    "snowforecast": "#D2473E",
+    "mountainwatch": "#9463C6",
+    "janesweather": "#D65C9B",
+    "snowatch": "#C4A028",
+    "openmeteo": "#E36E24",
+    "ensemble": "#3E9E62",
 }
 PROVIDER_NAMES = {
     "yrno": "YR.no",
@@ -51,6 +55,20 @@ PROVIDER_NAMES = {
     "openmeteo": "Open-Meteo",
     "ensemble": "Ensemble",
 }
+
+# Brand marks (favicons/app-icons) embedded as data URIs so the page stays
+# self-contained. Missing files just fall back to the coloured dot. The
+# ensemble has no brand, so it keeps its coloured mark.
+LOGO_DIR = Path(__file__).parent / "assets" / "logos"
+
+
+def _logo_uri(source_id: str) -> str | None:
+    p = LOGO_DIR / f"{source_id}.png"
+    if not p.exists():
+        return None
+    b64 = base64.b64encode(p.read_bytes()).decode("ascii")
+    return f"data:image/png;base64,{b64}"
+
 
 # palette -> mode -> tokens. "clay" is the Anthropic-inspired scheme:
 # ivory ground, book-cloth coral accent, warm near-black ink.
@@ -132,7 +150,7 @@ body { margin: 0; background: var(--bg); color: var(--ink);
   font: 15px/1.55 "Archivo", "Avenir Next", "Segoe UI", sans-serif;
   transition: background 0.3s, color 0.3s;
   -webkit-font-smoothing: antialiased; }
-main { max-width: 1100px; margin: 0 auto; padding: 36px 24px 56px; }
+main { max-width: 1100px; margin: 0 auto; padding: 30px 24px 44px; }
 header { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 16px; }
 .masthead { flex: 1 1 320px; }
 h1 { font-family: "Fraunces", Georgia, serif; font-weight: 600;
@@ -155,11 +173,23 @@ h1 span { color: var(--accent); font-style: italic; }
   border-radius: 999px; padding: 7px 34px 7px 15px; cursor: pointer;
   font: 600 12px "Archivo", sans-serif; transition: border-color 0.18s; }
 .palette-select:hover { border-color: var(--muted); }
-.ridge { display: block; width: 100%; height: 34px; margin: 14px 0 24px;
-  color: var(--line); }
+.headctl { display: flex; gap: 8px; align-items: center; }
+.iconbtn { display: inline-flex; align-items: center; justify-content: center;
+  width: 31px; height: 31px; border-radius: 999px; background: var(--chip);
+  border: 1px solid var(--line); color: var(--ink); cursor: pointer;
+  transition: border-color 0.18s, color 0.18s; }
+.iconbtn:hover { border-color: var(--muted); color: var(--accent); }
+/* brand-mark badge (logo on a light tile) with a coloured-dot fallback */
+.mark { display: inline-flex; width: 18px; height: 18px; border-radius: 5px;
+  overflow: hidden; background: #fff; border: 1px solid var(--line);
+  flex: none; vertical-align: middle; }
+.mark img { width: 100%; height: 100%; object-fit: contain; padding: 1.5px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  flex: none; vertical-align: middle; }
+.rule { height: 1px; background: var(--line); border: 0; margin: 18px 0 20px; }
 h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.11em;
   color: var(--muted); margin: 0; font-weight: 650; }
-.hero { display: grid; gap: 12px; margin: 0 0 20px;
+.hero { display: grid; gap: 12px; margin: 0 0 14px;
   grid-template-columns: minmax(320px, 1.3fr) 1fr; align-items: stretch; }
 @media (max-width: 800px) { .hero { grid-template-columns: 1fr; } }
 .herocard { border-radius: 14px; padding: 18px 20px;
@@ -182,17 +212,30 @@ h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.11em;
   font-variant-numeric: tabular-nums; }
 .insight { font-size: 13px; margin-top: 1px; }
 .insight b { font-weight: 650; }
-.strip { margin-top: 8px; }
-.strip-track { position: relative; height: 30px; }
+.strip { margin-top: 12px; }
+.strip-medlabel { position: relative; height: 19px; margin-bottom: 2px; }
+.strip-medlabel span { position: absolute; transform: translateX(-50%);
+  white-space: nowrap; font-size: 11.5px; font-weight: 700; color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 15%, var(--card));
+  padding: 2px 9px; border-radius: 999px; font-variant-numeric: tabular-nums; }
+.strip-track { position: relative; height: 34px; overflow: visible; }
 .strip-track::before { content: ""; position: absolute; left: 0; right: 0;
-  top: 50%; height: 1px; background: var(--line); }
-.strip-dot { position: absolute; top: 50%; width: 11px; height: 11px;
-  border-radius: 50%; transform: translate(-50%, -50%);
-  border: 1.5px solid var(--card); }
-.strip-med { position: absolute; top: 4px; bottom: 4px; width: 2px;
-  background: var(--accent); transform: translateX(-50%); border-radius: 1px; }
-.strip-scale { display: flex; justify-content: space-between; font-size: 10.5px;
-  color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 2px; }
+  top: 50%; height: 2px; border-radius: 2px; transform: translateY(-50%);
+  background: var(--line); }
+.strip-med { position: absolute; top: -3px; bottom: -3px; width: 2.5px;
+  background: var(--accent); transform: translateX(-50%); border-radius: 2px; }
+.strip-med::before { content: ""; position: absolute; top: -5px; left: 50%;
+  transform: translateX(-50%); border: 5px solid transparent;
+  border-top-color: var(--accent); }
+.strip-badge { position: absolute; top: 50%; width: 21px; height: 21px;
+  transform: translate(-50%, -50%); border-radius: 6px; overflow: hidden;
+  background: #fff; border: 1px solid var(--line); padding: 2px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22); }
+.strip-badge img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.strip-scale { display: flex; justify-content: space-between; margin-top: 5px;
+  font-size: 11.5px; font-weight: 700; color: var(--ink);
+  font-variant-numeric: tabular-nums; }
+.strip-scale .unit { color: var(--muted); font-weight: 500; }
 .statgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .stat { background: var(--card); border: 1px solid var(--line);
   border-radius: 12px; padding: 13px 15px; }
@@ -202,23 +245,25 @@ h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.11em;
 .stat .range { font-size: 11.5px; color: var(--muted); margin-top: 4px;
   font-variant-numeric: tabular-nums; }
 #tip { position: fixed; left: 0; top: 0; z-index: 10; pointer-events: none;
-  background: var(--card); color: var(--ink); border: 1px solid var(--line);
+  background: var(--card); color: var(--ink);
+  border: 1px solid color-mix(in srgb, var(--ink) 15%, var(--line));
   border-radius: 10px; padding: 9px 12px; font-size: 12px; max-width: 260px;
-  box-shadow: 0 6px 24px -8px color-mix(in srgb, var(--ink) 35%, transparent);
+  box-shadow: 0 4px 12px -7px rgba(0, 0, 0, 0.4);
   opacity: 0; transition: opacity 0.12s; }
 #tip.on { opacity: 1; }
 #tip h4 { margin: 0 0 6px; font: 650 10.5px "Archivo", sans-serif;
   text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted); }
 #tip .trow { display: flex; align-items: center; gap: 7px; margin: 2px 0;
   min-width: 150px; font-variant-numeric: tabular-nums; }
-#tip .trow i { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+#tip .trow .mark { width: 15px; height: 15px; border-radius: 4px; }
+#tip .trow .dot { width: 9px; height: 9px; }
 #tip .trow b { margin-left: auto; font-weight: 650; padding-left: 12px; }
 .card { background: var(--card); border: 1px solid var(--line);
-  border-radius: 14px; padding: 20px 22px; margin: 0 0 16px;
+  border-radius: 14px; padding: 17px 20px; margin: 0 0 12px;
   box-shadow: 0 1px 2px color-mix(in srgb, var(--ink) 4%, transparent),
     0 10px 28px -20px color-mix(in srgb, var(--ink) 22%, transparent); }
 .cardhead { display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-  margin-bottom: 16px; }
+  margin-bottom: 13px; }
 .seg { display: inline-flex; background: var(--chip); border: 1px solid var(--line);
   border-radius: 999px; padding: 3px; gap: 2px; }
 .seg button { border: 0; background: transparent; color: var(--muted);
@@ -227,7 +272,7 @@ h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.11em;
 .seg button:hover { color: var(--ink); }
 .seg button.on { background: var(--card); color: var(--ink);
   box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 16%, transparent); }
-.panel { margin-bottom: 22px; animation: fadeup 0.4s ease backwards; }
+.panel { margin-bottom: 16px; animation: fadeup 0.4s ease backwards; }
 .panel:last-child { margin-bottom: 0; }
 @keyframes fadeup { from { opacity: 0; transform: translateY(6px); } }
 .panel-tag { display: flex; align-items: center; gap: 10px; font-size: 10.5px;
@@ -256,21 +301,25 @@ h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.11em;
 .wrow.off { opacity: 0.4; }
 .wrow b { text-align: right; font-variant-numeric: tabular-nums; }
 .wrow input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
-.days { display: grid; grid-auto-flow: column; gap: 14px; align-items: end;
-  height: 200px; padding-top: 10px; }
-.day { display: flex; flex-direction: column; height: 100%; }
-.bars { flex: 1; display: flex; align-items: flex-end; gap: 2px;
+.days { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0;
+  align-items: stretch; height: 200px; padding-top: 10px;
   border-bottom: 1px solid var(--line); }
+.day { display: flex; padding: 0 9px; }
+.day + .day { border-left: 1px dashed var(--line); }
+.bars { flex: 1; display: flex; align-items: flex-end; gap: 2px; }
 .bar { flex: 1; border-radius: 2px 2px 0 0; min-height: 1px; position: relative;
   transition: filter 0.15s; }
 .day:hover .bar { filter: saturate(1.15) brightness(1.08); }
 .bar em { position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
   font: 600 10px/1 "Archivo", sans-serif; font-style: normal; color: var(--muted);
   font-variant-numeric: tabular-nums; }
-.day > small { text-align: center; padding-top: 6px; color: var(--muted);
+.daylabels { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
+.daylabel { text-align: center; padding-top: 6px; color: var(--muted);
   font-size: 11.5px; white-space: nowrap; }
 svg text { fill: var(--muted); font: 600 10.5px "Archivo", sans-serif; }
 svg .grid { stroke: var(--line); stroke-width: 1; }
+svg .vgrid { stroke: var(--muted); stroke-opacity: 0.4; stroke-width: 1;
+  stroke-dasharray: 3 4; }
 .rank { display: grid; grid-template-columns: 150px 1fr 56px; gap: 12px;
   align-items: center; margin: 10px 0; font-size: 13.5px; }
 .rank .track { background: var(--chip); border-radius: 999px; height: 10px;
@@ -282,9 +331,10 @@ table { width: 100%; border-collapse: collapse; font-size: 13.5px;
   font-variant-numeric: tabular-nums; }
 th, td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--line); }
 th:first-child, td:first-child { text-align: left; }
-th { color: var(--muted); font-size: 11px; text-transform: uppercase;
-  letter-spacing: 0.09em; font-weight: 650; }
-td.max { color: var(--accent); font-weight: 650; }
+th { color: var(--ink); font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.05em; font-weight: 700; }
+td.tsrc { font-weight: 650; }
+td.tsrc .mark, td.tsrc .dot { margin-right: 8px; }
 tr:hover td { background: color-mix(in srgb, var(--chip) 55%, transparent); }
 .empty { color: var(--muted); font-size: 13.5px; font-style: italic; }
 .scroll { overflow-x: auto; }
@@ -368,7 +418,7 @@ document.addEventListener("scroll", () => tip.classList.remove("on"), true);
 function dayTipHtml(d) {
   const rows = visible().map((s) => ({ s, v: F(s.id, d) }))
     .filter((r) => r.v != null).sort((a, b) => b.v - a.v)
-    .map((r) => `<div class="trow"><i style="background:${r.s.color}"></i>` +
+    .map((r) => `<div class="trow">${badgeMark(r.s)}` +
       `${r.s.name}<b>${r.v.toFixed(1)}cm</b></div>`).join("");
   return `<h4>${fmtDay(d)}</h4>${rows || "no data"}`;
 }
@@ -377,6 +427,7 @@ const PANEL_LABEL = { bars: "Daily bars", range: "Range band — provider spread
   cumulative: "Cumulative", lines: "Daily lines", table: "Table" };
 const state = {
   palette: localStorage.getItem("palette") || "glacier",
+  theme: localStorage.getItem("theme") || "dark",   // dark by default
   panels: JSON.parse(localStorage.getItem("panels") || '["bars","cumulative"]'),
   horizon: +(localStorage.getItem("horizon") || 5),
   disabled: JSON.parse(localStorage.getItem("disabledSources") || "[]"),
@@ -393,6 +444,15 @@ const providers = sources.filter((s) => s.id !== "ensemble");
 const isOn = (id) => !state.disabled.includes(id);
 const weightOf = (id) => state.weights[id] ?? 50;
 const visible = () => sources.filter((s) => isOn(s.id));
+
+// a source's identifying mark: its brand logo on a light tile, or, lacking a
+// logo (the ensemble), a coloured dot. `cls` lets callers size it in context.
+function badgeMark(s, cls) {
+  const k = cls ? " " + cls : "";
+  return s.logo
+    ? `<span class="mark${k}"><img src="${s.logo}" alt="" loading="lazy"></span>`
+    : `<i class="dot${k}" style="background:${s.color}"></i>`;
+}
 
 // The ensemble is recomputed live in the browser: a weighted median of the
 // providers that are toggled on, using the Advanced-panel weights (default 50
@@ -442,6 +502,20 @@ function setPalette(p) {
   if (sel) sel.value = p;
 }
 
+const ICON_SUN = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const ICON_MOON = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>';
+
+function setTheme(t) {
+  state.theme = t;
+  localStorage.setItem("theme", t);
+  document.documentElement.dataset.theme = t;
+  const b = $("#themeBtn");
+  if (b) {  // show the icon for the mode you'd switch TO
+    b.innerHTML = t === "dark" ? ICON_SUN : ICON_MOON;
+    b.title = t === "dark" ? "Switch to light" : "Switch to dark";
+  }
+}
+
 function horizonDates() {
   const out = [];
   for (let i = 1; i <= state.horizon; i++) {
@@ -469,19 +543,36 @@ function windowTotals(win) {
   }).filter(Boolean);
 }
 
-// dot strip: each provider's event total on a 0..max scale, median marked
+// spread meter: each forecaster's event total placed on a 0..max axis as its
+// logo badge, with the ensemble median marked prominently. Badges that land
+// close together are nudged onto stacked lanes so they never overlap.
 function stripHtml(tot, med) {
   if (tot.length < 2) return "";
   const max = Math.max(1, med, ...tot.map((r) => r.t)) * 1.08;
-  const dots = tot.map((r) =>
-    `<i class="strip-dot" style="left:${(100 * r.t / max).toFixed(1)}%;background:${r.s.color}"
-      ${tipRef(`<h4>${r.s.name}</h4><div class="trow">event total<b>${r.t.toFixed(0)}cm</b></div>`)}></i>`).join("");
+  const xOf = (v) => 100 * v / max;
+  const DY = [0, -18, 18, -36, 36], lanes = [];
+  const placed = tot.slice().sort((a, b) => a.t - b.t).map((r) => {
+    const x = xOf(r.t);
+    let lane = 0;
+    while (lane < lanes.length && x - lanes[lane] < 7) lane++;
+    lanes[lane] = x;
+    return { ...r, x, dy: DY[Math.min(lane, DY.length - 1)] };
+  });
+  const badges = placed.map((r) =>
+    `<span class="strip-badge" style="left:${r.x.toFixed(1)}%;top:calc(50% + ${r.dy}px)"
+      ${tipRef(`<h4>${r.s.name}</h4><div class="trow">event total<b>${r.t.toFixed(0)}cm</b></div>`)}>` +
+    (r.s.logo ? `<img src="${r.s.logo}" alt="">`
+      : `<i style="width:100%;height:100%;display:block;background:${r.s.color}"></i>`) +
+    `</span>`).join("");
+  const mx = xOf(med).toFixed(1);
   return `<div class="strip">
+    <div class="strip-medlabel"><span style="left:${mx}%">median ${med.toFixed(0)}cm</span></div>
     <div class="strip-track">
-      <span class="strip-med" style="left:${(100 * med / max).toFixed(1)}%"
-        ${tipRef(`<div class="trow">ensemble median<b>${med.toFixed(0)}cm</b></div>`)}></span>${dots}
+      <span class="strip-med" style="left:${mx}%"
+        ${tipRef(`<div class="trow">ensemble median<b>${med.toFixed(0)}cm</b></div>`)}></span>${badges}
     </div>
-    <div class="strip-scale"><span>0</span><span>${max.toFixed(0)}cm</span></div></div>`;
+    <div class="strip-scale"><span>0<span class="unit">cm</span></span>
+      <span>${max.toFixed(0)}<span class="unit">cm</span></span></div></div>`;
 }
 
 // one-line read on how much the forecasters agree, and who's the outlier
@@ -570,7 +661,7 @@ function renderFreshness() {
     const label = age == null ? "no data yet"
       : age <= 0 ? "today" : age === 1 ? "1 day ago" : `${age} days ago`;
     return `<span class="chip${stale ? " stale" : ""}" title="${s.name}: last captured ${last || "never"}">
-      <i style="background:${s.color}"></i>${s.name} · ${label}</span>`;
+      ${badgeMark(s)}${s.name} · ${label}</span>`;
   }).join("");
   $("#freshness").innerHTML = rows +
     `<a class="freshlink" href="${DATA.actionsUrl}" target="_blank" rel="noopener"
@@ -582,7 +673,7 @@ function chartBars(days) {
   const vis = visible();
   const vmax = Math.max(1,
     ...vis.map((s) => days.map((d) => F(s.id, d) || 0)).flat());
-  return `<div class="days">` + days.map((d) => {
+  const cols = days.map((d) => {
     const bars = vis.map((s) => {
       const v = F(s.id, d) ?? 0;
       const h = Math.max(0.5, 100 * v / vmax);
@@ -590,9 +681,10 @@ function chartBars(days) {
       return `<div class="bar"
         style="height:${h}%;background:${s.color}">${em}</div>`;
     }).join("");
-    return `<div class="day" ${tipRef(dayTipHtml(d))}>
-      <div class="bars">${bars}</div><small>${fmtDay(d)}</small></div>`;
-  }).join("") + `</div>`;
+    return `<div class="day" ${tipRef(dayTipHtml(d))}><div class="bars">${bars}</div></div>`;
+  }).join("");
+  const labels = days.map((d) => `<div class="daylabel">${fmtDay(d)}</div>`).join("");
+  return `<div class="days">${cols}</div><div class="daylabels">${labels}</div>`;
 }
 
 function chartSvg(days, cumulative) {
@@ -614,6 +706,9 @@ function chartSvg(days, cumulative) {
     g += `<line class="grid" x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}"/>
       <text x="${PL - 6}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(0)}</text>`;
   }
+  // dashed verticals divide the days
+  for (let i = 0; i < days.length; i++)
+    g += `<line class="vgrid" x1="${x(i)}" x2="${x(i)}" y1="${PT}" y2="${H - PB}"/>`;
   const lastX = x(days.length - 1);
   const lines = series.map((s) => {
     const path = s.pts.map((v, i) => `${i ? "L" : "M"}${x(i)},${y(v)}`).join("");
@@ -662,6 +757,8 @@ function chartRange(days) {
     g += `<line class="grid" x1="${PL}" x2="${W - PR}" y1="${y(v)}" y2="${y(v)}"/>
       <text x="${PL - 6}" y="${y(v) + 3}" text-anchor="end">${v.toFixed(0)}</text>`;
   }
+  for (let i = 0; i < days.length; i++)
+    g += `<line class="vgrid" x1="${x(i)}" x2="${x(i)}" y1="${PT}" y2="${H - PB}"/>`;
   const col = (sources.find((s) => s.id === "ensemble") || {}).color || "var(--accent)";
   const top = stats.map((s, i) => `${i ? "L" : "M"}${x(i)},${y(s.hi)}`).join("");
   const bot = stats.map((_, i) => {
@@ -691,11 +788,19 @@ function chartTable(days) {
   const maxByDay = days.map((d) => Math.max(
     ...vis.filter((s) => s.id !== "ensemble")
       .map((s) => F(s.id, d) ?? -1)));
-  const rows = vis.map((s) => "<tr><td>" + s.name + "</td>" + days.map((d, i) => {
-    const v = F(s.id, d);
-    const cls = v != null && s.id !== "ensemble" && v === maxByDay[i] && v > 0 ? ' class="max"' : "";
-    return `<td${cls}>${v == null ? "—" : v.toFixed(1)}</td>`;
-  }).join("") + "</tr>").join("");
+  const rows = vis.map((s) => {
+    // source name tinted with its chart colour, mixed toward the ink so it
+    // stays legible on both light and dark grounds whatever the palette
+    const tint = `color-mix(in srgb, ${s.color} 68%, var(--ink))`;
+    const src = `<td class="tsrc" style="color:${tint}">${badgeMark(s)}${s.name}</td>`;
+    return "<tr>" + src + days.map((d, i) => {
+      const v = F(s.id, d);
+      // the day's leading forecaster is emphasised in its own colour
+      const isMax = v != null && s.id !== "ensemble" && v === maxByDay[i] && v > 0;
+      const style = isMax ? ` style="color:${tint};font-weight:650"` : "";
+      return `<td${style}>${v == null ? "—" : v.toFixed(1)}</td>`;
+    }).join("") + "</tr>";
+  }).join("");
   return `<div class="scroll"><table><tr><th>Source</th>${head}</tr>${rows}</table></div>`;
 }
 
@@ -730,7 +835,7 @@ function renderMain() {
   $("#legend").innerHTML = sources.map((s) =>
     `<button class="lgd${isOn(s.id) ? "" : " off"}" data-src="${s.id}"
       title="Click to toggle ${s.name} ${s.id === "ensemble" ? "off the charts" : "in/out of charts and ensemble"}">
-     <i style="background:${s.color}"></i>${s.name}</button>`).join("");
+     ${badgeMark(s)}<span style="color:color-mix(in srgb, ${s.color} 68%, var(--ink))">${s.name}</span></button>`).join("");
   document.querySelectorAll("#legend .lgd").forEach((b) =>
     b.onclick = () => toggleSource(b.dataset.src));
   const active = PANEL_ORDER.filter((k) => state.panels.includes(k));
@@ -842,6 +947,8 @@ function renderForecasts() {
 
 function init() {
   document.documentElement.dataset.palette = state.palette;
+  setTheme(state.theme);
+  $("#themeBtn").onclick = () => setTheme(state.theme === "dark" ? "light" : "dark");
   const psel = $("#paletteSelect");
   psel.innerHTML = PALETTES.map((p) =>
     `<option value="${p.id}"${p.id === state.palette ? " selected" : ""}>${p.label}</option>`).join("");
@@ -947,7 +1054,8 @@ def render(out: Path | None = None) -> Path:
         "snapshot": snapshot,
         "generated": today,
         "sources": [
-            {"id": k, "name": PROVIDER_NAMES[k], "color": PROVIDER_COLORS[k]}
+            {"id": k, "name": PROVIDER_NAMES[k], "color": PROVIDER_COLORS[k],
+             "logo": _logo_uri(k)}
             for k in PROVIDER_COLORS
         ],
         "forecasts": forecasts,
@@ -988,6 +1096,12 @@ def render(out: Path | None = None) -> Path:
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..700&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&display=swap">
 <style>{_palette_css()}{CSS}</style>
+<script>
+/* set theme + palette before first paint so there's no flash */
+(function () {{ var d = document.documentElement;
+  d.dataset.palette = localStorage.getItem("palette") || "glacier";
+  d.dataset.theme = localStorage.getItem("theme") || "dark"; }})();
+</script>
 <main>
 <header>
   <div class="masthead">
@@ -997,20 +1111,16 @@ def render(out: Path | None = None) -> Path:
   </div>
   <div class="headtools">
     <p class="stamp">snapshot {snapshot} · generated {today}</p>
-    <div class="select-wrap">
-      <select id="paletteSelect" aria-label="Colour palette"></select>
+    <div class="headctl">
+      <button id="themeBtn" class="iconbtn" type="button"
+        aria-label="Toggle light or dark theme"></button>
+      <div class="select-wrap">
+        <select id="paletteSelect" aria-label="Colour palette"></select>
+      </div>
     </div>
   </div>
 </header>
-<svg class="ridge" viewBox="0 0 1100 40" preserveAspectRatio="none" aria-hidden="true">
-  <path d="M0 38 L90 22 L150 30 L260 8 L330 26 L420 14 L520 34 L610 10
-    L700 28 L800 18 L890 32 L980 12 L1100 30"
-    fill="none" stroke="currentColor" stroke-width="1.5"
-    vector-effect="non-scaling-stroke"/>
-  <circle cx="260" cy="8" r="2.5" fill="var(--accent)"/>
-  <circle cx="610" cy="10" r="2.5" fill="var(--accent)"/>
-  <circle cx="980" cy="12" r="2.5" fill="var(--accent)"/>
-</svg>
+<hr class="rule">
 <div class="hero" id="hero"></div>
 <div class="card">
   <div class="cardhead">
