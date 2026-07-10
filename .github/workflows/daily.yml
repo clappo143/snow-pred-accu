@@ -45,8 +45,11 @@ jobs:
             echo "push rejected (attempt $attempt) — resyncing and redoing the run"
             git fetch origin main
             git reset --hard origin/main
-            python ${{ steps.mode.outputs.script }}
-            python dashboard.py
+            # A collector may fail transiently on this redo (e.g. an API
+            # timeout); don't let that abort the step via bash -e and lose
+            # every other collector's freshly-recollected data.
+            python ${{ steps.mode.outputs.script }} || true
+            python dashboard.py || true
           done
 
   # Snowatch only: Cloudflare blocks GitHub's published Actions IP ranges
@@ -75,6 +78,8 @@ jobs:
             echo "push rejected (attempt $attempt) — resyncing and redoing the run"
             git fetch origin main
             git reset --hard origin/main
-            python3 run_evening.py --only snowatch
-            python3 dashboard.py
+            # See the cloud job's comment: don't let a transient collector
+            # failure on this redo abort the step via bash -e.
+            python3 run_evening.py --only snowatch || true
+            python3 dashboard.py || true
           done
