@@ -36,12 +36,15 @@ def lead_hours(run: str, lead: int) -> int:
 
 
 def pairs(
-    con: sqlite3.Connection, resort: str
+    con: sqlite3.Connection, resort: str | list[str]
 ) -> list[tuple[str, str, int, str, float, float]]:
     """(source, run, lead, target_date, forecast_cm, actual_cm) for every
-    scoreable forecast row of one resort, at every lead."""
+    scoreable forecast row, at every lead. `resort` may be a single id or a
+    list — a list pools resorts, so the same skill formula scores a source
+    across a state or the whole country (each resort-day is one sample)."""
+    rids = [resort] if isinstance(resort, str) else list(resort)
     return con.execute(
-        """
+        f"""
         SELECT f.source, f.run,
                CAST(round(julianday(f.target_date) - julianday(f.issued_date))
                     AS INTEGER) AS lead,
@@ -49,12 +52,12 @@ def pairs(
         FROM forecasts f
         JOIN actuals a ON a.resort = f.resort
                       AND a.date = date(f.target_date, '+1 day')
-        WHERE f.resort = ?
+        WHERE f.resort IN ({','.join('?' * len(rids))})
           AND lead >= 0
           AND NOT (f.run = 'pm' AND lead = 0)
         ORDER BY f.target_date
         """,
-        (resort,),
+        rids,
     ).fetchall()
 
 
@@ -66,7 +69,7 @@ def _skill(fc_actual: list[tuple[float, float]]) -> float:
 
 def accuracy(
     con: sqlite3.Connection,
-    resort: str,
+    resort: str | list[str],
     run: str = HEADLINE[0],
     lead: int = HEADLINE[1],
 ) -> dict[str, float]:
@@ -79,7 +82,7 @@ def accuracy(
 
 
 def accuracy_by_lead(
-    con: sqlite3.Connection, resort: str
+    con: sqlite3.Connection, resort: str | list[str]
 ) -> dict[str, list[dict]]:
     """Per source: accuracy at every (run, lead) with data, ordered by how
     far ahead the snapshot was taken. Feeds the dashboard's lead controls."""

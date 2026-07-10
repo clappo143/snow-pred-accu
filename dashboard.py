@@ -47,6 +47,16 @@ PROVIDER_COLORS = {
     "openmeteo": "#E36E24",
     "ensemble": "#3E9E62",
 }
+# Categorical colours for resort-vs-resort views (group mode) — same
+# verified mid-lightness family as the provider palette.
+RESORT_COLORS = {
+    "perisher": "#3B79C4",
+    "thredbo": "#12A2A2",
+    "hotham": "#D2473E",
+    "fallscreek": "#9463C6",
+    "buller": "#E36E24",
+}
+
 PROVIDER_NAMES = {
     "yrno": "YR.no",
     "bom": "BOM",
@@ -160,9 +170,35 @@ h1 { font-family: "Fraunces", Georgia, serif; font-weight: 600;
   letter-spacing: -0.015em; }
 h1 span { color: var(--accent); font-style: italic; }
 h1 b { font-weight: 600; }
-.resortbar { margin-top: 14px; }
+.resortbar { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; }
 .resortbar .seg { flex-wrap: wrap; }
 .resortbar .seg button { padding: 7px 14px; }
+/* group mode (All / NSW / VIC) swaps the resort-specific cards for the
+   aggregate ones */
+body[data-mode="group"] .resort-only { display: none !important; }
+body[data-mode="resort"] .group-only { display: none !important; }
+.hero.group { grid-template-columns: 1fr; }
+.ginsight { font-size: 13.5px; margin-bottom: 12px; }
+.ginsight b { font-weight: 650; }
+.rcards { display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.rcard { background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 12px 15px 13px; text-align: left;
+  cursor: pointer; font: inherit; color: var(--ink); display: flex;
+  flex-direction: column; gap: 3px; transition: border-color 0.18s;
+  border-top-width: 3px; }
+.rcard:hover { border-color: var(--accent); }
+.rcard .rname { display: flex; align-items: baseline; gap: 7px;
+  font-weight: 650; font-size: 14.5px; }
+.rcard .rname small { color: var(--muted); font-size: 10px;
+  text-transform: uppercase; letter-spacing: 0.08em; font-weight: 650; }
+.rcard .evt { font-size: 18px; font-weight: 650; letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums; }
+.rcard .evt .cum { font-size: 13px; color: var(--accent); font-weight: 650; }
+.rcard .meta { color: var(--muted); font-size: 11.5px;
+  font-variant-numeric: tabular-nums; }
+.swatchdot { display: inline-block; width: 9px; height: 9px;
+  border-radius: 50%; margin-right: 8px; vertical-align: baseline; }
 .sub { color: var(--muted); font-size: 13.5px; margin: 7px 0 0; max-width: 62ch; }
 .headtools { display: flex; flex-direction: column; align-items: flex-end;
   gap: 10px; margin-left: auto; }
@@ -444,7 +480,13 @@ const state = {
   manual: JSON.parse(localStorage.getItem("manualActuals") || "{}"),
   mforecasts: JSON.parse(localStorage.getItem("manualForecasts") || "[]"),
 };
-if (!(state.resort in DATA.resorts)) state.resort = "perisher";
+// views: a resort id, or a group id ("all" / "nsw" / "vic")
+state.view = localStorage.getItem("view") || state.resort;
+if (!(state.view in DATA.resorts) && !(state.view in DATA.groups))
+  state.view = "perisher";
+const activeGroup = () => DATA.groups[state.view] || null;
+// the blob rankings read from: pooled group stats, or the resort's own
+const activeAcc = () => activeGroup() || R;
 // pre-multi-resort localStorage: flat {date: cm} becomes Perisher's
 if (Object.values(state.manual).some((v) => typeof v === "number"))
   state.manual = { perisher: state.manual };
@@ -454,10 +496,13 @@ const plus1 = (iso) => {
   const t = new Date(iso + "T12:00"); t.setDate(t.getDate() + 1);
   return t.toISOString().slice(0, 10);
 };
-// R is the active resort's data blob; sources/providers follow it
-let R, sources, providers;
+// R is the active resort's data blob; sources/providers follow it. In group
+// mode R stays on the last resort (harmless — resort cards are hidden).
+let R, Rid, sources, providers;
 function bindResort() {
-  R = DATA.resorts[state.resort];
+  if (DATA.resorts[state.view]) Rid = state.view;
+  Rid = Rid || "perisher";
+  R = DATA.resorts[Rid];
   sources = DATA.sources.filter((s) =>
     s.id === "ensemble" || s.id in R.forecasts);
   providers = sources.filter((s) => s.id !== "ensemble");
@@ -493,16 +538,24 @@ function wmedian(pairs) { // [value, weight], weights > 0
   return s[s.length - 1][0];
 }
 
-function computeEnsemble() {
-  ENS = {};
-  const act = providers.filter((s) => isOn(s.id) && weightOf(s.id) > 0);
+// weighted-median ensemble for any resort (group cards need them all)
+function ensembleFor(rid) {
+  const fc = DATA.resorts[rid].forecasts;
+  const act = DATA.sources.filter((s) =>
+    s.id !== "ensemble" && s.id in fc && isOn(s.id) && weightOf(s.id) > 0);
+  const out = {};
   const dates = new Set();
-  act.forEach((s) => Object.keys(R.forecasts[s.id]).forEach((d) => dates.add(d)));
+  act.forEach((s) => Object.keys(fc[s.id]).forEach((d) => dates.add(d)));
   for (const d of dates) {
-    const pairs = act.map((s) => [R.forecasts[s.id][d], weightOf(s.id)])
+    const pairs = act.map((s) => [fc[s.id][d], weightOf(s.id)])
       .filter((p) => p[0] != null);
-    if (pairs.length) ENS[d] = wmedian(pairs);
+    if (pairs.length) out[d] = wmedian(pairs);
   }
+  return out;
+}
+
+function computeEnsemble() {
+  ENS = ensembleFor(Rid);
 }
 
 const F = (id, d) => (id === "ensemble" ? ENS[d] : R.forecasts[id][d]);
@@ -702,7 +755,8 @@ function leadLabel(e) {
 }
 
 function renderRankings() {
-  const byLead = R.accuracyByLead || {};
+  const A = activeAcc();  // pooled group stats, or the resort's own
+  const byLead = A.accuracyByLead || {};
   const avail = new Map();
   for (const src in byLead) for (const e of byLead[src]) {
     const k = `${e.run}:${e.lead}`;
@@ -713,7 +767,7 @@ function renderRankings() {
   if (!opts.length) {
     $("#leadSeg").innerHTML = "";
     $("#rankings").innerHTML = `<p class="empty">No scoreable days yet for
-      ${R.label} — rankings appear once a snapshot has a next-morning report
+      ${A.label} — rankings appear once a snapshot has a next-morning report
       to be judged against.</p>`;
     $("#leadcurve").innerHTML = "";
     return;
@@ -744,7 +798,11 @@ function renderRankings() {
       <div class="track"><div class="fill" style="width:${e.pct.toFixed(0)}%;background:${s.color}"></div></div>
       <b>${e.pct.toFixed(0)}%</b></div>`).join("") +
     `<footer>accuracy = 100 × max(0, 1 − MAE / mean(max(actual, ${DATA.floor}cm))),
-     ${rows.length ? rows[0].e.n : 0} day(s) scored at this lead. A forecast
+     ${rows.length ? rows[0].e.n : 0} ${activeGroup() ? "resort-day" : "day"}(s)
+     scored at this lead${activeGroup()
+       ? ` — pooled across ${activeGroup().resorts.length} resorts, each
+          resort-day one sample`
+       : ""}. A forecast
      for day D is judged against the 24h-to-7am report published the morning
      of D+1 — the report that actually measures day D. Rankings are noise
      until real snow falls.</footer>`;
@@ -755,7 +813,7 @@ function renderRankings() {
 // vs who nails the amount at short range
 function renderLeadCurve(byLead) {
   const series = Object.entries(byLead)
-    .map(([id, es]) => ({ s: sources.find((x) => x.id === id), es }))
+    .map(([id, es]) => ({ s: DATA.sources.find((x) => x.id === id), es }))
     .filter((r) => r.s && r.es.length >= 2 && isOn(r.s.id));
   if (!series.length) { $("#leadcurve").innerHTML = ""; return; }
   const W = 960, H = 230, PL = 42, PR = 26, PT = 14, PB = 30;
@@ -789,19 +847,132 @@ function renderLeadCurve(byLead) {
      <svg viewBox="0 0 ${W} ${H}" style="width:100%">${g}${lines}</svg>`;
 }
 
-function setResort(rid) {
-  state.resort = rid;
-  localStorage.setItem("resort", rid);
+// ---- group (All / NSW / VIC) aggregate views -----------------------------
+
+// next-event read for one resort over the coming week, from its live
+// client-side ensemble — the same 1cm-median threshold the hero uses
+function resortEvent(rid) {
+  const blob = DATA.resorts[rid];
+  const ens = ensembleFor(rid);
+  const days = [];
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date((blob.snapshot || DATA.generated) + "T12:00");
+    d.setDate(d.getDate() + i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+  const first = days.findIndex((d) => (ens[d] ?? 0) >= 1);
+  if (first < 0) return { blob, quiet: true, total: 0 };
+  let end = first;
+  while (end + 1 < days.length && (ens[days[end + 1]] ?? 0) >= 1) end++;
+  const win = days.slice(first, end + 1);
+  const total = win.reduce((t, d) => t + ens[d], 0);
+  let peak = win[0];
+  for (const d of win) if (ens[d] > ens[peak]) peak = d;
+  return { blob, quiet: false, win, total, peak, peakCm: ens[peak] };
+}
+
+function renderGroupHero(g) {
+  const evts = g.resorts.map((rid) => ({ rid, ...resortEvent(rid) }));
+  const best = evts.filter((e) => !e.quiet).sort((a, b) => b.total - a.total)[0];
+  const insight = best
+    ? `Biggest week ahead: <b>${best.blob.label}</b> — ensemble median
+       ~<b>${best.total.toFixed(0)}cm</b> over ${fmtDay(best.win[0])}–${fmtDay(best.win[best.win.length - 1])}.`
+    : `A quiet week — no resort's ensemble median reaches 1cm on any of the
+       next 7 days.`;
+  const cards = evts.map((e) => {
+    const st = e.blob.status || {};
+    const evt = e.quiet
+      ? `<span class="evt" style="color:var(--muted)">quiet week</span>`
+      : `<span class="evt">${fmtDay(e.win[0])}${e.win.length > 1
+           ? "–" + fmtDay(e.win[e.win.length - 1]) : ""}
+         <span class="cum">~${e.total.toFixed(0)}cm</span></span>`;
+    const meta = [
+      st.snow_24h != null ? `24h ${st.snow_24h.toFixed(0)}cm` : null,
+      st.natural_depth != null ? `depth ${st.natural_depth.toFixed(0)}cm` : null,
+      !e.quiet ? `peak ${fmtDay(e.peak)} ${e.peakCm.toFixed(0)}cm` : null,
+    ].filter(Boolean).join(" · ");
+    return `<button class="rcard" data-view="${e.rid}"
+        style="border-top-color:${e.blob.color}"
+        title="Open the ${e.blob.label} view">
+      <span class="rname">${e.blob.label}<small>${e.blob.state}</small></span>
+      ${evt}<span class="meta">${meta || "—"}</span></button>`;
+  }).join("");
+  $("#hero").innerHTML =
+    `<div><div class="ginsight">${insight}</div>
+     <div class="rcards">${cards}</div></div>`;
+  $("#hero").classList.add("group");
+  // the cards are late-added [data-view] buttons — wire them like the bar's
+  document.querySelectorAll("#hero [data-view]").forEach((b) =>
+    b.onclick = () => setView(b.dataset.view));
+}
+
+function renderGroupCompare(g) {
+  const snapshot = g.snapshot || DATA.generated;
+  const days = [];
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date(snapshot + "T12:00");
+    d.setDate(d.getDate() + i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+  const rows = g.resorts.map((rid) =>
+    ({ rid, blob: DATA.resorts[rid], ens: ensembleFor(rid) }));
+  const vmax = Math.max(1,
+    ...rows.map((r) => days.map((d) => r.ens[d] || 0)).flat());
+  const cols = days.map((d) => {
+    const tipHtml = `<h4>${fmtDay(d)}</h4>` + rows
+      .map((r) => ({ r, v: r.ens[d] }))
+      .filter((x) => x.v != null)
+      .sort((a, b) => b.v - a.v)
+      .map((x) => `<div class="trow"><i class="dot"
+        style="background:${x.r.blob.color}"></i>${x.r.blob.label}
+        <b>${x.v.toFixed(1)}cm</b></div>`).join("");
+    const bars = rows.map((r) => {
+      const v = r.ens[d] ?? 0;
+      const h = Math.max(0.5, 100 * v / vmax);
+      const em = v >= 0.5 ? `<em>${v.toFixed(0)}</em>` : "";
+      return `<div class="bar" style="height:${h}%;background:${r.blob.color}">${em}</div>`;
+    }).join("");
+    return `<div class="day" ${tipRef(tipHtml)}><div class="bars">${bars}</div></div>`;
+  }).join("");
+  const labels = days.map((d) => `<div class="daylabel">${fmtDay(d)}</div>`).join("");
+  const trows = rows.map((r) => {
+    const tint = `color-mix(in srgb, ${r.blob.color} 68%, var(--ink))`;
+    const cells = days.map((d) =>
+      `<td>${r.ens[d] == null ? "—" : r.ens[d].toFixed(1)}</td>`).join("");
+    const tot = days.reduce((t, d) => t + (r.ens[d] || 0), 0);
+    return `<tr><td class="tsrc" style="color:${tint}"><i class="swatchdot"
+      style="background:${r.blob.color}"></i>${r.blob.label}</td>${cells}
+      <td style="font-weight:650">${tot.toFixed(0)}</td></tr>`;
+  }).join("");
+  $("#gcompare").innerHTML =
+    `<div class="days">${cols}</div><div class="daylabels">${labels}</div>
+     <div class="scroll" style="margin-top:16px"><table>
+       <tr><th>Resort</th>${days.map((d) => `<th>${fmtDay(d)}</th>`).join("")}<th>Σ 7d</th></tr>
+       ${trows}</table></div>`;
+}
+
+function setView(v) {
+  state.view = v;
+  localStorage.setItem("view", v);
   bindResort();
-  $("#resortName").textContent = R.label;
+  const g = activeGroup();
+  document.body.dataset.mode = g ? "group" : "resort";
+  $("#hero").classList.toggle("group", !!g);
+  $("#resortName").textContent = g ? g.label : R.label;
   $("#stamp").textContent =
-    `snapshot ${R.snapshot || "—"} · generated ${DATA.generated}`;
-  document.querySelectorAll("[data-resort]").forEach((b) =>
-    b.classList.toggle("on", b.dataset.resort === rid));
-  const fr = $("#fResort"), mr = $("#mResort");
-  if (fr) fr.value = rid;
-  if (mr) mr.value = rid;
-  refresh(); renderActuals(); renderForecasts(); renderFreshness(); renderRankings();
+    `snapshot ${(g || R).snapshot || "—"} · generated ${DATA.generated}`;
+  document.querySelectorAll(".resortbar [data-view]").forEach((b) =>
+    b.classList.toggle("on", b.dataset.view === v));
+  if (g) {
+    computeEnsemble();  // keeps hidden resort panels consistent
+    renderGroupHero(g); renderGroupCompare(g);
+  } else {
+    const fr = $("#fResort"), mr = $("#mResort");
+    if (fr) fr.value = v;
+    if (mr) mr.value = v;
+    refresh(); renderActuals(); renderForecasts(); renderFreshness();
+  }
+  renderRankings();
 }
 
 function chartBars(days) {
@@ -1009,7 +1180,7 @@ function renderWeights() {
   });
 }
 
-const manualActuals = () => state.manual[state.resort] || {};
+const manualActuals = () => state.manual[Rid] || {};
 
 function renderActuals() {
   const mine = manualActuals();
@@ -1029,7 +1200,7 @@ function renderActuals() {
 }
 
 function removeManual(d) {
-  delete (state.manual[state.resort] || {})[d];
+  delete (state.manual[Rid] || {})[d];
   localStorage.setItem("manualActuals", JSON.stringify(state.manual));
   renderActuals(); renderBadges();
 }
@@ -1121,8 +1292,8 @@ function init() {
     saveWeights(); refresh();
   };
   // resort switcher
-  document.querySelectorAll("[data-resort]").forEach((b) =>
-    b.onclick = () => setResort(b.dataset.resort));
+  document.querySelectorAll(".resortbar [data-view]").forEach((b) =>
+    b.onclick = () => setView(b.dataset.view));
   // source + resort dropdowns for manual entry
   $("#fSource").innerHTML = DATA.sources.filter((s) => s.id !== "ensemble")
     .map((s) => `<option value="${s.id}">${s.name}</option>`).join("");
@@ -1172,7 +1343,7 @@ function init() {
     a.download = "manual.json";
     a.click();
   };
-  setResort(state.resort);
+  setView(state.view);
 }
 init();
 """
@@ -1215,6 +1386,8 @@ def _resort_blob(con, rid: str, label: str, status: dict) -> dict:
 
     return {
         "label": label,
+        "state": RESORTS[rid].state,
+        "color": RESORT_COLORS.get(rid, "var(--accent)"),
         "snapshot": snapshot,
         "forecasts": forecasts,
         "actuals": actuals,
@@ -1223,6 +1396,24 @@ def _resort_blob(con, rid: str, label: str, status: dict) -> dict:
         "scored": scored,
         "status": status.get(rid) or {},
         "freshness": freshness,
+    }
+
+
+def _group_blob(con, label: str, rids: list[str], resorts: dict) -> dict:
+    """Aggregate view: the same skill formula over the pooled resort-day
+    samples of several resorts (state level, or everything)."""
+    run, lead = HEADLINE
+    by_lead = accuracy_by_lead(con, rids)
+    return {
+        "label": label,
+        "resorts": rids,
+        "snapshot": max((resorts[r]["snapshot"] or "" for r in rids),
+                        default="") or None,
+        "accuracy": accuracy(con, rids),
+        "accuracyByLead": by_lead,
+        # pooled samples at the headline lead (resort-days, not days)
+        "scored": max((e["n"] for es in by_lead.values() for e in es
+                       if (e["run"], e["lead"]) == (run, lead)), default=0),
     }
 
 
@@ -1235,6 +1426,15 @@ def render(out: Path | None = None) -> Path:
     if "snow_24h" in status:  # pre-multi-resort flat file
         status = {"perisher": status}
 
+    resorts = {rid: _resort_blob(con, rid, r.name, status)
+               for rid, r in RESORTS.items()}
+    group_defs = [
+        ("all", "All resorts", list(RESORTS)),
+        ("nsw", "New South Wales",
+         [rid for rid, r in RESORTS.items() if r.state == "NSW"]),
+        ("vic", "Victoria",
+         [rid for rid, r in RESORTS.items() if r.state == "VIC"]),
+    ]
     data = {
         "generated": today,
         "sources": [
@@ -1243,8 +1443,9 @@ def render(out: Path | None = None) -> Path:
             for k in PROVIDER_COLORS
         ],
         "resortOrder": list(RESORTS),
-        "resorts": {rid: _resort_blob(con, rid, r.name, status)
-                    for rid, r in RESORTS.items()},
+        "resorts": resorts,
+        "groups": {gid: _group_blob(con, label, rids, resorts)
+                   for gid, label, rids in group_defs},
         "floor": FLOOR_CM,
         "actionsUrl": ACTIONS_URL,
     }
@@ -1254,8 +1455,12 @@ def render(out: Path | None = None) -> Path:
         for pid, p in PALETTES.items()
     ]
 
+    group_seg = "".join(
+        f'<button data-view="{gid}">{label}</button>'
+        for gid, label, _rids in group_defs
+    )
     resort_seg = "".join(
-        f'<button data-resort="{rid}">{r.name}</button>'
+        f'<button data-view="{rid}">{r.name}</button>'
         for rid, r in RESORTS.items()
     )
 
@@ -1290,10 +1495,21 @@ def render(out: Path | None = None) -> Path:
     </div>
   </div>
 </header>
-<div class="resortbar"><span class="seg">{resort_seg}</span></div>
+<div class="resortbar">
+  <span class="seg">{group_seg}</span>
+  <span class="seg">{resort_seg}</span>
+</div>
 <hr class="rule">
 <div class="hero" id="hero"></div>
-<div class="card">
+<div class="card group-only">
+  <div class="cardhead">
+    <h2>Resort comparison — ensemble median (cm)</h2>
+    <span class="spacer"></span>
+    <span class="hint">weighted median of the providers, per resort · next 7 days</span>
+  </div>
+  <div id="gcompare"></div>
+</div>
+<div class="card resort-only">
   <div class="cardhead">
     <h2>Forecast snowfall (cm)</h2>
     <span class="spacer"></span>
@@ -1327,7 +1543,7 @@ def render(out: Path | None = None) -> Path:
   </div>
   <div id="main"></div>
 </div>
-<div class="card">
+<div class="card resort-only">
   <div class="cardhead"><h2>Data freshness</h2></div>
   <div id="freshness" style="line-height:2.4"></div>
   <details class="fine"><summary>Why might a source lag?</summary>
@@ -1347,7 +1563,7 @@ def render(out: Path | None = None) -> Path:
   <div id="rankings"></div>
   <div id="leadcurve"></div>
 </div>
-<div class="card manual">
+<div class="card manual resort-only">
   <h2>Reported daily snowfall</h2>
   <div class="spark" id="spark" style="margin:12px 0"></div>
   <div class="scroll" style="max-height:220px;overflow-y:auto">
@@ -1356,7 +1572,7 @@ def render(out: Path | None = None) -> Path:
   </div>
   <div id="chips" style="margin-top:8px"></div>
 </div>
-<details class="fold manual">
+<details class="fold manual resort-only">
   <summary><h2>Manual backfill</h2>
     <span class="hint">repo owner only — transcribe forecasts &amp; actuals from forum threads</span></summary>
   <div class="foldbody">
