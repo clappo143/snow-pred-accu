@@ -4,6 +4,9 @@ Slugs/geohashes were probed live on 2026-07-10; all seven forecasters cover
 all five resorts. `alt` pins the model elevation for the lat/lon-based
 sources (Open-Meteo, YR.no) to a mid/upper-mountain height so the derived
 snowfall matches what skiers experience rather than the valley floor.
+Reference-point audit (2026-07-11): every provider's forecast elevation per
+resort is tabulated in docs/reference-points.md — all sit within ~±150 m of
+`alt` except Jane's Weather at Thredbo (~1367 m, village).
 
 Ground truth ("official") per resort:
   - perisher, hotham: Vail-platform HTML snow report (same markup, the

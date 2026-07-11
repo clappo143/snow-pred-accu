@@ -1355,11 +1355,15 @@ def _resort_blob(con, rid: str, label: str, status: dict) -> dict:
         "SELECT max(issued_date) FROM forecasts WHERE resort=?", (rid,)
     ).fetchone()[0]
 
-    # per source, the newest snapshot ('pm' outranks a same-day 'am')
+    # per source, the newest snapshot ('pm' outranks a same-day 'am').
+    # Only dashboard-known sources: extra series like Snow-Forecast's
+    # bot/top elevation bands stay DB-only (docs/reference-points.md).
     forecasts: dict[str, dict[str, float]] = {}
     for (source,) in con.execute(
         "SELECT DISTINCT source FROM forecasts WHERE resort=?", (rid,)
     ):
+        if source not in PROVIDER_COLORS:
+            continue
         issued, run = con.execute(
             "SELECT issued_date, run FROM forecasts WHERE resort=? AND source=? "
             "ORDER BY issued_date DESC, run DESC LIMIT 1", (rid, source),
@@ -1379,10 +1383,10 @@ def _resort_blob(con, rid: str, label: str, status: dict) -> dict:
     run, lead = HEADLINE
     scored = len({d for s, r, l, d, _f, _a in pairs(con, rid)
                   if (r, l) == (run, lead)})
-    freshness = dict(con.execute(
+    freshness = {s: d for s, d in con.execute(
         "SELECT source, max(issued_date) FROM forecasts "
         "WHERE resort=? AND source != 'ensemble' GROUP BY source", (rid,)
-    ).fetchall())
+    ) if s in PROVIDER_COLORS}
 
     return {
         "label": label,
