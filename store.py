@@ -21,6 +21,12 @@ from pathlib import Path
 
 DB_PATH = Path(__file__).parent / "data" / "snow.db"
 
+# Sources that must never feed the ensemble: the ensemble itself, plus
+# Snow-Forecast's extra elevation bands (bot/top) — the canonical mid band
+# is the 'snowforecast' series; the extras are stored for elevation-gradient
+# analysis only (see docs/reference-points.md).
+NON_ENSEMBLE_SOURCES = ("ensemble", "snowforecast_bot", "snowforecast_top")
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS forecasts (
     resort      TEXT NOT NULL,
@@ -108,7 +114,7 @@ def load_forecasts_for_issued(
     resort: str,
     issued: dt.date,
     run: str,
-    exclude: tuple[str, ...] = ("ensemble",),
+    exclude: tuple[str, ...] = NON_ENSEMBLE_SOURCES,
 ) -> dict[str, dict[dt.date, float]]:
     """Every source's forecast rows for one resort's snapshot, regardless of
     which script invocation collected them (used to rebuild the ensemble

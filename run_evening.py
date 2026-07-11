@@ -43,11 +43,20 @@ def snapshot_forecasts(con, mods, issued: dt.date, run: str) -> list[str]:
     for resort in RESORTS.values():
         for mod in mods:
             try:
-                fc = mod.collect(resort)
-                store.save_forecasts(con, resort.id, mod.SOURCE, issued, run, fc)
+                # a collector may publish several series (e.g. Snow-Forecast's
+                # bot/mid/top elevation bands) via collect_multi(); the plain
+                # collect() path stays for single-series providers
+                if hasattr(mod, "collect_multi"):
+                    series = mod.collect_multi(resort)
+                else:
+                    series = {mod.SOURCE: mod.collect(resort)}
+                for src, fc in series.items():
+                    store.save_forecasts(con, resort.id, src, issued, run, fc)
+                fc = series[mod.SOURCE]
                 nxt = min((d for d in fc if d > issued), default=None)
+                extra = f" (+{len(series) - 1} band(s))" if len(series) > 1 else ""
                 print(f"[ok] {resort.id}/{mod.SOURCE}: {len(fc)} days"
-                      + (f", tomorrow={fc[nxt]}cm" if nxt else ""))
+                      + (f", tomorrow={fc[nxt]}cm" if nxt else "") + extra)
             except Exception:
                 failed.append(f"{resort.id}/{mod.SOURCE}")
                 print(f"[FAIL] {resort.id}/{mod.SOURCE}", file=sys.stderr)
