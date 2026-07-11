@@ -593,9 +593,12 @@ function setTheme(t) {
   }
 }
 
+// The window opens on the snapshot day itself (today) — a forecast issued
+// today is about today onwards, and "what's called for today" is exactly
+// what a skier checks first. Runs from D through D+(horizon-1).
 function horizonDates() {
   const out = [];
-  for (let i = 1; i <= state.horizon; i++) {
+  for (let i = 0; i < state.horizon; i++) {
     const d = new Date(R.snapshot + "T12:00");
     d.setDate(d.getDate() + i);
     out.push(d.toISOString().slice(0, 10));
@@ -857,7 +860,7 @@ function resortEvent(rid) {
   const blob = DATA.resorts[rid];
   const ens = ensembleFor(rid);
   const days = [];
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 0; i < 7; i++) {
     const d = new Date((blob.snapshot || DATA.generated) + "T12:00");
     d.setDate(d.getDate() + i);
     days.push(d.toISOString().slice(0, 10));

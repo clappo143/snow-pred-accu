@@ -31,7 +31,7 @@ self-hosted runner in both slots (`--only snowatch`); the cloud jobs pass
 |---|---|
 | YR.no | official `api.met.no` API; snow = precip falling at ≤1°C, 1mm≈1cm |
 | BOM | `api.weather.bom.gov.au` JSON; rain-range midpoint on days with tmax ≤2°C |
-| BOM MetEye | MetEye text views (`bom.gov.au/places/…/forecast/detailed/`): 3-hourly forecaster-edited Snow flags × 50th-pct precip, summed per day — the parallel BOM methodology, scored against `bom` but kept out of the ensemble |
+| BOM MetEye | MetEye text views (`bom.gov.au/places/…/forecast/detailed/`): 3-hourly forecaster-edited Snow flags × 50th-pct precip, summed per day — the parallel BOM methodology; a full ensemble member alongside `bom`, each weighted on its own accuracy record |
 | Snow-Forecast.com | server-rendered table, mid-mountain (canonical); bot/top elevation bands stored DB-only (see `docs/reference-points.md`) |
 | Mountainwatch | server-rendered 7-day table, anchored to its day labels |
 | Snowatch | server-rendered 15-day page; range midpoints |
