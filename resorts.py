@@ -76,7 +76,15 @@ RESORTS: dict[str, Resort] = {r.id: r for r in [
     Resort(
         id="hotham", name="Mt Hotham", state="VIC",
         lat=-36.976, lon=147.146, alt=1750,
-        bom_geohash="r32tsk",
+        # r32tsk (the v1 geohash) resolves to "Hotham Heights" — BOM's
+        # generic North East district forecast for the surrounding area,
+        # not the alpine-specific Mount Hotham product. Its temp_max runs
+        # 5-6C warmer than bom.gov.au/places/vic/mount-hotham/forecast
+        # every single day (caught 2026-07-11 comparing the two live
+        # pages), which silently failed the SNOW_TMAX_C gate. r32tsh6 is
+        # the geohash BOM's own location search returns for "Mount
+        # Hotham" and matches the public page exactly.
+        bom_geohash="r32tsh6",
         meteye_slug="vic/mount-hotham",
         snowatch_slug="hotham", mountainwatch_slug="mt-hotham",
         snowforecast_slug="Mount-Hotham", onthesnow_slug="mt-hotham",

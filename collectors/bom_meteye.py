@@ -112,6 +112,6 @@ def collect(resort: Resort) -> dict[dt.date, float]:
     rain = bom.daily_rain(resort)
     return {
         date: (lo + hi) / 2 * fractions[date]
-        for date, (lo, hi, _tmax) in rain.items()
+        for date, (lo, hi, _tmax, _snow_text) in rain.items()
         if date in fractions
     }
