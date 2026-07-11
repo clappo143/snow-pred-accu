@@ -27,7 +27,11 @@ jobs:
         run: |
           H=$(TZ=Australia/Sydney date +%H)
           if [ "$H" -lt 12 ]; then echo "script=run_morning.py --skip snowatch" >> "$GITHUB_OUTPUT";
-          else echo "script=run_evening.py --skip snowatch" >> "$GITHUB_OUTPUT"; fi
+          # --actuals: re-collect official reports in the evening slot too —
+          # resorts sometimes publish after the morning run (Hotham seen at
+          # 9:45am), and the proxies mirror the same pages so they can't cover
+          # a late report. Rank precedence makes the re-collect safe.
+          else echo "script=run_evening.py --skip snowatch --actuals" >> "$GITHUB_OUTPUT"; fi
       - run: python ${{ steps.mode.outputs.script }}
       - name: render dashboard
         if: always()

@@ -6,8 +6,11 @@ sources (Open-Meteo, YR.no) to a mid/upper-mountain height so the derived
 snowfall matches what skiers experience rather than the valley floor.
 
 Ground truth ("official") per resort:
-  - perisher, hotham: Vail-platform HTML snow report (same markup, the
-    titles just differ in case), parsed by collectors/actuals_official.py
+  - perisher: Vail-platform HTML snow report, parsed by
+    collectors/actuals_official.py
+  - hotham: the conditions/snow-reports page's "Natural snow fall and
+    depth" section, which (unlike the Vail-style reports page) carries an
+    "Issued:" timestamp for the snow report itself
   - fallscreek: the WordPress JSON feed behind fallscreek.com.au/snow-report
     (ski-patrol fresh-snow figure, stamped ~6:15am)
   - thredbo: thredbo.com.au/weather/snow-report/ serves a raw LivePass
@@ -38,7 +41,7 @@ class Resort:
     mountainwatch_slug: str
     snowforecast_slug: str
     onthesnow_slug: str
-    official_kind: str | None = None  # "vail" | "falls_json" | "thredbo_xml" | "buller_json" | None
+    official_kind: str | None = None  # "vail" | "hotham_html" | "falls_json" | "thredbo_xml" | "buller_json" | None
     official_url: str | None = None
 
 
@@ -67,8 +70,8 @@ RESORTS: dict[str, Resort] = {r.id: r for r in [
         bom_geohash="r32tsk",
         snowatch_slug="hotham", mountainwatch_slug="mt-hotham",
         snowforecast_slug="Mount-Hotham", onthesnow_slug="mt-hotham",
-        official_kind="vail",
-        official_url="https://www.mthotham.com.au/mountain/reports/snow-report",
+        official_kind="hotham_html",
+        official_url="https://www.mthotham.com.au/mountain/conditions/snow-reports",
     ),
     Resort(
         id="fallscreek", name="Falls Creek", state="VIC",
