@@ -5,6 +5,13 @@ to forecasts. Every snapshot is kept — the 6pm run no longer overwrites a
 same-day morning capture — so accuracy can be scored at any lead, not just
 the classic night-before call. connect() migrates a v1 database in place
 (v1 rows become resort='perisher', run='pm').
+
+Schema v3 (2026-07-11): adds nullable `reported_at` to actuals — the
+timestamp the source says the report was issued (≈ when the measurement
+was taken), ISO 8601 where the source exposes one. Existing rows keep
+NULL. save_actual is now rank-based: official resort report > snowatch
+homepage proxy > OnTheSnow > manual — a lagging proxy can never overwrite
+an official figure, regardless of collection order.
 """
 from __future__ import annotations
 
@@ -29,9 +36,14 @@ CREATE TABLE IF NOT EXISTS actuals (
     date    TEXT NOT NULL,       -- local date the 24h-to-7am period ended
     snow_cm REAL NOT NULL,
     source  TEXT NOT NULL,
+    reported_at TEXT,            -- ISO 8601 report-issued stamp, if the source has one
     PRIMARY KEY (resort, date)
 );
 """
+
+# Actuals-source precedence: higher rank wins; equal rank may refresh its
+# own row (e.g. a later official scrape correcting the morning figure).
+SOURCE_RANK = {"manual": 0, "onthesnow": 1, "snowatch": 2, "official": 3}
 
 
 def _columns(con: sqlite3.Connection, table: str) -> list[str]:
@@ -73,11 +85,21 @@ def _migrate_v1(con: sqlite3.Connection) -> None:
     con.commit()
 
 
+def _migrate_v3(con: sqlite3.Connection) -> None:
+    """Add actuals.reported_at (nullable). Idempotent."""
+    cols = _columns(con, "actuals")
+    if cols and "reported_at" not in cols:
+        con.execute("ALTER TABLE actuals ADD COLUMN reported_at TEXT")
+        con.commit()
+        print("[ok] migrated actuals to schema v3 (reported_at column)")
+
+
 def connect() -> sqlite3.Connection:
     DB_PATH.parent.mkdir(exist_ok=True)
     con = sqlite3.connect(DB_PATH)
     _migrate_v1(con)
     con.executescript(SCHEMA)
+    _migrate_v3(con)
     return con
 
 
@@ -126,15 +148,29 @@ def save_actual(
     date: dt.date,
     cm: float,
     source: str,
-    replace: bool = True,
+    reported_at: str | None = None,
 ) -> None:
-    """replace=False only fills gaps — used when a lesser source (OnTheSnow
-    fallback) must never overwrite official-report history."""
-    op = "REPLACE" if replace else "IGNORE"
-    con.execute(
-        f"INSERT OR {op} INTO actuals VALUES (?,?,?,?)",
-        (resort, date.isoformat(), cm, source),
-    )
+    """Rank-based upsert (see SOURCE_RANK): a source only replaces an
+    existing row of equal or lower rank, so a lagging proxy (snowatch,
+    onthesnow) can never overwrite an official-report figure, while
+    an equal-rank re-collection may refresh its own row."""
+    rank = SOURCE_RANK.get(source, 0)
+    row = con.execute(
+        "SELECT source FROM actuals WHERE resort=? AND date=?",
+        (resort, date.isoformat()),
+    ).fetchone()
+    if row is None:
+        con.execute(
+            "INSERT INTO actuals (resort, date, snow_cm, source, reported_at)"
+            " VALUES (?,?,?,?,?)",
+            (resort, date.isoformat(), cm, source, reported_at),
+        )
+    elif rank >= SOURCE_RANK.get(row[0], 0):
+        con.execute(
+            "UPDATE actuals SET snow_cm=?, source=?, reported_at=?"
+            " WHERE resort=? AND date=?",
+            (cm, source, reported_at, resort, date.isoformat()),
+        )
     con.commit()
 
 
@@ -170,7 +206,8 @@ def merge_manual(con: sqlite3.Connection) -> tuple[int, int]:
     for resort, days in actuals.items():
         for date, cm in days.items():
             na += con.execute(
-                "INSERT OR IGNORE INTO actuals VALUES (?,?,?,?)",
+                "INSERT OR IGNORE INTO actuals (resort, date, snow_cm, source)"
+                " VALUES (?,?,?,?)",
                 (resort, date, float(cm), "manual"),
             ).rowcount
 

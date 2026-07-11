@@ -5,11 +5,12 @@ the counter goes stale when the resort stops updating (it held last week's
 storm total for days), while `recent[]` carries explicit 0cm days and can
 be backfilled — each morning run upserts every date it contains.
 
-Primary source for Thredbo and Mt Buller (no scrapeable official page);
-fallback for the resorts with an official report. Caveat from v1: for
-Perisher its per-day attribution disagreed with the resort's own 7-day
-total (57cm vs 37cm for the same week), so official reports win wherever
-we have them.
+Lowest-rank fallback (official > snowatch homepage proxy > onthesnow —
+see store.SOURCE_RANK): every resort now has an official source, so this
+only fills gaps when a scrape breaks, and can backfill past days the
+current-snapshot-only official pages can't. Known to lag 1-2 days, and in
+v1 its Perisher per-day attribution disagreed with the resort's own 7-day
+total (57cm vs 37cm for the same week) — hence the bottom rank.
 """
 from __future__ import annotations
 

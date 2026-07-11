@@ -10,8 +10,15 @@ Ground truth ("official") per resort:
     titles just differ in case), parsed by collectors/actuals_official.py
   - fallscreek: the WordPress JSON feed behind fallscreek.com.au/snow-report
     (ski-patrol fresh-snow figure, stamped ~6:15am)
-  - thredbo, buller: no scrapeable official page found (JS-rendered / 404),
-    so OnTheSnow's resort-reported history is the primary source there.
+  - thredbo: thredbo.com.au/weather/snow-report/ serves a raw LivePass
+    snowReport XML document (snow24Hours + full ISO `updated` stamp)
+  - buller: api.mtbuller.com.au/api/weather/widget — the JSON feed behind
+    the (otherwise JS-rendered) mtbuller.com.au snow report page
+    (snow_report.snow_last_24_hours + ISO last_updated)
+
+Every resort now has an official source (re-probed 2026-07-11). The
+snowatch.com.au homepage 24hr table is the mid-rank proxy, and OnTheSnow's
+resort-reported history remains the lowest-rank gap-filling fallback.
 """
 from __future__ import annotations
 
@@ -31,7 +38,7 @@ class Resort:
     mountainwatch_slug: str
     snowforecast_slug: str
     onthesnow_slug: str
-    official_kind: str | None = None  # "vail" | "falls_json" | None
+    official_kind: str | None = None  # "vail" | "falls_json" | "thredbo_xml" | "buller_json" | None
     official_url: str | None = None
 
 
@@ -51,6 +58,8 @@ RESORTS: dict[str, Resort] = {r.id: r for r in [
         bom_geohash="r392q7",
         snowatch_slug="thredbo", mountainwatch_slug="thredbo",
         snowforecast_slug="Thredbo", onthesnow_slug="thredbo-alpine-resort",
+        official_kind="thredbo_xml",
+        official_url="https://www.thredbo.com.au/weather/snow-report/",
     ),
     Resort(
         id="hotham", name="Mt Hotham", state="VIC",
@@ -76,5 +85,7 @@ RESORTS: dict[str, Resort] = {r.id: r for r in [
         bom_geohash="r32hsm",
         snowatch_slug="mt-buller", mountainwatch_slug="mount-buller",
         snowforecast_slug="Mount-Buller", onthesnow_slug="mt-buller",
+        official_kind="buller_json",
+        official_url="https://api.mtbuller.com.au/api/weather/widget",
     ),
 ]}

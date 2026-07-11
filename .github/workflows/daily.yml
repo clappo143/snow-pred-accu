@@ -65,6 +65,15 @@ jobs:
       - uses: actions/checkout@v4
       - run: pip3 install -r requirements.txt
       - run: python3 run_evening.py --only snowatch
+      # Morning slot only: record Snowatch's homepage 24hr-snow table as the
+      # mid-rank actuals proxy (official > snowatch > onthesnow; the rank
+      # logic in store.save_actual means it can never clobber an official
+      # figure even though this job races the cloud job).
+      - name: snowatch actuals proxy
+        run: |
+          if [ "$(TZ=Australia/Sydney date +%H)" -lt 12 ]; then
+            python3 -m collectors.actuals_snowatch
+          fi
       - name: render dashboard
         if: always()
         run: python3 dashboard.py
@@ -84,5 +93,8 @@ jobs:
             # See the cloud job's comment: don't let a transient collector
             # failure on this redo abort the step via bash -e.
             python3 run_evening.py --only snowatch || true
+            if [ "$(TZ=Australia/Sydney date +%H)" -lt 12 ]; then
+              python3 -m collectors.actuals_snowatch || true
+            fi
             python3 dashboard.py || true
           done
