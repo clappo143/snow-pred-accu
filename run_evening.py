@@ -84,6 +84,10 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--only", help="comma-separated source names to run")
     parser.add_argument("--skip", help="comma-separated source names to skip")
+    parser.add_argument(
+        "--actuals", action="store_true",
+        help="also re-collect official actuals — catches reports published "
+             "after the morning run (see run_morning.record_actuals)")
     args = parser.parse_args(argv)
 
     mods = pick_collectors(args.only, args.skip)
@@ -92,9 +96,17 @@ def main(argv: list[str]) -> int:
         return 1
 
     con = store.connect()
+
+    actual_failures: list[str] = []
+    if args.actuals:
+        from run_morning import record_actuals  # deferred: circular import
+        actual_failures = record_actuals(con)
+
     failed = snapshot_forecasts(con, mods, today(), run_now())
-    if failed:
-        print(f"FAILED collectors: {', '.join(failed)}", file=sys.stderr)
+    if failed or actual_failures:
+        print(f"FAILED collectors: {', '.join(failed) or 'none'}; "
+              f"actuals: {', '.join(actual_failures) or 'none'}",
+              file=sys.stderr)
         return 1
     return 0
 

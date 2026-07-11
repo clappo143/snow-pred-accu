@@ -2,12 +2,17 @@
 
 Four scrapeable formats (resorts.py says which applies where):
 
-  - "vail" (Perisher, Mt Hotham): the Vail-platform page server-renders a
-    "24 Hrs" new-snow figure (to ~7am) plus "7 Days" and a depth item, with
-    an "Updated: <day> <time>" stamp. Same markup on both sites, only the
-    title case differs ("24 Hrs" vs "24 hrs"), so matching is
-    case-insensitive. This is Star_Hawk's exact yardstick and is accurately
-    dated with no reporting lag.
+  - "vail" (Perisher): the Vail-platform page server-renders a "24 Hrs"
+    new-snow figure (to ~7am) plus "7 Days" and a depth item, with an
+    "Updated: <day> <time>" stamp. This is Star_Hawk's exact yardstick and
+    is accurately dated with no reporting lag.
+
+  - "hotham_html" (Mt Hotham): the /mountain/conditions/snow-reports page's
+    "Natural snow fall and depth" section — Last 24hrs / Last 7 Days /
+    Season Total / Depth figures under the section's own
+    "Issued: <Day> <d> <Month>, <h:mm>AM" stamp. (The Vail-style
+    /mountain/reports/snow-report page carries the same figures but no
+    snow-report timestamp, so this page wins; switched 2026-07-11.)
 
   - "falls_json" (Falls Creek): the WordPress JSON feed behind their snow
     report; ski patrol's fresh-snow figure (stamped ~6:15am) plus natural
@@ -89,8 +94,6 @@ def _collect_vail(url: str) -> dict:
     if snow_24h is None:
         raise ValueError("could not find 24 Hrs snowfall figure")
     depth = _item(html, "Natural Depth")
-    if depth is None:
-        depth = _item(html, "Total")  # Hotham's label for the depth item
     date, reported_at = _updated_stamp(html)
     return {
         "date": date,
@@ -123,6 +126,47 @@ def _collect_falls_json(url: str) -> dict:
         "snow_24h": float(snow),
         "snow_7day": None,  # feed doesn't carry a 7-day total
         "natural_depth": float(depth) if depth not in (None, "") else None,
+        "reported_at": reported_at,
+    }
+
+
+def _section_item(seg: str, label: str) -> float | None:
+    """The cm value in the <h2> following a labelled tile in the Hotham
+    'Natural snow fall and depth' section."""
+    m = re.search(
+        re.escape(label) + r"\s*(?:<[^>]*>\s*)*([\d.]+)\s*cm", seg)
+    return float(m.group(1)) if m else None
+
+
+def _collect_hotham_html(url: str) -> dict:
+    html = get(url).text
+    i = html.find("Natural snow fall and depth")
+    if i < 0:
+        raise ValueError("snow fall and depth section not found")
+    seg = html[i : i + 4000]
+    snow_24h = _section_item(seg, "Last 24hrs")
+    if snow_24h is None:
+        raise ValueError("could not find Last 24hrs figure")
+    date, reported_at = today(), None
+    m = re.search(
+        r"Issued:\s*[A-Za-z]+\s+(\d{1,2})\s+([A-Za-z]+),\s*"
+        r"(\d{1,2}):(\d{2})\s*(AM|PM)", seg, re.I)
+    if m:
+        try:
+            date = dt.datetime.strptime(
+                f"{m.group(1)} {m.group(2)} {dt.datetime.now(TZ).year}",
+                "%d %B %Y").date()
+            hour = int(m.group(3)) % 12 + (12 if m.group(5).upper() == "PM" else 0)
+            reported_at = dt.datetime(
+                date.year, date.month, date.day, hour, int(m.group(4)),
+                tzinfo=TZ).isoformat()
+        except ValueError:
+            date, reported_at = today(), None
+    return {
+        "date": date,
+        "snow_24h": snow_24h,
+        "snow_7day": _section_item(seg, "Last 7 Days"),
+        "natural_depth": _section_item(seg, "Depth"),
         "reported_at": reported_at,
     }
 
@@ -180,6 +224,7 @@ def _collect_buller_json(url: str) -> dict:
 
 _COLLECTORS = {
     "vail": _collect_vail,
+    "hotham_html": _collect_hotham_html,
     "falls_json": _collect_falls_json,
     "thredbo_xml": _collect_thredbo_xml,
     "buller_json": _collect_buller_json,

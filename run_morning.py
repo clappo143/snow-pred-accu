@@ -76,6 +76,27 @@ def _record_actual(con, resort: Resort) -> dict | None:
         return None
 
 
+def record_actuals(con) -> list[str]:
+    """Record every resort's actual and refresh resort_status.json; returns
+    the resorts where no actual could be recorded. Called from the morning
+    run and again (via run_evening.py --actuals) in the evening slot, since
+    resorts don't reliably publish by the morning collection — Hotham has
+    been seen issuing at 9:45am — and the proxies mirror the same pages, so
+    only a later official re-collect can catch a late report. Rank-based
+    save_actual makes the re-collect safe and self-correcting."""
+    status: dict[str, dict] = {}
+    failures = []
+    for resort in RESORTS.values():
+        blob = _record_actual(con, resort)
+        if blob is None:
+            failures.append(resort.id)
+        else:
+            status[resort.id] = blob
+    (DB_PATH.parent / "resort_status.json").write_text(
+        json.dumps(status, indent=1))
+    return failures
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--only", help="comma-separated source names to run")
@@ -85,16 +106,7 @@ def main(argv: list[str]) -> int:
     con = store.connect()
     date = today()
 
-    status: dict[str, dict] = {}
-    actual_failures = []
-    for resort in RESORTS.values():
-        blob = _record_actual(con, resort)
-        if blob is None:
-            actual_failures.append(resort.id)
-        else:
-            status[resort.id] = blob
-    (DB_PATH.parent / "resort_status.json").write_text(
-        json.dumps(status, indent=1))
+    actual_failures = record_actuals(con)
 
     store.merge_manual(con)
 
