@@ -1,5 +1,6 @@
 from . import (
     bom,
+    bom_meteye,
     janesweather,
     mountainwatch,
     openmeteo,
@@ -9,5 +10,6 @@ from . import (
 )
 
 FORECASTERS = [
-    yrno, bom, snowforecast, mountainwatch, janesweather, snowatch, openmeteo,
+    yrno, bom, bom_meteye, snowforecast, mountainwatch, janesweather,
+    snowatch, openmeteo,
 ]

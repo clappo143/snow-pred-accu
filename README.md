@@ -31,12 +31,13 @@ self-hosted runner in both slots (`--only snowatch`); the cloud jobs pass
 |---|---|
 | YR.no | official `api.met.no` API; snow = precip falling at ≤1°C, 1mm≈1cm |
 | BOM | `api.weather.bom.gov.au` JSON; rain-range midpoint on days with tmax ≤2°C |
-| Snow-Forecast.com | server-rendered table, mid-mountain |
+| BOM MetEye | MetEye text views (`bom.gov.au/places/…/forecast/detailed/`): 3-hourly forecaster-edited Snow flags × 50th-pct precip, summed per day — the parallel BOM methodology, scored against `bom` but kept out of the ensemble |
+| Snow-Forecast.com | server-rendered table, mid-mountain (canonical); bot/top elevation bands stored DB-only (see `docs/reference-points.md`) |
 | Mountainwatch | server-rendered 7-day table, anchored to its day labels |
 | Snowatch | server-rendered 15-day page; range midpoints |
 | Jane's Weather | public forecast-edge API, `model=ml` |
 | Open-Meteo | free model API; also backfillable (`backfill_openmeteo.py`) |
-| **actuals** | official resort reports for Perisher & Hotham (Vail HTML) and Falls Creek (WP JSON patrol feed); OnTheSnow embedded JSON for Thredbo & Buller and as gap-filling fallback |
+| **actuals** | official resort reports for all five (Perisher & Hotham Vail HTML, Falls Creek WP JSON patrol feed, Thredbo LivePass XML, Buller widget JSON); snowatch.com.au homepage table as mid-rank proxy; OnTheSnow as gap-filling fallback (rank precedence in `store.save_actual`) |
 
 ## Scoring — the window, and leads
 

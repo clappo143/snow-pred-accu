@@ -40,6 +40,7 @@ ACTIONS_URL = f"https://github.com/{_REPO}/actions/workflows/daily.yml"
 PROVIDER_COLORS = {
     "yrno": "#3B79C4",
     "bom": "#12A2A2",
+    "bom_meteye": "#586E75",  # muted slate-teal: BOM's sibling methodology
     "snowforecast": "#D2473E",
     "mountainwatch": "#9463C6",
     "janesweather": "#D65C9B",
@@ -60,6 +61,7 @@ RESORT_COLORS = {
 PROVIDER_NAMES = {
     "yrno": "YR.no",
     "bom": "BOM",
+    "bom_meteye": "BOM MetEye",
     "snowforecast": "Snow-Forecast",
     "mountainwatch": "Mountainwatch",
     "janesweather": "Jane's Weather",
@@ -1485,7 +1487,7 @@ def render(out: Path | None = None) -> Path:
 <header>
   <div class="masthead">
     <h1><b id="resortName">Perisher</b> <span>forecast accuracy</span></h1>
-    <p class="sub">Forecast snapshots from seven services, morning and evening,
+    <p class="sub">Forecast snapshots from eight sources, morning and evening,
     scored against each resort's reported snowfall.</p>
   </div>
   <div class="headtools">

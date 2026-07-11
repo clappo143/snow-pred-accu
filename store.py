@@ -24,8 +24,13 @@ DB_PATH = Path(__file__).parent / "data" / "snow.db"
 # Sources that must never feed the ensemble: the ensemble itself, plus
 # Snow-Forecast's extra elevation bands (bot/top) — the canonical mid band
 # is the 'snowforecast' series; the extras are stored for elevation-gradient
-# analysis only (see docs/reference-points.md).
-NON_ENSEMBLE_SOURCES = ("ensemble", "snowforecast_bot", "snowforecast_top")
+# analysis only (see docs/reference-points.md) — plus bom_meteye, the
+# parallel BOM methodology (collectors/bom_meteye.py): it is displayed and
+# scored like any provider, but feeding it in alongside 'bom' would
+# double-weight the Bureau in the ensemble.
+NON_ENSEMBLE_SOURCES = (
+    "ensemble", "snowforecast_bot", "snowforecast_top", "bom_meteye",
+)
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS forecasts (

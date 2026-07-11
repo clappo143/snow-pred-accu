@@ -15,6 +15,7 @@ CHART_DIR = Path(__file__).parent / "charts"
 COLORS = {
     "yrno": "#5B9BD5",
     "bom": "#2E75B6",
+    "bom_meteye": "#586E75",
     "snowforecast": "#C00000",
     "mountainwatch": "#44546A",
     "janesweather": "#2B4BD8",
@@ -37,7 +38,11 @@ def _sources_dates(con: sqlite3.Connection, issued: dt.date):
     ).fetchall()
     data: dict[str, dict[str, float]] = {}
     for s, d, cm in rows:
-        data.setdefault(s, {})[d] = cm
+        # chart-known sources only — DB-only series like Snow-Forecast's
+        # bot/top elevation bands stay out of view (same rule as the
+        # dashboard's PROVIDER_COLORS filter)
+        if s in COLORS:
+            data.setdefault(s, {})[d] = cm
     return data
 
 
@@ -65,7 +70,9 @@ def next_days_chart(con: sqlite3.Connection, issued: dt.date, ndays: int = 5) ->
 
 def accuracy_chart(acc: dict[str, float]) -> Path:
     fig, ax = plt.subplots(figsize=(8, 4.5))
-    items = sorted(acc.items(), key=lambda kv: -kv[1])
+    items = sorted(
+        ((s, v) for s, v in acc.items() if s in COLORS), key=lambda kv: -kv[1]
+    )
     ax.barh(
         [s for s, _ in items][::-1],
         [v for _, v in items][::-1],
@@ -104,7 +111,7 @@ def history_chart(con: sqlite3.Connection) -> Path:
         raise ValueError("nothing scoreable yet")
     dates = sorted({r[0] for r in rows})
     fig, ax = plt.subplots(figsize=(12, 5))
-    for source in sorted({r[1] for r in rows}):
+    for source in sorted({r[1] for r in rows} & COLORS.keys()):
         vals = {d: cm for d, s, cm, _ in rows if s == source}
         ax.plot(
             dates,
