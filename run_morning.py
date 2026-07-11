@@ -1,10 +1,12 @@
 """Morning run (~7:45am AEST), per resort:
 
 1. Record the reported 24h-to-7am snowfall. Ground truth is the resort's
-   own report where one is scrapeable (Perisher, Hotham, Falls Creek —
-   accurate, unlagged); OnTheSnow's resort-reported history is the primary
-   source for Thredbo and Mt Buller, and the gap-filling fallback
-   everywhere else (it never overwrites official history).
+   own report — every resort now has a scrapeable official source (see
+   resorts.py) — with OnTheSnow's lagging resort-reported history as the
+   gap-filling fallback. A third, mid-rank source (the snowatch.com.au
+   homepage table) is collected separately on the self-hosted runner (see
+   collectors/actuals_snowatch.py). store.save_actual enforces precedence
+   (official > snowatch > onthesnow) regardless of collection order.
 2. Snapshot every forecaster again (run='am'). Providers like Snowatch
    issue at 6-7am, so this captures the genuine "morning of" call for the
    24h window that just began at 7am — the evening snapshot alone was up to
@@ -39,15 +41,18 @@ def _record_actual(con, resort: Resort) -> dict | None:
         try:
             rep = actuals_official.collect(resort)
             store.save_actual(con, resort.id, rep["date"], rep["snow_24h"],
-                              actuals_official.SOURCE)
+                              actuals_official.SOURCE,
+                              reported_at=rep["reported_at"])
             print(f"[ok] {resort.id} official: {rep['date']} "
                   f"24h={rep['snow_24h']}cm, 7d={rep['snow_7day']}cm, "
-                  f"depth={rep['natural_depth']}cm")
+                  f"depth={rep['natural_depth']}cm, "
+                  f"reported_at={rep['reported_at']}")
             return {
                 "date": rep["date"].isoformat(),
                 "snow_24h": rep["snow_24h"],
                 "snow_7day": rep["snow_7day"],
                 "natural_depth": rep["natural_depth"],
+                "reported_at": rep["reported_at"],
             }
         except Exception:
             print(f"[warn] {resort.id} official scrape failed; "
@@ -55,15 +60,13 @@ def _record_actual(con, resort: Resort) -> dict | None:
             traceback.print_exc()
     try:
         history = actuals_onthesnow.collect(resort)
-        # primary source for resorts without an official page (full upsert);
-        # gap-filling only where official history exists
-        replace = not resort.official_kind
+        # lowest-rank fallback: save_actual only lets it fill gaps or
+        # refresh its own rows — it never overwrites official/snowatch
         for date, cm in history.items():
             store.save_actual(con, resort.id, date, cm,
-                              actuals_onthesnow.SOURCE, replace=replace)
+                              actuals_onthesnow.SOURCE)
         newest = max(history)
-        role = "primary" if replace else "fallback"
-        print(f"[ok] {resort.id} actual ({role} OnTheSnow): "
+        print(f"[ok] {resort.id} actual (fallback OnTheSnow): "
               f"{newest} = {history[newest]}cm ({len(history)} days upserted)")
         return {"date": newest.isoformat(), "snow_24h": history[newest],
                 "snow_7day": None, "natural_depth": None}
