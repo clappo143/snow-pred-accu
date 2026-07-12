@@ -42,7 +42,11 @@ def _record_actual(con, resort: Resort) -> dict | None:
             rep = actuals_official.collect(resort)
             store.save_actual(con, resort.id, rep["date"], rep["snow_24h"],
                               actuals_official.SOURCE,
-                              reported_at=rep["reported_at"])
+                              reported_at=rep["reported_at"],
+                              report_time_kind=rep["report_time_kind"],
+                              source_url=rep["source_url"],
+                              natural_depth=rep["natural_depth"],
+                              snow_7day=rep["snow_7day"], raw=rep)
             print(f"[ok] {resort.id} official: {rep['date']} "
                   f"24h={rep['snow_24h']}cm, 7d={rep['snow_7day']}cm, "
                   f"depth={rep['natural_depth']}cm, "
@@ -53,6 +57,8 @@ def _record_actual(con, resort: Resort) -> dict | None:
                 "snow_7day": rep["snow_7day"],
                 "natural_depth": rep["natural_depth"],
                 "reported_at": rep["reported_at"],
+                "report_time_kind": rep["report_time_kind"],
+                "source_url": rep["source_url"],
             }
         except Exception:
             print(f"[warn] {resort.id} official scrape failed; "
@@ -64,7 +70,10 @@ def _record_actual(con, resort: Resort) -> dict | None:
         # refresh its own rows — it never overwrites official/snowatch
         for date, cm in history.items():
             store.save_actual(con, resort.id, date, cm,
-                              actuals_onthesnow.SOURCE)
+                              actuals_onthesnow.SOURCE,
+                              source_url=actuals_onthesnow.URL.format(
+                                  slug=resort.onthesnow_slug),
+                              raw={"date": date.isoformat(), "snow_24h": cm})
         newest = max(history)
         print(f"[ok] {resort.id} actual (fallback OnTheSnow): "
               f"{newest} = {history[newest]}cm ({len(history)} days upserted)")

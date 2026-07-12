@@ -2,17 +2,11 @@
 
 Four scrapeable formats (resorts.py says which applies where):
 
-  - "vail" (Perisher): the Vail-platform page server-renders a "24 Hrs"
-    new-snow figure (to ~7am) plus "7 Days" and a depth item, with an
-    "Updated: <day> <time>" stamp. This is Star_Hawk's exact yardstick and
-    is accurately dated with no reporting lag.
+  - "perisher_xml" (Perisher): the resort's snowreport12.xml feed carries
+    the 24-hour/top figure, seven-day figure, depth and report timestamp.
 
-  - "hotham_html" (Mt Hotham): the /mountain/conditions/snow-reports page's
-    "Natural snow fall and depth" section — Last 24hrs / Last 7 Days /
-    Season Total / Depth figures under the section's own
-    "Issued: <Day> <d> <Month>, <h:mm>AM" stamp. (The Vail-style
-    /mountain/reports/snow-report page carries the same figures but no
-    snow-report timestamp, so this page wins; switched 2026-07-11.)
+  - "hotham_xml" (Mt Hotham): the resort's SnowReport.xml feed carries
+    snowfall, depth and a second-precision _LastUpdated timestamp.
 
   - "falls_json" (Falls Creek): the WordPress JSON feed behind their snow
     report; ski patrol's fresh-snow figure (stamped ~6:15am) plus natural
@@ -23,13 +17,16 @@ Four scrapeable formats (resorts.py says which applies where):
     <snow7Days>, <avgsnowdepth>, and a full ISO `updated` attribute.
     (Re-probed 2026-07-11; the 2026-07-10 probe hit the wrong URL.)
 
-  - "buller_json" (Mt Buller): api.mtbuller.com.au/api/weather/widget, the
-    JSON feed behind the JS-rendered mtbuller.com.au snow report page —
-    snow_report.snow_last_24_hours plus an ISO last_updated stamp.
+  - "buller_json" (Mt Buller): the API supplies the snow amount, while the
+    public snow-report page supplies the separate "Ski Patrol update" time.
+    The API's last_updated is a whole-widget weather refresh and must not be
+    treated as the snow measurement/report time.
 
-Each collect() also returns `reported_at`, the source's report-issued
-timestamp (ISO 8601, or None where the source has no usable stamp) — an
-approximation of when the measurement was taken.
+Each collect() also returns `reported_at` and `report_time_kind`. The latter
+makes the timestamp semantics explicit: `report_publication`,
+`patrol_observation`, or `documented_measurement` where the resort documents
+the gauge-reading procedure. A generic API refresh is never promoted to a
+snow-report timestamp.
 
 The official pages expose only the current snapshot (no per-day history),
 so this gives clean actuals going forward but cannot backfill past days.
@@ -44,6 +41,8 @@ from resorts import Resort
 from .common import TZ, get, today
 
 SOURCE = "official"
+BULLER_REPORT_URL = "https://www.mtbuller.com.au/winter/snow-weather/snow-report"
+THREDBO_REPORT_URL = "https://www.thredbo.com.au/weather/weather-report/"
 
 _MONTHS = {m: i for i, m in enumerate(
     ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -101,6 +100,35 @@ def _collect_vail(url: str) -> dict:
         "snow_7day": _item(html, "7 Days"),
         "natural_depth": depth,
         "reported_at": reported_at,
+        "report_time_kind": "report_publication" if reported_at else None,
+        "source_url": url,
+    }
+
+
+def _collect_perisher_xml(url: str) -> dict:
+    from xml.etree import ElementTree
+
+    root = ElementTree.fromstring(get(url).text)
+    stamp = " ".join((root.findtext("date") or "").split())
+    try:
+        reported = dt.datetime.strptime(stamp, "%d/%m/%Y %H:%M").replace(tzinfo=TZ)
+    except ValueError as exc:
+        raise ValueError("invalid Perisher report date") from exc
+    def number(*tags: str) -> float | None:
+        for tag in tags:
+            value = root.findtext(tag)
+            if value not in (None, ""):
+                return float(value.strip())
+        return None
+    snow = number("new_snow_24hrs_top", "new_snow_24hrs")
+    if snow is None:
+        raise ValueError("no Perisher 24-hour snowfall")
+    return {
+        "date": reported.date(), "snow_24h": snow,
+        "snow_7day": number("new_snow_7days"),
+        "natural_depth": number("snowdepth"),
+        "reported_at": reported.isoformat(),
+        "report_time_kind": "report_publication", "source_url": url,
     }
 
 
@@ -127,6 +155,8 @@ def _collect_falls_json(url: str) -> dict:
         "snow_7day": None,  # feed doesn't carry a 7-day total
         "natural_depth": float(depth) if depth not in (None, "") else None,
         "reported_at": reported_at,
+        "report_time_kind": "patrol_observation" if reported_at else None,
+        "source_url": url,
     }
 
 
@@ -168,6 +198,32 @@ def _collect_hotham_html(url: str) -> dict:
         "snow_7day": _section_item(seg, "Last 7 Days"),
         "natural_depth": _section_item(seg, "Depth"),
         "reported_at": reported_at,
+        "report_time_kind": "report_publication" if reported_at else None,
+        "source_url": url,
+    }
+
+
+def _collect_hotham_xml(url: str) -> dict:
+    from xml.etree import ElementTree
+
+    root = ElementTree.fromstring(get(url).text)
+    stamp = (root.findtext("_LastUpdated") or "").strip()
+    try:
+        reported = dt.datetime.fromisoformat(stamp).replace(tzinfo=TZ)
+    except ValueError as exc:
+        raise ValueError("invalid Hotham _LastUpdated") from exc
+    def number(tag: str) -> float | None:
+        value = root.findtext(tag)
+        return float(value.strip()) if value not in (None, "") else None
+    snow = number("TwentyFourHourSnowfall")
+    if snow is None:
+        raise ValueError("no Hotham TwentyFourHourSnowfall")
+    return {
+        "date": reported.date(), "snow_24h": snow,
+        "snow_7day": number("SevenDaySnowfall"),
+        "natural_depth": number("CurrentSnowdepth"),
+        "reported_at": reported.isoformat(),
+        "report_time_kind": "report_publication", "source_url": url,
     }
 
 
@@ -177,6 +233,21 @@ def _xml_amount(root, tag: str) -> float | None:
     return float(amt) if amt not in (None, "") else None
 
 
+def _thredbo_report_stamp(html: str) -> str | None:
+    """Publication stamp from the narrative weather report page."""
+    m = re.search(
+        r'class="report-date".*?(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4}),\s*'
+        r'(\d{1,2}):(\d{2})\s*(AM|PM)', html, re.I | re.S)
+    if not m:
+        return None
+    month = _MONTHS.get(m.group(2).title())
+    if not month:
+        return None
+    hour = int(m.group(4)) % 12 + (12 if m.group(6).upper() == "PM" else 0)
+    return dt.datetime(int(m.group(3)), month, int(m.group(1)), hour,
+                       int(m.group(5)), tzinfo=TZ).isoformat()
+
+
 def _collect_thredbo_xml(url: str) -> dict:
     from xml.etree import ElementTree
 
@@ -184,7 +255,14 @@ def _collect_thredbo_xml(url: str) -> dict:
     snow_24h = _xml_amount(root, "snow24Hours")
     if snow_24h is None:
         raise ValueError("no snow24Hours amount in XML")
-    reported_at = root.get("updated")  # full ISO 8601 with offset
+    xml_updated_at = root.get("updated")  # data-feed refresh, retained as raw context
+    try:
+        reported_at = _thredbo_report_stamp(get(THREDBO_REPORT_URL).text)
+    except Exception:
+        reported_at = None
+    # If the publication page is temporarily unavailable, the snow feed's own
+    # update remains a transparent fallback rather than losing the actual.
+    reported_at = reported_at or xml_updated_at
     try:
         date = dt.datetime.fromisoformat(reported_at).date()
     except (TypeError, ValueError):
@@ -198,7 +276,34 @@ def _collect_thredbo_xml(url: str) -> dict:
         "snow_7day": _xml_amount(root, "snow7Days"),
         "natural_depth": depth,
         "reported_at": reported_at,
+        "report_time_kind": "report_publication" if reported_at else None,
+        "source_url": THREDBO_REPORT_URL,
+        "data_url": url,
+        "xml_updated_at": xml_updated_at,
     }
+
+
+def _buller_patrol_stamp(html: str, year: int) -> tuple[dt.date, str] | None:
+    """Parse the patrol narrative stamp, e.g. Sunday 12th July 7:15am."""
+    i = html.lower().find("ski patrol update")
+    if i < 0:
+        return None
+    plain = re.sub(r"<[^>]+>", " ", html[i : i + 5000])
+    m = re.search(
+        r"(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+"
+        r"(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+"
+        r"(\d{1,2}):(\d{2})\s*(am|pm)", plain, re.I)
+    if not m:
+        return None
+    try:
+        date = dt.datetime.strptime(
+            f"{m.group(1)} {m.group(2)} {year}", "%d %B %Y").date()
+    except ValueError:
+        return None
+    hour = int(m.group(3)) % 12 + (12 if m.group(5).lower() == "pm" else 0)
+    stamp = dt.datetime(
+        date.year, date.month, date.day, hour, int(m.group(4)), tzinfo=TZ)
+    return date, stamp.isoformat()
 
 
 def _collect_buller_json(url: str) -> dict:
@@ -207,11 +312,19 @@ def _collect_buller_json(url: str) -> dict:
     snow = rep.get("snow_last_24_hours")
     if snow is None:
         raise ValueError("no snow_report.snow_last_24_hours in feed")
-    reported_at = feed.get("last_updated")  # ISO 8601 with offset
+    widget_updated_at = feed.get("last_updated")  # weather/widget refresh only
     try:
-        date = dt.datetime.fromisoformat(reported_at).date()
+        year = dt.datetime.fromisoformat(widget_updated_at).year
     except (TypeError, ValueError):
-        date, reported_at = today(), None
+        year = dt.datetime.now(TZ).year
+    patrol = None
+    try:
+        patrol = _buller_patrol_stamp(get(BULLER_REPORT_URL).text, year)
+    except Exception:
+        # The snow amount remains useful even if the independent page request
+        # fails. Crucially, we do not substitute the widget refresh time.
+        pass
+    date, reported_at = patrol if patrol else (today(), None)
     depth = rep.get("average_natural")
     return {
         "date": date,
@@ -219,12 +332,18 @@ def _collect_buller_json(url: str) -> dict:
         "snow_7day": None,  # widget only has 24/48/72h and season totals
         "natural_depth": float(depth) if depth is not None else None,
         "reported_at": reported_at,
+        "report_time_kind": "documented_measurement" if reported_at else None,
+        "source_url": BULLER_REPORT_URL,
+        "data_url": url,
+        "widget_updated_at": widget_updated_at,
     }
 
 
 _COLLECTORS = {
     "vail": _collect_vail,
+    "perisher_xml": _collect_perisher_xml,
     "hotham_html": _collect_hotham_html,
+    "hotham_xml": _collect_hotham_xml,
     "falls_json": _collect_falls_json,
     "thredbo_xml": _collect_thredbo_xml,
     "buller_json": _collect_buller_json,

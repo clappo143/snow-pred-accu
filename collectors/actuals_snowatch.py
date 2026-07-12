@@ -76,7 +76,9 @@ def main() -> int:
     for resort in RESORTS.values():
         try:
             cm = parse(html, resort)
-            store.save_actual(con, resort.id, date, cm, SOURCE)
+            store.save_actual(
+                con, resort.id, date, cm, SOURCE, source_url=URL,
+                raw={"date": date.isoformat(), "snow_24h": cm})
             print(f"[ok] {resort.id} snowatch proxy: {date} 24h={cm}cm")
         except Exception:
             failed.append(resort.id)
