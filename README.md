@@ -37,7 +37,7 @@ self-hosted runner in both slots (`--only snowatch`); the cloud jobs pass
 | Snowatch | server-rendered 15-day page; range midpoints |
 | Jane's Weather | public forecast-edge API, `model=ml` |
 | Open-Meteo | free model API; also backfillable (`backfill_openmeteo.py`) |
-| **actuals** | official resort reports for all five (Perisher & Hotham Vail HTML, Falls Creek WP JSON patrol feed, Thredbo LivePass XML, Buller widget JSON); snowatch.com.au homepage table as mid-rank proxy; OnTheSnow as gap-filling fallback (rank precedence in `store.save_actual`) |
+| **actuals** | official resort reports for all five (Perisher HTML, Hotham snow-report HTML, Falls Creek patrol JSON, Thredbo LivePass XML, Buller API amount + public-page patrol time); snowatch.com.au homepage table as mid-rank proxy; OnTheSnow as gap-filling fallback (rank precedence in `store.save_actual`) |
 
 ## Scoring — the window, and leads
 
@@ -58,9 +58,46 @@ the past (pm, lead 0) are excluded as hindsight.
 
 Per (source, lead): `accuracy = 100 × max(0, 1 − MAE / mean(max(actual, 2cm)))`
 over the season. The 2cm floor keeps long snowless runs from dominating;
-rankings are meaningless until real snow falls. The ensemble weights each
-provider by its running night-before accuracy (equal weights until there is
-history).
+rankings are meaningless until real snow falls. The operational consensus
+is an accuracy-weighted **median** (resistant to one extreme provider); the
+historical DB `ensemble` remains the older accuracy-weighted mean and is
+exported under an explicitly diagnostic name.
+
+## Actual provenance and Alpine export
+
+Schema v4 separates two concerns:
+
+- `actual_observations` is an append-only record of every source observation,
+  including retrieval time, source URL, raw payload and timestamp semantics.
+- `actuals` is the single effective value used by scoring. Precedence is
+  protected manual correction > official > Snowatch > OnTheSnow.
+
+`report_time_kind` distinguishes report publication times from ski-patrol
+observation/update times. In particular, Buller's weather-widget
+`last_updated` is retained only as raw context; the snow report uses the
+separate public-page Ski Patrol update time.
+
+`python export_normalized.py` writes two versioned feeds:
+
+- `data/alpine_export_v1.json` is the broader forecast/actual compatibility
+  export.
+- `data/official-report-export.v1.json` is the strict
+  `alpine.official-report-export.v1` contract consumed by Alpine's
+  timestamp-aligned auxiliary-gauge workflow. It retains append-only source
+  layers, selected effective-layer IDs, explicit value states, timestamp
+  semantics, raw-payload references, and protected manual corrections.
+
+The scheduled workflows regenerate both feeds after every collection run.
+Set Alpine's `PHASE1_OFFICIAL_REPORT_EXPORT` to the strict export path; the
+legacy compatibility export is deliberately rejected for that use. Baw Baw
+is deliberately absent from this producer because this project does not
+collect its resort report; Alpine remains its canonical owner rather than
+receiving invented cross-project provenance.
+
+Every strict export is also retained at
+`data/official-report-exports/<sha256>.json`. Auxiliary sidecars record that
+exact SHA-256, so a historical report-window audit can be reproduced against
+the immutable producer artifact rather than a later mutable "latest" export.
 
 ## Running locally
 
@@ -69,9 +106,11 @@ pip install -r requirements.txt
 python run_evening.py   # snapshot forecasts (all resorts)
 python run_morning.py   # actuals + am snapshot + scoring + dashboard
 python backfill_openmeteo.py [START] [END] [resort|all]
+python export_normalized.py  # stable feed for Alpine Weather Dashboard
+python -m unittest discover -s tests
 ```
 
-Data lives in `data/snow.db` (schema v2: keyed by resort and am/pm run —
-`store.py` migrates a v1 database automatically); the dashboard in
+Data lives in `data/snow.db` (schema v4; migrations from older schemas are
+automatic and additive); the dashboard in
 `docs/index.html`. Both are committed back by the Actions workflow so the
 repo is the archive.

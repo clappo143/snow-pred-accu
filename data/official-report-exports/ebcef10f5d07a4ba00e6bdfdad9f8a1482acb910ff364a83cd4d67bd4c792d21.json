@@ -1,0 +1,2027 @@
+{
+  "generatedAt": "2026-07-12T11:40:03.829596+00:00",
+  "identitySchemaVersion": "alpine.resort-identities.v1",
+  "producer": "snow-pred-accu official-report exporter",
+  "reports": [
+    {
+      "canonicalResortId": "perisher",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "perisher|2026-07-09|onthesnow|effective-projection",
+          "reportedAt": "perisher|2026-07-09|onthesnow|effective-projection",
+          "snow24hCm": "perisher|2026-07-09|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "perisher|2026-07-09|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "perisher",
+            "date": "2026-07-09",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/perisher/2026-07-09",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-09"
+    },
+    {
+      "canonicalResortId": "perisher",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "perisher|2026-07-10|official|effective-projection",
+          "reportedAt": "perisher|2026-07-10|official|effective-projection",
+          "snow24hCm": "perisher|2026-07-10|official|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "perisher|2026-07-10|official|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "perisher",
+            "date": "2026-07-10",
+            "effectiveRecord": true,
+            "source": "official"
+          },
+          "rawPayloadRef": "sqlite:actuals/perisher/2026-07-10",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-10"
+    },
+    {
+      "canonicalResortId": "perisher",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": "2026-07-11T07:03:00+10:00",
+        "selectedLayers": {
+          "depthCm": "perisher|2026-07-11|official|effective-projection",
+          "reportedAt": "perisher|2026-07-11|official|effective-projection",
+          "snow24hCm": "perisher|2026-07-11|official|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "perisher|2026-07-11|official|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "perisher",
+            "date": "2026-07-11",
+            "effectiveRecord": true,
+            "source": "official"
+          },
+          "rawPayloadRef": "sqlite:actuals/perisher/2026-07-11",
+          "reportTimeKind": "unknown",
+          "reportedAt": "2026-07-11T07:03:00+10:00",
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-11"
+    },
+    {
+      "canonicalResortId": "perisher",
+      "effective": {
+        "reportTimeKind": "report_publication",
+        "reportedAt": "2026-07-12T07:25:00+10:00",
+        "selectedLayers": {
+          "depthCm": "perisher|2026-07-12|official|6",
+          "reportedAt": "perisher|2026-07-12|official|6",
+          "snow24hCm": "perisher|2026-07-12|official|6",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": 34.1,
+          "depthStatus": "observed_value",
+          "snow24hCm": 15.0,
+          "snow24hStatus": "observed_value",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:53:59.584947+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "perisher|2026-07-12|official|1",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "repair": "verified direct resort report",
+            "snow24hCm": 15.0
+          },
+          "rawPayloadRef": "sqlite:actual_observations/1",
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-07-12T07:25:00+10:00",
+          "scrapedAt": "2026-07-12T09:53:59.584947+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://www.perisher.com.au/media_files/snowreport12.xml",
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 15.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        },
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:54:00.662532+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "perisher|2026-07-12|official|6",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "date": "2026-07-12",
+            "natural_depth": 34.1,
+            "report_time_kind": "report_publication",
+            "reported_at": "2026-07-12T07:25:00+10:00",
+            "snow_24h": 15.0,
+            "snow_7day": 15.0,
+            "source_url": "https://www.perisher.com.au/media_files/snowreport12.xml"
+          },
+          "rawPayloadRef": "sqlite:actual_observations/6",
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-07-12T07:25:00+10:00",
+          "scrapedAt": "2026-07-12T09:54:00.662532+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://www.perisher.com.au/media_files/snowreport12.xml",
+          "values": {
+            "depthCm": 34.1,
+            "depthStatus": "observed_value",
+            "snow24hCm": 15.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-12"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-03|onthesnow|effective-projection",
+          "reportedAt": "thredbo_top|2026-07-03|onthesnow|effective-projection",
+          "snow24hCm": "thredbo_top|2026-07-03|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "thredbo_top|2026-07-03|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "thredbo",
+            "date": "2026-07-03",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/thredbo/2026-07-03",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-03"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-04|onthesnow|effective-projection",
+          "reportedAt": "thredbo_top|2026-07-04|onthesnow|effective-projection",
+          "snow24hCm": "thredbo_top|2026-07-04|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "thredbo_top|2026-07-04|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "thredbo",
+            "date": "2026-07-04",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/thredbo/2026-07-04",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-04"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-05|onthesnow|effective-projection",
+          "reportedAt": "thredbo_top|2026-07-05|onthesnow|effective-projection",
+          "snow24hCm": "thredbo_top|2026-07-05|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 24.0,
+          "snow24hStatus": "observed_value",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "thredbo_top|2026-07-05|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "thredbo",
+            "date": "2026-07-05",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/thredbo/2026-07-05",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 24.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-05"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-06|onthesnow|effective-projection",
+          "reportedAt": "thredbo_top|2026-07-06|onthesnow|effective-projection",
+          "snow24hCm": "thredbo_top|2026-07-06|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "thredbo_top|2026-07-06|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "thredbo",
+            "date": "2026-07-06",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/thredbo/2026-07-06",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-06"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-07|onthesnow|effective-projection",
+          "reportedAt": "thredbo_top|2026-07-07|onthesnow|effective-projection",
+          "snow24hCm": "thredbo_top|2026-07-07|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "thredbo_top|2026-07-07|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "thredbo",
+            "date": "2026-07-07",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/thredbo/2026-07-07",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-07"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-08|onthesnow|effective-projection",
+          "reportedAt": "thredbo_top|2026-07-08|onthesnow|effective-projection",
+          "snow24hCm": "thredbo_top|2026-07-08|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "thredbo_top|2026-07-08|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "thredbo",
+            "date": "2026-07-08",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/thredbo/2026-07-08",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-08"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-09|onthesnow|effective-projection",
+          "reportedAt": "thredbo_top|2026-07-09|onthesnow|effective-projection",
+          "snow24hCm": "thredbo_top|2026-07-09|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "thredbo_top|2026-07-09|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "thredbo",
+            "date": "2026-07-09",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/thredbo/2026-07-09",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-09"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-10|onthesnow|effective-projection",
+          "reportedAt": "thredbo_top|2026-07-10|onthesnow|effective-projection",
+          "snow24hCm": "thredbo_top|2026-07-10|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "thredbo_top|2026-07-10|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "thredbo",
+            "date": "2026-07-10",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/thredbo/2026-07-10",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-10"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": "2026-07-11T08:04:42.000+10:00",
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-11|official|effective-projection",
+          "reportedAt": "thredbo_top|2026-07-11|official|effective-projection",
+          "snow24hCm": "thredbo_top|2026-07-11|official|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "thredbo_top|2026-07-11|official|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "thredbo",
+            "date": "2026-07-11",
+            "effectiveRecord": true,
+            "source": "official"
+          },
+          "rawPayloadRef": "sqlite:actuals/thredbo/2026-07-11",
+          "reportTimeKind": "unknown",
+          "reportedAt": "2026-07-11T08:04:42.000+10:00",
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-11"
+    },
+    {
+      "canonicalResortId": "thredbo_top",
+      "effective": {
+        "reportTimeKind": "report_publication",
+        "reportedAt": "2026-07-12T06:30:00+10:00",
+        "selectedLayers": {
+          "depthCm": "thredbo_top|2026-07-12|official|7",
+          "reportedAt": "thredbo_top|2026-07-12|official|7",
+          "snow24hCm": "thredbo_top|2026-07-12|official|7",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": 35.4,
+          "depthStatus": "observed_value",
+          "snow24hCm": 10.0,
+          "snow24hStatus": "observed_value",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:53:59.585906+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "thredbo_top|2026-07-12|official|2",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "repair": "verified direct resort report",
+            "snow24hCm": 10.0
+          },
+          "rawPayloadRef": "sqlite:actual_observations/2",
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-07-12T06:30:00+10:00",
+          "scrapedAt": "2026-07-12T09:53:59.585906+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://www.thredbo.com.au/weather/snow-report/",
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 10.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        },
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:54:00.871681+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "thredbo_top|2026-07-12|official|7",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "data_url": "https://www.thredbo.com.au/weather/snow-report/",
+            "date": "2026-07-12",
+            "natural_depth": 35.4,
+            "report_time_kind": "report_publication",
+            "reported_at": "2026-07-12T06:30:00+10:00",
+            "snow_24h": 10.0,
+            "snow_7day": 0.0,
+            "source_url": "https://www.thredbo.com.au/weather/weather-report/",
+            "xml_updated_at": "2026-07-12T06:46:19.000+10:00"
+          },
+          "rawPayloadRef": "sqlite:actual_observations/7",
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-07-12T06:30:00+10:00",
+          "scrapedAt": "2026-07-12T09:54:00.871681+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://www.thredbo.com.au/weather/weather-report/",
+          "values": {
+            "depthCm": 35.4,
+            "depthStatus": "observed_value",
+            "snow24hCm": 10.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-12"
+    },
+    {
+      "canonicalResortId": "hotham",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "hotham|2026-07-10|official|effective-projection",
+          "reportedAt": "hotham|2026-07-10|official|effective-projection",
+          "snow24hCm": "hotham|2026-07-10|official|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "hotham|2026-07-10|official|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "hotham",
+            "date": "2026-07-10",
+            "effectiveRecord": true,
+            "source": "official"
+          },
+          "rawPayloadRef": "sqlite:actuals/hotham/2026-07-10",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-10"
+    },
+    {
+      "canonicalResortId": "hotham",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": "2026-07-11T09:45:00+10:00",
+        "selectedLayers": {
+          "depthCm": "hotham|2026-07-11|official|effective-projection",
+          "reportedAt": "hotham|2026-07-11|official|effective-projection",
+          "snow24hCm": "hotham|2026-07-11|official|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "hotham|2026-07-11|official|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "hotham",
+            "date": "2026-07-11",
+            "effectiveRecord": true,
+            "source": "official"
+          },
+          "rawPayloadRef": "sqlite:actuals/hotham/2026-07-11",
+          "reportTimeKind": "unknown",
+          "reportedAt": "2026-07-11T09:45:00+10:00",
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-11"
+    },
+    {
+      "canonicalResortId": "hotham",
+      "effective": {
+        "reportTimeKind": "report_publication",
+        "reportedAt": "2026-07-12T07:33:19+10:00",
+        "selectedLayers": {
+          "depthCm": "hotham|2026-07-12|official|8",
+          "reportedAt": "hotham|2026-07-12|official|8",
+          "snow24hCm": "hotham|2026-07-12|official|8",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": 45.0,
+          "depthStatus": "observed_value",
+          "snow24hCm": 17.0,
+          "snow24hStatus": "observed_value",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:53:59.586295+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "hotham|2026-07-12|official|3",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "repair": "verified direct resort report",
+            "snow24hCm": 17.0
+          },
+          "rawPayloadRef": "sqlite:actual_observations/3",
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-07-12T07:33:00+10:00",
+          "scrapedAt": "2026-07-12T09:53:59.586295+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://snowreport.mthotham.com.au/resources/SnowReport.xml",
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 17.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        },
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:54:00.951175+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "hotham|2026-07-12|official|8",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "date": "2026-07-12",
+            "natural_depth": 45.0,
+            "report_time_kind": "report_publication",
+            "reported_at": "2026-07-12T07:33:19+10:00",
+            "snow_24h": 17.0,
+            "snow_7day": 17.0,
+            "source_url": "https://snowreport.mthotham.com.au/resources/SnowReport.xml"
+          },
+          "rawPayloadRef": "sqlite:actual_observations/8",
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-07-12T07:33:19+10:00",
+          "scrapedAt": "2026-07-12T09:54:00.951175+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://snowreport.mthotham.com.au/resources/SnowReport.xml",
+          "values": {
+            "depthCm": 45.0,
+            "depthStatus": "observed_value",
+            "snow24hCm": 17.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-12"
+    },
+    {
+      "canonicalResortId": "falls",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "falls|2026-07-10|official|effective-projection",
+          "reportedAt": "falls|2026-07-10|official|effective-projection",
+          "snow24hCm": "falls|2026-07-10|official|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "falls|2026-07-10|official|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "fallscreek",
+            "date": "2026-07-10",
+            "effectiveRecord": true,
+            "source": "official"
+          },
+          "rawPayloadRef": "sqlite:actuals/fallscreek/2026-07-10",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-10"
+    },
+    {
+      "canonicalResortId": "falls",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": "2026-07-11T06:15:00+10:00",
+        "selectedLayers": {
+          "depthCm": "falls|2026-07-11|official|effective-projection",
+          "reportedAt": "falls|2026-07-11|official|effective-projection",
+          "snow24hCm": "falls|2026-07-11|official|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "falls|2026-07-11|official|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "fallscreek",
+            "date": "2026-07-11",
+            "effectiveRecord": true,
+            "source": "official"
+          },
+          "rawPayloadRef": "sqlite:actuals/fallscreek/2026-07-11",
+          "reportTimeKind": "unknown",
+          "reportedAt": "2026-07-11T06:15:00+10:00",
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-11"
+    },
+    {
+      "canonicalResortId": "falls",
+      "effective": {
+        "reportTimeKind": "patrol_observation",
+        "reportedAt": "2026-07-12T06:15:00+10:00",
+        "selectedLayers": {
+          "depthCm": "falls|2026-07-12|official|9",
+          "reportedAt": "falls|2026-07-12|official|9",
+          "snow24hCm": "falls|2026-07-12|official|9",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": 43.0,
+          "depthStatus": "observed_value",
+          "snow24hCm": 14.0,
+          "snow24hStatus": "observed_value",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:53:59.586643+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "falls|2026-07-12|official|4",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "repair": "verified direct resort report",
+            "snow24hCm": 14.0
+          },
+          "rawPayloadRef": "sqlite:actual_observations/4",
+          "reportTimeKind": "patrol_observation",
+          "reportedAt": "2026-07-12T06:15:00+10:00",
+          "scrapedAt": "2026-07-12T09:53:59.586643+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json",
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 14.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        },
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:54:01.016714+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "falls|2026-07-12|official|9",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "date": "2026-07-12",
+            "natural_depth": 43.0,
+            "report_time_kind": "patrol_observation",
+            "reported_at": "2026-07-12T06:15:00+10:00",
+            "snow_24h": 14.0,
+            "snow_7day": null,
+            "source_url": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json"
+          },
+          "rawPayloadRef": "sqlite:actual_observations/9",
+          "reportTimeKind": "patrol_observation",
+          "reportedAt": "2026-07-12T06:15:00+10:00",
+          "scrapedAt": "2026-07-12T09:54:01.016714+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json",
+          "values": {
+            "depthCm": 43.0,
+            "depthStatus": "observed_value",
+            "snow24hCm": 14.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-12"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-03|onthesnow|effective-projection",
+          "reportedAt": "buller|2026-07-03|onthesnow|effective-projection",
+          "snow24hCm": "buller|2026-07-03|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "buller|2026-07-03|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "buller",
+            "date": "2026-07-03",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/buller/2026-07-03",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-03"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-04|onthesnow|effective-projection",
+          "reportedAt": "buller|2026-07-04|onthesnow|effective-projection",
+          "snow24hCm": "buller|2026-07-04|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "buller|2026-07-04|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "buller",
+            "date": "2026-07-04",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/buller/2026-07-04",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-04"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-05|onthesnow|effective-projection",
+          "reportedAt": "buller|2026-07-05|onthesnow|effective-projection",
+          "snow24hCm": "buller|2026-07-05|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "buller|2026-07-05|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "buller",
+            "date": "2026-07-05",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/buller/2026-07-05",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-05"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-06|onthesnow|effective-projection",
+          "reportedAt": "buller|2026-07-06|onthesnow|effective-projection",
+          "snow24hCm": "buller|2026-07-06|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "buller|2026-07-06|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "buller",
+            "date": "2026-07-06",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/buller/2026-07-06",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-06"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-07|onthesnow|effective-projection",
+          "reportedAt": "buller|2026-07-07|onthesnow|effective-projection",
+          "snow24hCm": "buller|2026-07-07|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "buller|2026-07-07|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "buller",
+            "date": "2026-07-07",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/buller/2026-07-07",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-07"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-08|onthesnow|effective-projection",
+          "reportedAt": "buller|2026-07-08|onthesnow|effective-projection",
+          "snow24hCm": "buller|2026-07-08|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "buller|2026-07-08|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "buller",
+            "date": "2026-07-08",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/buller/2026-07-08",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-08"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-09|onthesnow|effective-projection",
+          "reportedAt": "buller|2026-07-09|onthesnow|effective-projection",
+          "snow24hCm": "buller|2026-07-09|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "buller|2026-07-09|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "buller",
+            "date": "2026-07-09",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/buller/2026-07-09",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-09"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": null,
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-10|onthesnow|effective-projection",
+          "reportedAt": "buller|2026-07-10|onthesnow|effective-projection",
+          "snow24hCm": "buller|2026-07-10|onthesnow|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective onthesnow row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "buller|2026-07-10|onthesnow|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "buller",
+            "date": "2026-07-10",
+            "effectiveRecord": true,
+            "source": "onthesnow"
+          },
+          "rawPayloadRef": "sqlite:actuals/buller/2026-07-10",
+          "reportTimeKind": "unknown",
+          "reportedAt": null,
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "fallback",
+          "sourceName": "onthesnow",
+          "sourceRank": 100,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-10"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "unknown",
+        "reportedAt": "2026-07-11T19:10:00+10:00",
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-11|official|effective-projection",
+          "reportedAt": "buller|2026-07-11|official|effective-projection",
+          "snow24hCm": "buller|2026-07-11|official|effective-projection",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": null,
+          "depthStatus": "not_provided",
+          "snow24hCm": 0.0,
+          "snow24hStatus": "observed_zero",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "stale",
+          "freshness": {
+            "assessedAt": "2026-07-12T11:40:03.829596+00:00",
+            "reason": "Legacy effective record has no append-only source observation.",
+            "status": "stale"
+          },
+          "layerId": "buller|2026-07-11|official|effective-projection",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "collectorResortId": "buller",
+            "date": "2026-07-11",
+            "effectiveRecord": true,
+            "source": "official"
+          },
+          "rawPayloadRef": "sqlite:actuals/buller/2026-07-11",
+          "reportTimeKind": "unknown",
+          "reportedAt": "2026-07-11T19:10:00+10:00",
+          "scrapedAt": "2026-07-12T11:40:03.829596+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": null,
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 0.0,
+            "snow24hStatus": "observed_zero",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-11"
+    },
+    {
+      "canonicalResortId": "buller",
+      "effective": {
+        "reportTimeKind": "documented_measurement",
+        "reportedAt": "2026-07-12T07:15:00+10:00",
+        "selectedLayers": {
+          "depthCm": "buller|2026-07-12|official|10",
+          "reportedAt": "buller|2026-07-12|official|10",
+          "snow24hCm": "buller|2026-07-12|official|10",
+          "temperatureC": null
+        },
+        "selectionMode": "single_layer",
+        "selectionReason": "Effective official row selected using store source precedence.",
+        "values": {
+          "depthCm": 26.0,
+          "depthStatus": "observed_value",
+          "snow24hCm": 14.0,
+          "snow24hStatus": "observed_value",
+          "temperatureC": null
+        }
+      },
+      "layers": [
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:53:59.586996+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "buller|2026-07-12|official|5",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "repair": "verified direct resort report",
+            "snow24hCm": 14.0
+          },
+          "rawPayloadRef": "sqlite:actual_observations/5",
+          "reportTimeKind": "documented_measurement",
+          "reportedAt": "2026-07-12T07:15:00+10:00",
+          "scrapedAt": "2026-07-12T09:53:59.586996+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://www.mtbuller.com.au/winter/snow-weather/snow-report",
+          "values": {
+            "depthCm": null,
+            "depthStatus": "not_provided",
+            "snow24hCm": 14.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        },
+        {
+          "collectionStatus": "success",
+          "freshness": {
+            "assessedAt": "2026-07-12T09:54:01.579700+00:00",
+            "reason": "Freshness cannot be inferred solely from collection time.",
+            "status": "unknown"
+          },
+          "layerId": "buller|2026-07-12|official|10",
+          "manualProtection": {
+            "fields": [],
+            "protected": false,
+            "reason": null
+          },
+          "parserErrors": [],
+          "rawPayload": {
+            "data_url": "https://api.mtbuller.com.au/api/weather/widget",
+            "date": "2026-07-12",
+            "natural_depth": 26.0,
+            "report_time_kind": "documented_measurement",
+            "reported_at": "2026-07-12T07:15:00+10:00",
+            "snow_24h": 14.0,
+            "snow_7day": null,
+            "source_url": "https://www.mtbuller.com.au/winter/snow-weather/snow-report",
+            "widget_updated_at": "2026-07-12T19:40:00+10:00"
+          },
+          "rawPayloadRef": "sqlite:actual_observations/10",
+          "reportTimeKind": "documented_measurement",
+          "reportedAt": "2026-07-12T07:15:00+10:00",
+          "scrapedAt": "2026-07-12T09:54:01.579700+00:00",
+          "sourceKind": "official_resort",
+          "sourceName": "official",
+          "sourceRank": 300,
+          "sourceUrl": "https://www.mtbuller.com.au/winter/snow-weather/snow-report",
+          "values": {
+            "depthCm": 26.0,
+            "depthStatus": "observed_value",
+            "snow24hCm": 14.0,
+            "snow24hStatus": "observed_value",
+            "temperatureC": null
+          }
+        }
+      ],
+      "reportDate": "2026-07-12"
+    }
+  ],
+  "schemaVersion": "alpine.official-report-export.v1"
+}

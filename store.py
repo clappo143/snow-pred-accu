@@ -9,9 +9,13 @@ the classic night-before call. connect() migrates a v1 database in place
 Schema v3 (2026-07-11): adds nullable `reported_at` to actuals — the
 timestamp the source says the report was issued (≈ when the measurement
 was taken), ISO 8601 where the source exposes one. Existing rows keep
-NULL. save_actual is now rank-based: official resort report > snowatch
-homepage proxy > OnTheSnow > manual — a lagging proxy can never overwrite
-an official figure, regardless of collection order.
+NULL. save_actual is rank-based so lagging proxies cannot overwrite official
+figures, regardless of collection order.
+
+Schema v4 (2026-07-12) adds an append-only `actual_observations` provenance
+ledger and extends the effective `actuals` row with timestamp semantics,
+source URL, depth/7-day context and update time. Existing readers remain
+compatible. Manual actuals are protected corrections and outrank automation.
 """
 from __future__ import annotations
 
@@ -46,13 +50,27 @@ CREATE TABLE IF NOT EXISTS actuals (
     snow_cm REAL NOT NULL,
     source  TEXT NOT NULL,
     reported_at TEXT,            -- ISO 8601 report-issued stamp, if the source has one
+    report_time_kind TEXT,
+    source_url TEXT,
+    natural_depth REAL,
+    snow_7day REAL,
+    updated_at TEXT,
     PRIMARY KEY (resort, date)
 );
+CREATE TABLE IF NOT EXISTS actual_observations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    resort TEXT NOT NULL, date TEXT NOT NULL, snow_cm REAL NOT NULL,
+    source TEXT NOT NULL, reported_at TEXT, report_time_kind TEXT,
+    source_url TEXT, natural_depth REAL, snow_7day REAL,
+    collected_at TEXT NOT NULL, raw_json TEXT, notes TEXT
+);
+CREATE INDEX IF NOT EXISTS actual_observations_resort_date
+    ON actual_observations(resort, date);
 """
 
 # Actuals-source precedence: higher rank wins; equal rank may refresh its
 # own row (e.g. a later official scrape correcting the morning figure).
-SOURCE_RANK = {"manual": 0, "onthesnow": 1, "snowatch": 2, "official": 3}
+SOURCE_RANK = {"onthesnow": 1, "snowatch": 2, "official": 3, "manual": 4}
 
 
 def _columns(con: sqlite3.Connection, table: str) -> list[str]:
@@ -103,12 +121,26 @@ def _migrate_v3(con: sqlite3.Connection) -> None:
         print("[ok] migrated actuals to schema v3 (reported_at column)")
 
 
+def _migrate_v4(con: sqlite3.Connection) -> None:
+    """Add v4 columns without rebuilding or dropping the effective table."""
+    cols = set(_columns(con, "actuals"))
+    for name, sql_type in {
+        "report_time_kind": "TEXT", "source_url": "TEXT",
+        "natural_depth": "REAL", "snow_7day": "REAL", "updated_at": "TEXT",
+    }.items():
+        if cols and name not in cols:
+            con.execute(f"ALTER TABLE actuals ADD COLUMN {name} {sql_type}")
+    con.commit()
+
+
 def connect() -> sqlite3.Connection:
     DB_PATH.parent.mkdir(exist_ok=True)
     con = sqlite3.connect(DB_PATH)
     _migrate_v1(con)
     con.executescript(SCHEMA)
     _migrate_v3(con)
+    _migrate_v4(con)
+    con.executescript(SCHEMA)
     return con
 
 
@@ -158,11 +190,30 @@ def save_actual(
     cm: float,
     source: str,
     reported_at: str | None = None,
+    report_time_kind: str | None = None,
+    source_url: str | None = None,
+    natural_depth: float | None = None,
+    snow_7day: float | None = None,
+    raw: dict | list | str | None = None,
+    notes: str | None = None,
+    collected_at: str | None = None,
 ) -> None:
     """Rank-based upsert (see SOURCE_RANK): a source only replaces an
     existing row of equal or lower rank, so a lagging proxy (snowatch,
     onthesnow) can never overwrite an official-report figure, while
     an equal-rank re-collection may refresh its own row."""
+    import json
+
+    collected_at = collected_at or dt.datetime.now(dt.timezone.utc).isoformat()
+    raw_json = json.dumps(raw, default=str, sort_keys=True) if raw is not None else None
+    con.execute(
+        "INSERT INTO actual_observations "
+        "(resort,date,snow_cm,source,reported_at,report_time_kind,source_url,"
+        "natural_depth,snow_7day,collected_at,raw_json,notes) "
+        "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+        (resort, date.isoformat(), cm, source, reported_at, report_time_kind,
+         source_url, natural_depth, snow_7day, collected_at, raw_json, notes),
+    )
     rank = SOURCE_RANK.get(source, 0)
     row = con.execute(
         "SELECT source FROM actuals WHERE resort=? AND date=?",
@@ -170,15 +221,19 @@ def save_actual(
     ).fetchone()
     if row is None:
         con.execute(
-            "INSERT INTO actuals (resort, date, snow_cm, source, reported_at)"
-            " VALUES (?,?,?,?,?)",
-            (resort, date.isoformat(), cm, source, reported_at),
+            "INSERT INTO actuals (resort,date,snow_cm,source,reported_at,"
+            "report_time_kind,source_url,natural_depth,snow_7day,updated_at) "
+            "VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (resort, date.isoformat(), cm, source, reported_at,
+             report_time_kind, source_url, natural_depth, snow_7day, collected_at),
         )
     elif rank >= SOURCE_RANK.get(row[0], 0):
         con.execute(
-            "UPDATE actuals SET snow_cm=?, source=?, reported_at=?"
+            "UPDATE actuals SET snow_cm=?,source=?,reported_at=?,report_time_kind=?,"
+            "source_url=?,natural_depth=?,snow_7day=?,updated_at=?"
             " WHERE resort=? AND date=?",
-            (cm, source, reported_at, resort, date.isoformat()),
+            (cm, source, reported_at, report_time_kind, source_url,
+             natural_depth, snow_7day, collected_at, resort, date.isoformat()),
         )
     con.commit()
 
@@ -194,8 +249,7 @@ def merge_manual(con: sqlite3.Connection) -> tuple[int, int]:
 
     (v1 bundles — flat actuals, no resort keys — are read as Perisher.)
 
-    Manual rows never override feed data (INSERT OR IGNORE) — they only fill
-    gaps, e.g. historical predictions transcribed from the forum. A manual
+    Manual actuals are protected corrections and outrank automated feeds. A manual
     forecast is treated as the classic night-before call: issued_date =
     target_date − 1, run 'pm', so it slots into the existing scoring join.
     Manual actual dates use the same convention as the feed: the date is the
@@ -214,11 +268,16 @@ def merge_manual(con: sqlite3.Connection) -> tuple[int, int]:
     na = 0
     for resort, days in actuals.items():
         for date, cm in days.items():
-            na += con.execute(
-                "INSERT OR IGNORE INTO actuals (resort, date, snow_cm, source)"
-                " VALUES (?,?,?,?)",
-                (resort, date, float(cm), "manual"),
-            ).rowcount
+            cm = float(cm)
+            existing = con.execute(
+                "SELECT snow_cm,source FROM actuals WHERE resort=? AND date=?",
+                (resort, date),
+            ).fetchone()
+            if existing == (cm, "manual"):
+                continue
+            save_actual(con, resort, dt.date.fromisoformat(date), float(cm),
+                        "manual", notes="data/manual.json protected correction")
+            na += 1
 
     nf = 0
     for row in bundle.get("forecasts") or []:

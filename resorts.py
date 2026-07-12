@@ -12,18 +12,16 @@ resort is tabulated in docs/reference-points.md — all sit within ~±150 m of
 `alt` except Jane's Weather at Thredbo (~1367 m, village).
 
 Ground truth ("official") per resort:
-  - perisher: Vail-platform HTML snow report, parsed by
+  - perisher: resort-owned snowreport12.xml, parsed by
     collectors/actuals_official.py
-  - hotham: the conditions/snow-reports page's "Natural snow fall and
-    depth" section, which (unlike the Vail-style reports page) carries an
-    "Issued:" timestamp for the snow report itself
+  - hotham: resort-owned SnowReport.xml with second-precision update time
   - fallscreek: the WordPress JSON feed behind fallscreek.com.au/snow-report
     (ski-patrol fresh-snow figure, stamped ~6:15am)
   - thredbo: thredbo.com.au/weather/snow-report/ serves a raw LivePass
     snowReport XML document (snow24Hours + full ISO `updated` stamp)
-  - buller: api.mtbuller.com.au/api/weather/widget — the JSON feed behind
-    the (otherwise JS-rendered) mtbuller.com.au snow report page
-    (snow_report.snow_last_24_hours + ISO last_updated)
+  - buller: the API widget supplies snow_report.snow_last_24_hours; the
+    public snow-report page independently supplies the Ski Patrol update
+    time. The widget's last_updated is not a snow-report timestamp.
 
 Every resort now has an official source (re-probed 2026-07-11). The
 snowatch.com.au homepage 24hr table is the mid-rank proxy, and OnTheSnow's
@@ -48,7 +46,7 @@ class Resort:
     mountainwatch_slug: str
     snowforecast_slug: str
     onthesnow_slug: str
-    official_kind: str | None = None  # "vail" | "hotham_html" | "falls_json" | "thredbo_xml" | "buller_json" | None
+    official_kind: str | None = None  # parser key in actuals_official._COLLECTORS
     official_url: str | None = None
 
 
@@ -60,8 +58,8 @@ RESORTS: dict[str, Resort] = {r.id: r for r in [
         meteye_slug="nsw/perisher-valley",
         snowatch_slug="perisher", mountainwatch_slug="perisher",
         snowforecast_slug="Perisher-Blue", onthesnow_slug="perisher",
-        official_kind="vail",
-        official_url="https://www.perisher.com.au/reports-cams/reports/snow-report",
+        official_kind="perisher_xml",
+        official_url="https://www.perisher.com.au/media_files/snowreport12.xml",
     ),
     Resort(
         id="thredbo", name="Thredbo", state="NSW",
@@ -88,8 +86,8 @@ RESORTS: dict[str, Resort] = {r.id: r for r in [
         meteye_slug="vic/mount-hotham",
         snowatch_slug="hotham", mountainwatch_slug="mt-hotham",
         snowforecast_slug="Mount-Hotham", onthesnow_slug="mt-hotham",
-        official_kind="hotham_html",
-        official_url="https://www.mthotham.com.au/mountain/conditions/snow-reports",
+        official_kind="hotham_xml",
+        official_url="https://snowreport.mthotham.com.au/resources/SnowReport.xml",
     ),
     Resort(
         id="fallscreek", name="Falls Creek", state="VIC",
@@ -99,7 +97,7 @@ RESORTS: dict[str, Resort] = {r.id: r for r in [
         snowatch_slug="falls-creek", mountainwatch_slug="falls-creek",
         snowforecast_slug="Falls-Creek", onthesnow_slug="falls-creek-alpine-resort",
         official_kind="falls_json",
-        official_url="https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport_2021.json",
+        official_url="https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json",
     ),
     Resort(
         id="buller", name="Mt Buller", state="VIC",
