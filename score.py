@@ -28,6 +28,14 @@ import sqlite3
 FLOOR_CM = 2.0
 HEADLINE = ("pm", 1)  # the classic night-before call
 
+# (source, resort) pairs excluded from POOLED (multi-resort) scores only.
+# The ADFD snow weather-type grid is inconsistently painted at the Vic
+# resorts — it can flag Rain at -1C while BOM's own text says "Snow
+# showers", zeroing out real events (see collectors/bom_meteye.py). The
+# rows stay in the DB and in per-resort views, where the discrepancy is
+# itself informative.
+POOLED_EXCLUDE = {("bom_meteye", "hotham"), ("bom_meteye", "buller")}
+
 
 def lead_hours(run: str, lead: int) -> int:
     """Nominal hours between the snapshot and the start of the scored
@@ -41,8 +49,15 @@ def pairs(
     """(source, run, lead, target_date, forecast_cm, actual_cm) for every
     scoreable forecast row, at every lead. `resort` may be a single id or a
     list — a list pools resorts, so the same skill formula scores a source
-    across a state or the whole country (each resort-day is one sample)."""
+    across a state or the whole country (each resort-day is one sample).
+    Pooled queries skip POOLED_EXCLUDE (source, resort) pairs."""
     rids = [resort] if isinstance(resort, str) else list(resort)
+    exclude = ""
+    params: list[str] = list(rids)
+    if len(rids) > 1:
+        for src, rid in sorted(POOLED_EXCLUDE):
+            exclude += " AND NOT (f.source = ? AND f.resort = ?)"
+            params += [src, rid]
     return con.execute(
         f"""
         SELECT f.source, f.run,
@@ -54,10 +69,10 @@ def pairs(
                       AND a.date = date(f.target_date, '+1 day')
         WHERE f.resort IN ({','.join('?' * len(rids))})
           AND lead >= 0
-          AND NOT (f.run = 'pm' AND lead = 0)
+          AND NOT (f.run = 'pm' AND lead = 0){exclude}
         ORDER BY f.target_date
         """,
-        rids,
+        params,
     ).fetchall()
 
 

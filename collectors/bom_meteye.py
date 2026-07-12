@@ -23,6 +23,19 @@ part ways.
 (v1 summed the blocks' 50th-percentile amounts directly, but medians
 don't add — showery days sum to ~0 even when the daily median is 10mm+,
 collapsing every forecast beyond ~48h. Caught by James on day one.)
+
+Caveat (probed 2026-07-12, mid-event): the ADFD snow weather-type grid is
+inconsistently painted at the Victorian resorts. Hotham's cell read
+Snow=No/Rain=Yes at -1°C and 100% humidity while BOM's own text said
+"Snow showers"; at Buller no cell within 6km was flagged despite the same
+text. Neighbouring-cell probes (every ~6km cell has its own
+/places/vic/{code}/ page, code via meteye/forecast.php?lat=..&lon=..)
+found no summit-representative alternative — the only flagged cell near
+Hotham was a *warmer* one, and Buller is an isolated peak with none. Kept
+as-is deliberately: this series measures MetEye-as-published, and marginal
+days elsewhere may still be revealing. But because the Vic flags can zero
+out real events, score.POOLED_EXCLUDE drops hotham/buller from this
+source's pooled (multi-resort) accuracy scores.
 """
 from __future__ import annotations
 
