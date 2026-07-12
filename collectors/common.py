@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import time
 from zoneinfo import ZoneInfo
 
 import requests
@@ -25,7 +26,17 @@ def run_now() -> str:
     return "am" if dt.datetime.now(TZ).hour < 12 else "pm"
 
 
-def get(url: str, ua: str = BROWSER_UA, **kw) -> requests.Response:
-    r = requests.get(url, headers={"User-Agent": ua}, timeout=30, **kw)
-    r.raise_for_status()
-    return r
+def get(url: str, ua: str = BROWSER_UA, retries: int = 2, **kw) -> requests.Response:
+    """GET with a couple of short-backoff retries on connect/read timeouts —
+    api.open-meteo.com in particular has been flaky from GitHub-hosted
+    runners (seen 2026-07-11/12), timing out a single collector without
+    retrying it."""
+    for attempt in range(retries + 1):
+        try:
+            r = requests.get(url, headers={"User-Agent": ua}, timeout=30, **kw)
+            r.raise_for_status()
+            return r
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            if attempt == retries:
+                raise
+            time.sleep(2 * (attempt + 1))
