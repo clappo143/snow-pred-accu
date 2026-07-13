@@ -59,11 +59,19 @@ def run_now() -> str:
     return "am" if dt.datetime.now(TZ).hour < 12 else "pm"
 
 
+# Status codes worth a retry: 429 (rate-limited) plus any 5xx. All are
+# transient — a genuine bad request/slug is a 4xx and should fail fast.
+RETRY_STATUS = frozenset({429, 500, 502, 503, 504})
+
+
 def get(url: str, ua: str = BROWSER_UA, retries: int = 2, **kw) -> requests.Response:
-    """GET with a couple of short-backoff retries on connect/read timeouts —
+    """GET with a couple of short-backoff retries on transient failures —
     api.open-meteo.com in particular has been flaky from GitHub-hosted
-    runners (seen 2026-07-11/12), timing out a single collector without
-    retrying it."""
+    runners (timeouts seen 2026-07-11/12; and hitting it once per resort
+    back-to-back can draw a 429, seen 2026-07-13), failing a single
+    collector without retrying it. We retry connect/read timeouts and the
+    transient HTTP statuses in RETRY_STATUS, honouring a Retry-After header
+    when the server sends one."""
     for attempt in range(retries + 1):
         try:
             r = requests.get(url, headers={"User-Agent": ua}, timeout=30, **kw)
@@ -73,3 +81,11 @@ def get(url: str, ua: str = BROWSER_UA, retries: int = 2, **kw) -> requests.Resp
             if attempt == retries:
                 raise
             time.sleep(2 * (attempt + 1))
+        except requests.exceptions.HTTPError as e:
+            resp = e.response
+            if attempt == retries or resp is None or resp.status_code not in RETRY_STATUS:
+                raise
+            retry_after = resp.headers.get("Retry-After")
+            delay = float(retry_after) if retry_after and retry_after.isdigit() \
+                else 2 * (attempt + 1)
+            time.sleep(delay)
