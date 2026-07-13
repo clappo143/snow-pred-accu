@@ -348,6 +348,8 @@ h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.11em;
 .days { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0;
   align-items: stretch; height: 200px; padding-top: 10px;
   border-bottom: 1px solid var(--line); }
+/* extra headroom when brand caps sit above the bars */
+.days.withmarks { height: 218px; padding-top: 34px; }
 .day { display: flex; padding: 0 9px; }
 .day + .day { border-left: 1px dashed var(--line); }
 .bars { flex: 1; display: flex; align-items: flex-end; gap: 2px; }
@@ -357,6 +359,12 @@ h2 { font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.11em;
 .bar em { position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
   font: 600 10px/1 "Archivo", sans-serif; font-style: normal; color: var(--muted);
   font-variant-numeric: tabular-nums; }
+.bar .barmark { position: absolute; top: -32px; left: 50%;
+  transform: translateX(-50%); width: 15px; height: 15px; border-radius: 4px;
+  overflow: hidden; background: #fff; border: 1px solid var(--line); padding: 1px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); z-index: 1; }
+.bar .barmark img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.bar .barmark i { display: block; width: 100%; height: 100%; border-radius: 50%; }
 .daylabels { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
 .daylabel { text-align: center; padding-top: 6px; color: var(--muted);
   font-size: 11.5px; white-space: nowrap; }
@@ -426,21 +434,27 @@ footer { color: var(--muted); font-size: 12px; margin-top: 12px;
 .acc-rest .mark { width: 14px; height: 14px; border-radius: 3px; }
 .acc-rest .dot { width: 7px; height: 7px; }
 .acc-rest b { font-weight: 650; color: var(--ink); }
-/* mini strip on group resort cards */
-.rcard .ministrip { margin-top: 5px; position: relative; height: 18px; }
-.ministrip-track { position: relative; height: 100%; }
+/* mini strip on group resort cards — badges stack onto lanes so close
+   totals stay legible rather than piling up on one line */
+.rcard .ministrip { margin-top: 9px; position: relative; }
+.ministrip-scale { display: flex; justify-content: space-between; margin-top: 4px;
+  font-size: 9.5px; font-weight: 700; color: var(--muted);
+  font-variant-numeric: tabular-nums; }
+.ministrip-track { position: absolute; left: 0; right: 0; top: 0; height: 20px; }
 .ministrip-track::before { content: ""; position: absolute; left: 0; right: 0;
-  top: 50%; height: 1.5px; border-radius: 1px; transform: translateY(-50%);
+  top: 10px; height: 1.5px; border-radius: 1px; transform: translateY(-50%);
   background: var(--line); }
-.ministrip-med { position: absolute; top: 0; bottom: 0; width: 2px;
+.ministrip-med { position: absolute; top: 1px; height: 18px; width: 2px;
   background: var(--accent); transform: translateX(-50%); border-radius: 1px; }
-.ministrip-badge { position: absolute; top: 50%; width: 14px; height: 14px;
-  transform: translate(-50%, -50%); border-radius: 3px; overflow: hidden;
-  background: #fff; border: 1px solid var(--line); padding: 1px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.18); }
+.ministrip-med::before { content: ""; position: absolute; top: -4px; left: 50%;
+  transform: translateX(-50%); border: 4px solid transparent;
+  border-top-color: var(--accent); }
+.ministrip-badge { position: absolute; width: 18px; height: 18px;
+  transform: translate(-50%, -50%); border-radius: 4px; overflow: hidden;
+  background: #fff; border: 1px solid var(--line); padding: 1.5px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
 .ministrip-badge img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.ministrip-dot { position: absolute; top: 50%; width: 7px; height: 7px;
-  transform: translate(-50%, -50%); border-radius: 50%; }
+.ministrip-badge i { display: block; width: 100%; height: 100%; border-radius: 50%; }
 /* forecast vs actuals section */
 .fva-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
   margin-bottom: 12px; }
@@ -522,6 +536,7 @@ const state = {
   disabled: JSON.parse(localStorage.getItem("disabledSources") || "[]"),
   weights: JSON.parse(localStorage.getItem("sourceWeights") || "{}"),
   showAdv: localStorage.getItem("showAdv") === "1",
+  barMarks: localStorage.getItem("barMarks") === "1",  // logos on daily bars
   manual: JSON.parse(localStorage.getItem("manualActuals") || "{}"),
   mforecasts: JSON.parse(localStorage.getItem("manualForecasts") || "[]"),
 };
@@ -967,16 +982,39 @@ function miniStripHtml(rid) {
   const med = ens ? days.reduce((t, d) => t + (ens[d] || 0), 0) : 0;
   const max = Math.max(1, med, ...tot.map((r) => r.t)) * 1.08;
   const xOf = (v) => 100 * v / max;
-  const badges = tot.sort((a, b) => a.t - b.t).map((r) => {
-    const x = xOf(r.t).toFixed(1);
-    return r.s.logo
-      ? `<span class="ministrip-badge" style="left:${x}%"><img src="${r.s.logo}" alt=""></span>`
-      : `<span class="ministrip-dot" style="left:${x}%;background:${r.s.color}"></span>`;
+  // stack badges onto lanes (like the hero strip) — a badge whose x is within
+  // ~9% of one already placed in a lane drops to the next lane down
+  const lanes = [];
+  const placed = tot.slice().sort((a, b) => a.t - b.t).map((r) => {
+    const x = xOf(r.t);
+    let lane = 0;
+    while (lane < lanes.length && x - lanes[lane] < 9) lane++;
+    lanes[lane] = x;
+    return { ...r, x, lane };
+  });
+  const nLanes = Math.max(1, lanes.length);
+  const badges = placed.map((r) => {
+    const inner = r.s.logo
+      ? `<img src="${r.s.logo}" alt="">`
+      : `<i style="background:${r.s.color}"></i>`;
+    return `<span class="ministrip-badge"
+      style="left:${r.x.toFixed(1)}%;top:${10 + r.lane * 19}px"
+      ${tipRef(`<h4>${r.s.name}</h4>
+        <div class="trow">7-day total<b>${r.t.toFixed(0)}cm</b></div>`)}>${inner}</span>`;
   }).join("");
   const mx = xOf(med).toFixed(1);
-  return `<div class="ministrip"><div class="ministrip-track">
-    <span class="ministrip-med" style="left:${mx}%"></span>${badges}
-  </div></div>`;
+  const badgesH = 20 + (nLanes - 1) * 19;
+  const h = badgesH + 13;
+  return `<div class="ministrip" style="height:${h}px">
+    <div class="ministrip-track">
+      <span class="ministrip-med" style="left:${mx}%"
+        ${tipRef(`<div class="trow">ensemble median<b>${med.toFixed(0)}cm</b></div>`)}></span>
+      ${badges}
+    </div>
+    <div class="ministrip-scale" style="position:absolute;left:0;right:0;top:${badgesH}px">
+      <span>0cm</span>
+      <span style="color:var(--accent)">median ${med.toFixed(0)}cm</span>
+      <span>${max.toFixed(0)}cm</span></div></div>`;
 }
 
 function renderGroupHero(g) {
@@ -1087,6 +1125,7 @@ function setView(v) {
 
 function chartBars(days) {
   const vis = visible();
+  const marks = state.barMarks;
   const vmax = Math.max(1,
     ...vis.map((s) => days.map((d) => F(s.id, d) || 0)).flat());
   const cols = days.map((d) => {
@@ -1094,13 +1133,20 @@ function chartBars(days) {
       const v = F(s.id, d) ?? 0;
       const h = Math.max(0.5, 100 * v / vmax);
       const em = v >= 0.5 ? `<em>${v.toFixed(0)}</em>` : "";
+      // opt-in brand cap sitting above each bar (its numeric value stays below)
+      const cap = (marks && v >= 0.5)
+        ? `<span class="barmark">${s.logo
+            ? `<img src="${s.logo}" alt="">`
+            : `<i style="background:${s.color}"></i>`}</span>`
+        : "";
       return `<div class="bar"
-        style="height:${h}%;background:${s.color}">${em}</div>`;
+        style="height:${h}%;background:${s.color}">${cap}${em}</div>`;
     }).join("");
     return `<div class="day" ${tipRef(dayTipHtml(d))}><div class="bars">${bars}</div></div>`;
   }).join("");
   const labels = days.map((d) => `<div class="daylabel">${fmtDay(d)}</div>`).join("");
-  return `<div class="days">${cols}</div><div class="daylabels">${labels}</div>`;
+  return `<div class="days${marks ? " withmarks" : ""}">${cols}</div>
+    <div class="daylabels">${labels}</div>`;
 }
 
 function chartSvg(days, cumulative) {
@@ -1468,6 +1514,13 @@ function init() {
     localStorage.setItem("showAdv", state.showAdv ? "1" : "0");
     renderWeights();
   };
+  $("#marksBtn").classList.toggle("on", state.barMarks);
+  $("#marksBtn").onclick = () => {
+    state.barMarks = !state.barMarks;
+    localStorage.setItem("barMarks", state.barMarks ? "1" : "0");
+    $("#marksBtn").classList.toggle("on", state.barMarks);
+    renderMain();
+  };
   $("#wEqual").onclick = () => { state.weights = {}; saveWeights(); refresh(); };
   $("#wAcc").onclick = () => {
     providers.forEach((s) =>
@@ -1722,6 +1775,8 @@ def render(out: Path | None = None) -> Path:
     <span class="seg">
       <button data-h="5">5d</button><button data-h="7">7d</button><button data-h="10">10d</button>
     </span>
+    <button type="button" class="ghost" id="marksBtn"
+      title="Cap each daily bar with the forecaster's logo">Logos</button>
     <button type="button" class="ghost" id="advBtn"
       title="Custom per-forecaster weights for the ensemble median">Weights</button>
   </div>
