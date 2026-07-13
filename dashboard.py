@@ -412,6 +412,49 @@ footer { color: var(--muted); font-size: 12px; margin-top: 12px;
 .freshlink { color: var(--accent); font-size: 12.5px; text-decoration: none;
   font-weight: 600; white-space: nowrap; }
 .freshlink:hover { text-decoration: underline; }
+/* accuracy headline — compact top-forecaster + runners-up */
+.acc-headline { margin-bottom: 14px; }
+.acc-top { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.acc-top .mark, .acc-top .dot { flex: none; }
+.acc-top b { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.acc-top .aname { font-weight: 650; font-size: 14px; }
+.acc-top .atag { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.09em;
+  color: var(--accent); font-weight: 650; }
+.acc-rest { display: flex; flex-wrap: wrap; gap: 4px 12px; margin-left: 2px; }
+.acc-rest span { display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.acc-rest .mark { width: 14px; height: 14px; border-radius: 3px; }
+.acc-rest .dot { width: 7px; height: 7px; }
+.acc-rest b { font-weight: 650; color: var(--ink); }
+/* mini strip on group resort cards */
+.rcard .ministrip { margin-top: 5px; position: relative; height: 18px; }
+.ministrip-track { position: relative; height: 100%; }
+.ministrip-track::before { content: ""; position: absolute; left: 0; right: 0;
+  top: 50%; height: 1.5px; border-radius: 1px; transform: translateY(-50%);
+  background: var(--line); }
+.ministrip-med { position: absolute; top: 0; bottom: 0; width: 2px;
+  background: var(--accent); transform: translateX(-50%); border-radius: 1px; }
+.ministrip-badge { position: absolute; top: 50%; width: 14px; height: 14px;
+  transform: translate(-50%, -50%); border-radius: 3px; overflow: hidden;
+  background: #fff; border: 1px solid var(--line); padding: 1px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.18); }
+.ministrip-badge img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ministrip-dot { position: absolute; top: 50%; width: 7px; height: 7px;
+  transform: translate(-50%, -50%); border-radius: 50%; }
+/* forecast vs actuals section */
+.fva-controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  margin-bottom: 12px; }
+.fva-table td.hit { color: var(--accent); font-weight: 650; }
+.fva-table td.miss { color: color-mix(in srgb, var(--ink) 60%, transparent); }
+.fva-table td.actual-col { font-weight: 700; background:
+  color-mix(in srgb, var(--accent) 6%, transparent); }
+.fva-table td.err-col { font-variant-numeric: tabular-nums; }
+.fva-summary { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; }
+.fva-stat { text-align: center; }
+.fva-stat b { display: block; font-size: 18px; font-weight: 700;
+  font-variant-numeric: tabular-nums; }
+.fva-stat small { font-size: 10.5px; text-transform: uppercase;
+  letter-spacing: 0.09em; color: var(--muted); font-weight: 600; }
 .spark { display: flex; align-items: flex-end; gap: 2px; height: 42px; }
 .spark i { flex: 1; max-width: 14px; background: var(--accent);
   border-radius: 2px 2px 0 0; min-height: 2px; opacity: 0.85; }
@@ -672,6 +715,29 @@ function insightText(tot, med) {
     around a ${med.toFixed(0)}cm median, with no single outlier.`;
 }
 
+// compact accuracy headline: top forecaster prominent, rest inline
+function accHeadlineHtml(accObj) {
+  const ranked = DATA.sources
+    .map((s) => ({ s, pct: accObj[s.id] }))
+    .filter((r) => r.pct != null && r.s.id !== "ensemble")
+    .sort((a, b) => b.pct - a.pct);
+  if (!ranked.length) return "";
+  const top = ranked[0];
+  const rest = ranked.slice(1);
+  let html = `<div class="acc-headline">
+    <div class="acc-top">
+      ${badgeMark(top.s)}
+      <span class="aname">${top.s.name}</span>
+      <b>${top.pct.toFixed(0)}%</b>
+      <span class="atag">most accurate</span>
+    </div>`;
+  if (rest.length)
+    html += `<div class="acc-rest">${rest.map((r) =>
+      `<span>${badgeMark(r.s)}${r.s.name} <b>${r.pct.toFixed(0)}%</b></span>`
+    ).join("")}</div>`;
+  return html + "</div>";
+}
+
 function renderBadges() {
   const days = horizonDates();
   const stats = days.map(dayStats);
@@ -723,8 +789,10 @@ function renderBadges() {
   tiles.push(`<div class="stat"><small>Days scored</small><b>${R.scored}</b>
     <div class="range">night-before comparisons</div></div>`);
 
+  const accHl = accHeadlineHtml(R.accuracy);
   $("#hero").innerHTML = `<div class="herocard">${hero}</div>
-    <div class="statgrid">${tiles.join("")}</div>`;
+    <div><div style="margin-bottom:10px">${accHl}</div>
+    <div class="statgrid">${tiles.join("")}</div></div>`;
 }
 
 function daysAgo(iso) {
@@ -876,6 +944,41 @@ function resortEvent(rid) {
   return { blob, quiet: false, win, total, peak, peakCm: ens[peak] };
 }
 
+// mini consensus strip for a single resort — provider totals on a tiny axis
+function miniStripHtml(rid) {
+  const blob = DATA.resorts[rid];
+  const ens = ensembleFor(rid);
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date((blob.snapshot || DATA.generated) + "T12:00");
+    d.setDate(d.getDate() + i);
+    days.push(d.toISOString().slice(0, 10));
+  }
+  const fc = blob.forecasts;
+  const act = DATA.sources.filter((s) =>
+    s.id !== "ensemble" && s.id in fc && isOn(s.id) && weightOf(s.id) > 0);
+  if (act.length < 2) return "";
+  const tot = act.map((s) => {
+    let t = 0, any = false;
+    days.forEach((d) => { const v = fc[s.id][d]; if (v != null) { t += v; any = true; } });
+    return any ? { s, t } : null;
+  }).filter(Boolean);
+  if (tot.length < 2) return "";
+  const med = ens ? days.reduce((t, d) => t + (ens[d] || 0), 0) : 0;
+  const max = Math.max(1, med, ...tot.map((r) => r.t)) * 1.08;
+  const xOf = (v) => 100 * v / max;
+  const badges = tot.sort((a, b) => a.t - b.t).map((r) => {
+    const x = xOf(r.t).toFixed(1);
+    return r.s.logo
+      ? `<span class="ministrip-badge" style="left:${x}%"><img src="${r.s.logo}" alt=""></span>`
+      : `<span class="ministrip-dot" style="left:${x}%;background:${r.s.color}"></span>`;
+  }).join("");
+  const mx = xOf(med).toFixed(1);
+  return `<div class="ministrip"><div class="ministrip-track">
+    <span class="ministrip-med" style="left:${mx}%"></span>${badges}
+  </div></div>`;
+}
+
 function renderGroupHero(g) {
   const evts = g.resorts.map((rid) => ({ rid, ...resortEvent(rid) }));
   const best = evts.filter((e) => !e.quiet).sort((a, b) => b.total - a.total)[0];
@@ -900,13 +1003,15 @@ function renderGroupHero(g) {
         style="border-top-color:${e.blob.color}"
         title="Open the ${e.blob.label} view">
       <span class="rname">${e.blob.label}<small>${e.blob.state}</small></span>
-      ${evt}<span class="meta">${meta || "—"}</span></button>`;
+      ${evt}<span class="meta">${meta || "—"}</span>
+      ${miniStripHtml(e.rid)}</button>`;
   }).join("");
+  const accHl = accHeadlineHtml(g.accuracy);
   $("#hero").innerHTML =
     `<div><div class="ginsight">${insight}</div>
+     ${accHl}
      <div class="rcards">${cards}</div></div>`;
   $("#hero").classList.add("group");
-  // the cards are late-added [data-view] buttons — wire them like the bar's
   document.querySelectorAll("#hero [data-view]").forEach((b) =>
     b.onclick = () => setView(b.dataset.view));
 }
@@ -914,7 +1019,7 @@ function renderGroupHero(g) {
 function renderGroupCompare(g) {
   const snapshot = g.snapshot || DATA.generated;
   const days = [];
-  for (let i = 1; i <= 7; i++) {
+  for (let i = 0; i <= 7; i++) {
     const d = new Date(snapshot + "T12:00");
     d.setDate(d.getDate() + i);
     days.push(d.toISOString().slice(0, 10));
@@ -952,7 +1057,7 @@ function renderGroupCompare(g) {
   $("#gcompare").innerHTML =
     `<div class="days">${cols}</div><div class="daylabels">${labels}</div>
      <div class="scroll" style="margin-top:16px"><table>
-       <tr><th>Resort</th>${days.map((d) => `<th>${fmtDay(d)}</th>`).join("")}<th>Σ 7d</th></tr>
+       <tr><th>Resort</th>${days.map((d) => `<th>${fmtDay(d)}</th>`).join("")}<th>Σ</th></tr>
        ${trows}</table></div>`;
 }
 
@@ -975,7 +1080,7 @@ function setView(v) {
     const fr = $("#fResort"), mr = $("#mResort");
     if (fr) fr.value = v;
     if (mr) mr.value = v;
-    refresh(); renderActuals(); renderForecasts(); renderFreshness();
+    refresh(); renderActuals(); renderForecasts(); renderFreshness(); renderFva();
   }
   renderRankings();
 }
@@ -1199,9 +1304,33 @@ function renderActuals() {
   $("#spark").innerHTML = dates.map((d) =>
     `<i class="${d in R.actuals ? "" : "manual"}" title="${d}: ${merged[d]}cm"
      style="height:${Math.max(4, 100 * merged[d] / vmax)}%"></i>`).join("");
-  $("#actualRows").innerHTML = dates.slice().reverse().map((d) =>
-    `<tr><td>${d}</td><td>${merged[d].toFixed(0)}</td>
-     <td>${d in R.actuals ? "resort report" : "manual ✎"}</td></tr>`).join("");
+  // show forecaster calls alongside actuals for days that have scored pairs
+  const sp = R.scoredPairs || {};
+  const vis = providers.filter((s) => isOn(s.id));
+  // the scored pair key is the target_date (day D); the actual report is D+1
+  // so map report dates back to target dates
+  const hasFc = (reportDate) => {
+    const td = new Date(reportDate + "T12:00");
+    td.setDate(td.getDate() - 1);
+    return td.toISOString().slice(0, 10);
+  };
+  $("#actualRows").innerHTML = dates.slice().reverse().map((d) => {
+    const targetD = hasFc(d);
+    const row = sp[targetD];
+    let fcCells = "";
+    if (row) {
+      fcCells = vis.slice(0, 4).map((s) => {
+        const v = row[s.id];
+        if (v == null) return "";
+        const err = Math.abs(v - merged[d]);
+        const col = err <= 2 ? "var(--accent)" : "var(--muted)";
+        return `<span style="color:${col};margin-left:6px;font-size:12px"
+          title="${s.name}: ${v.toFixed(1)}cm">${badgeMark(s)}${v.toFixed(0)}</span>`;
+      }).join("");
+    }
+    return `<tr><td>${d}</td><td>${merged[d].toFixed(0)}</td>
+     <td>${d in R.actuals ? "resort report" : "manual ✎"}${fcCells}</td></tr>`;
+  }).join("");
 }
 
 function removeManual(d) {
@@ -1263,6 +1392,55 @@ function renderForecasts() {
      <th>Forecast</th><th>Actual</th><th>Error</th></tr>${rows}</table></div>
      <footer>Mean absolute error across ${scored.length} manual call(s): ${mae}cm.
      Export and merge to fold these into the season rankings.</footer>`;
+}
+
+// forecast vs actuals review — scored days with per-forecaster predictions
+function renderFva() {
+  const sp = R.scoredPairs || {};
+  const dates = Object.keys(sp).sort().reverse();
+  if (!dates.length) {
+    $("#fvaBody").innerHTML = `<p class="empty">No scored days yet for
+      ${R.label} — this table fills in as actuals arrive.</p>`;
+    return;
+  }
+  const vis = providers.filter((s) => isOn(s.id));
+  const srcHead = vis.map((s) =>
+    `<th title="${s.name}" style="color:color-mix(in srgb, ${s.color} 68%, var(--ink))">${badgeMark(s)}</th>`).join("");
+  const rows = dates.map((d) => {
+    const row = sp[d];
+    const actual = row._actual;
+    const cells = vis.map((s) => {
+      const fc = row[s.id];
+      if (fc == null) return `<td>—</td>`;
+      const err = Math.abs(fc - actual);
+      const cls = err <= Math.max(2, actual * 0.3) ? "hit" : "miss";
+      return `<td class="${cls}" ${tipRef(
+        `<h4>${s.name} — ${d}</h4>
+        <div class="trow">forecast<b>${fc.toFixed(1)}cm</b></div>
+        <div class="trow">actual<b>${actual.toFixed(1)}cm</b></div>
+        <div class="trow">error<b>${(fc - actual) >= 0 ? "+" : ""}${(fc - actual).toFixed(1)}cm</b></div>`
+      )}>${fc.toFixed(1)}</td>`;
+    }).join("");
+    return `<tr><td>${d}</td><td class="actual-col">${actual.toFixed(1)}</td>${cells}</tr>`;
+  }).join("");
+  // per-source MAE summary
+  const maes = vis.map((s) => {
+    const errs = dates.map((d) => sp[d][s.id] != null
+      ? Math.abs(sp[d][s.id] - sp[d]._actual) : null).filter((e) => e != null);
+    const mae = errs.length ? errs.reduce((a, b) => a + b, 0) / errs.length : null;
+    return { s, mae, n: errs.length };
+  }).filter((r) => r.mae != null);
+  const maeRow = `<tr style="border-top:2px solid var(--line)"><td style="font-weight:700">MAE</td><td></td>${
+    vis.map((s) => {
+      const m = maes.find((r) => r.s.id === s.id);
+      return m ? `<td style="font-weight:700">${m.mae.toFixed(1)}</td>` : `<td>—</td>`;
+    }).join("")}</tr>`;
+  $("#fvaBody").innerHTML =
+    `<div class="scroll"><table class="fva-table">
+      <tr><th>Date</th><th>Actual</th>${srcHead}</tr>
+      ${rows}${maeRow}</table></div>
+     <footer>${dates.length} day(s) scored at the night-before lead. Cells
+     highlighted where forecast is within 2cm or 30% of actual.</footer>`;
 }
 
 function init() {
@@ -1393,6 +1571,17 @@ def _resort_blob(con, rid: str, label: str, status: dict) -> dict:
         "WHERE resort=? AND source != 'ensemble' GROUP BY source", (rid,)
     ) if s in PROVIDER_COLORS}
 
+    # scored pairs at the headline lead for the forecast-vs-actuals view
+    scored_pairs_raw = [
+        (s, r, l, d, round(fc, 2), round(a, 2))
+        for s, r, l, d, fc, a in pairs(con, rid)
+        if (r, l) == (run, lead)
+    ]
+    scored_pairs = {}
+    for s, _r, _l, d, fc, a in scored_pairs_raw:
+        scored_pairs.setdefault(d, {})[s] = fc
+        scored_pairs.setdefault(d, {})["_actual"] = a
+
     return {
         "label": label,
         "state": RESORTS[rid].state,
@@ -1405,6 +1594,7 @@ def _resort_blob(con, rid: str, label: str, status: dict) -> dict:
         "scored": scored,
         "status": status.get(rid) or {},
         "freshness": freshness,
+        "scoredPairs": scored_pairs,
     }
 
 
@@ -1514,7 +1704,7 @@ def render(out: Path | None = None) -> Path:
   <div class="cardhead">
     <h2>Resort comparison — ensemble median (cm)</h2>
     <span class="spacer"></span>
-    <span class="hint">weighted median of the providers, per resort · next 7 days</span>
+    <span class="hint">weighted median of the providers, per resort · today + 7 days</span>
   </div>
   <div id="gcompare"></div>
 </div>
@@ -1580,6 +1770,14 @@ def render(out: Path | None = None) -> Path:
     <tbody id="actualRows"></tbody></table>
   </div>
   <div id="chips" style="margin-top:8px"></div>
+</div>
+<div class="card resort-only">
+  <div class="cardhead">
+    <h2>Forecast vs actual — scored days</h2>
+    <span class="spacer"></span>
+    <span class="hint">night-before predictions vs next-morning reports</span>
+  </div>
+  <div id="fvaBody"></div>
 </div>
 <details class="fold manual resort-only">
   <summary><h2>Manual backfill</h2>
