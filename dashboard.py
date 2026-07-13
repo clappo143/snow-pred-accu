@@ -1619,9 +1619,9 @@ def render(out: Path | None = None) -> Path:
   wins on conflicts).</footer>
   </div>
 </details>
-<footer class="colophon">Ground truth: official resort snow reports where
-scrapeable (Perisher, Hotham, Falls Creek — 24h to ~7am, unlagged), OnTheSnow's
-resort-reported history for Thredbo and Buller. Forecasts are snapshotted
+<footer class="colophon">Ground truth: official resort snow reports for all
+five resorts (24h to ~7am, unlagged), with the snowatch.com.au homepage table
+and OnTheSnow's resort-reported history as gap-filling fallbacks. Forecasts are snapshotted
 ~7:45am and ~6pm AEST. A forecast for day D is scored against the report
 published the morning of D+1 — the report whose 24h window actually measures
 day D (snapshots taken the same evening, after most of the window had already
