@@ -108,14 +108,41 @@ to `janesweather_cal` (kept for reference; non-ensemble, undisplayed) and
 the canonical `janesweather` series restarts clean — same accepted cost as
 the BOM night-before purge.
 
-The same midnight→midnight skew applies in principle to **Open-Meteo**
-(`daily=snowfall_sum`), **YR.no** (hourly steps bucketed by calendar
-date), and **BOM** daily rainfall. They are hourly-capable and could be
-re-windowed the same way; that is a follow-up decision because it breaks
-those series' meaning too (and Open-Meteo's backfilled history would need
-re-deriving from its previous-runs archive). Snowatch, Mountainwatch and
-Snow-Forecast publish ski-day tables without a stated clock window and
-cannot be re-windowed.
+The same skew applied to **Open-Meteo** and **YR.no**, fixed the same way
+2026-07-13 (the window helper now lives in `collectors/common.windows_7am`,
+shared by all three collectors):
+
+- **Open-Meteo** now fetches `hourly=snowfall` instead of
+  `daily=snowfall_sum` and sums 7am→7am. (The old daily product was worse
+  than assumed: each hourly value covers the *preceding* hour and the daily
+  aggregate groups stamps 00:00–23:00, so it physically spanned 11pm→11pm.)
+  `forecast_days=12` keeps 11 scoreable windows per snapshot. The old rows
+  were renamed `openmeteo_cal`; unlike the other sources, the canonical
+  series does **not** restart empty — `backfill_openmeteo.py` re-derives
+  the season's night-before history in the new windowing from the
+  historical-forecast archive's hourly data (with the caveat that the
+  archive is a composite of consecutive short-lead runs, so a window's
+  post-midnight tail comes from the next day's run). The pre-fix *live*
+  multi-lead rows (am/pm, leads 0–10, from 2026-07-09) cannot be
+  re-derived and live on only in `openmeteo_cal`.
+- **YR.no** spreads each step's precip uniformly across its hours and sums
+  7am→7am. The compact feed is hourly for ~2.5 days then 6-hourly with
+  block boundaries at 04/10/16/22 local (winter), so a 4am–10am block
+  splits 3h/3h across the 7am cut — sub-block timing inside those far-lead
+  blocks is genuinely unresolved, and uniform apportioning is the neutral
+  choice. Old rows renamed `yrno_cal`; no past-runs archive exists, so the
+  canonical series restarts clean.
+- **BOM** stays calendar-day, deliberately. MetEye's 3-hourly blocks do
+  align to a 7am boundary (1am/4am/7am/…), but their per-block amounts are
+  *percentiles*, and medians don't add — exactly the v1 bom_meteye failure
+  — so a 7am→7am total can't be built from them; and both BOM series'
+  precip base is the daily 50%-chance rainfall, a calendar-day product
+  with no windowed equivalent. Re-windowing BOM would mean changing the
+  derivation itself, not just the alignment. The residual skew is a known
+  caveat on both `bom` series' scores.
+
+Snowatch, Mountainwatch and Snow-Forecast publish ski-day tables without a
+stated clock window and cannot be re-windowed.
 
 A principled elevation adjustment of daily cm totals would need per-day
 freezing-level data (the rain/snow split is a threshold effect, not a linear
