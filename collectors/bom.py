@@ -1,8 +1,21 @@
 """BOM — undocumented JSON API used by the BOM app/site.
 
-Daily forecast gives rain min/max (mm) and temps. When the day is cold
-enough that precipitation falls as snow (max <= SNOW_TMAX_C), we take the
-midpoint of the rain range at ~1mm water -> 1cm snow.
+Daily forecast gives probabilistic rain amounts and temps. When the day is
+cold enough that precipitation falls as snow (max <= SNOW_TMAX_C), we take
+the 50%-chance (median) rainfall at ~1mm water -> 1cm snow.
+
+Why the median and not the published range's midpoint (the methodology
+until 2026-07-13): the API's rain.amount min/max — the "possible rainfall
+X to Y mm" range on bom.gov.au — are NOT a symmetric interval. Verified
+across all five resorts × 7 days: `amount.min` is always exactly
+`precipitation_amount_50_percent_chance` and `amount.max` exactly the
+25%-chance value (the 75%-chance floor sits in `amount.lower_range`). So
+(min+max)/2 lands halfway between the median and the wet tail,
+systematically above BOM's own central estimate — James caught it
+2026-07-13 when the dashboard kept flagging BOM as the high outlier
+(Thredbo: 17.5 vs the 15 median). The affected pre-fix rows (every
+nonzero bom/bom_meteye forecast, not re-derivable from the stored cm)
+were purged the same day.
 
 Also OR'd in: BOM's own qualitative call (short_text/extended_text
 mentioning "snow"). Caught 2026-07-11 comparing against bom_meteye: at
@@ -32,10 +45,10 @@ SNOW_TMAX_C = 2.0
 
 def daily_rain(
     resort: Resort,
-) -> dict[dt.date, tuple[float, float, float | None, bool]]:
-    """Per local calendar day: (rain_min_mm, rain_max_mm, temp_max, snow_text)."""
+) -> dict[dt.date, tuple[float, float | None, bool]]:
+    """Per local calendar day: (rain_p50_mm, temp_max, snow_text)."""
     data = get(URL.format(geohash=resort.bom_geohash)).json()
-    out: dict[dt.date, tuple[float, float, float | None, bool]] = {}
+    out: dict[dt.date, tuple[float, float | None, bool]] = {}
     for day in data["data"]:
         date = (
             dt.datetime.fromisoformat(day["date"].replace("Z", "+00:00"))
@@ -43,19 +56,18 @@ def daily_rain(
             .date()
         )
         rain = day.get("rain") or {}
-        lo = rain.get("amount", {}).get("min") if "amount" in rain else rain.get("min")
-        hi = rain.get("amount", {}).get("max") if "amount" in rain else rain.get("max")
-        lo = lo or 0
-        hi = hi if hi is not None else lo
+        p50 = rain.get("precipitation_amount_50_percent_chance")
+        if p50 is None:  # older payload shape: amount.min IS the 50% value
+            p50 = rain.get("amount", {}).get("min") if "amount" in rain else rain.get("min")
         text = f"{day.get('short_text') or ''} {day.get('extended_text') or ''}"
-        out[date] = (float(lo), float(hi), day.get("temp_max"), "snow" in text.lower())
+        out[date] = (float(p50 or 0), day.get("temp_max"), "snow" in text.lower())
     return out
 
 
 def collect(resort: Resort) -> dict[dt.date, float]:
     return {
-        date: (lo + hi) / 2
+        date: p50
         if ((tmax is not None and tmax <= SNOW_TMAX_C) or snow_text)
         else 0.0
-        for date, (lo, hi, tmax, snow_text) in daily_rain(resort).items()
+        for date, (p50, tmax, snow_text) in daily_rain(resort).items()
     }

@@ -38,7 +38,7 @@ Verification details:
   elevation; the daily forecast is for the ~6 km ADFD grid cell containing
   the geohash. All five geohashes sit on high terrain (1620–1790 m DEM at
   the cell centre), i.e. broadly aligned. Note the collector doesn't use an
-  elevation directly anyway — it derives snow from the rain range whenever
+  elevation directly anyway — it derives snow from the 50%-chance (median) rainfall whenever
   tmax ≤ 2 °C at that gridpoint.
 - **Snowatch**: no elevation is stated anywhere on the 15-day pages (checked
   all five). It's a human, resort-level outlook; its narrative quotes snow

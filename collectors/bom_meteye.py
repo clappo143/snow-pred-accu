@@ -6,9 +6,10 @@ three-hourly blocks, each with a forecaster-edited Snow yes/no flag (the
 same ADFD "Weather: Snow" grid the MetEye map paints blue) plus
 probabilistic precipitation ("10/25/50% chance of more than N mm").
 
-Methodology (v2, 2026-07-11 pm): daily snow = the SAME daily rain-range
-midpoint 'bom' uses (bom.daily_rain, ~1mm -> 1cm) × the fraction of that
-precip falling in snow-flagged blocks. The fraction weights blocks by
+Methodology (v2, 2026-07-11 pm; precip base moved to the daily median
+2026-07-13): daily snow = the SAME daily 50%-chance rainfall 'bom' uses
+(bom.daily_rain, ~1mm -> 1cm) × the fraction of that precip falling in
+snow-flagged blocks. The fraction weights blocks by
 their 3-hourly 25%-chance amounts; when those are all zero (light or
 far-out days) it falls back to the plain share of flagged blocks. Blocks
 showing "–" (hours already past) are excluded from the fraction, and days
@@ -124,7 +125,7 @@ def collect(resort: Resort) -> dict[dt.date, float]:
         raise ValueError(f"no snow flags parsed for {resort.meteye_slug}")
     rain = bom.daily_rain(resort)
     return {
-        date: (lo + hi) / 2 * fractions[date]
-        for date, (lo, hi, _tmax, _snow_text) in rain.items()
+        date: p50 * fractions[date]
+        for date, (p50, _tmax, _snow_text) in rain.items()
         if date in fractions
     }
