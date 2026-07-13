@@ -245,7 +245,7 @@
     {
       "collectorResortId": "perisher",
       "date": "2026-07-14",
-      "effectiveSource": "snowatch",
+      "effectiveSource": "official",
       "layers": [
         {
           "collectedAt": "2026-07-13T15:27:12.374661+00:00",
@@ -276,16 +276,36 @@
           "snow7dCm": null,
           "source": "snowatch",
           "sourceUrl": "https://www.snowatch.com.au/"
+        },
+        {
+          "collectedAt": "2026-07-13T22:40:45.705726+00:00",
+          "naturalDepthCm": 53.4,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-14",
+            "natural_depth": 53.4,
+            "report_time_kind": "report_publication",
+            "reported_at": "2026-07-14T07:33:00+10:00",
+            "snow_24h": 3.0,
+            "snow_7day": 28.0,
+            "source_url": "https://www.perisher.com.au/media_files/snowreport12.xml"
+          },
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-07-14T07:33:00+10:00",
+          "snow24hCm": 3.0,
+          "snow7dCm": 28.0,
+          "source": "official",
+          "sourceUrl": "https://www.perisher.com.au/media_files/snowreport12.xml"
         }
       ],
-      "naturalDepthCm": null,
-      "reportTimeKind": null,
-      "reportedAt": null,
+      "naturalDepthCm": 53.4,
+      "reportTimeKind": "report_publication",
+      "reportedAt": "2026-07-14T07:33:00+10:00",
       "resortId": "perisher",
       "snow24hCm": 3.0,
-      "snow7dCm": null,
-      "sourceUrl": "https://www.snowatch.com.au/",
-      "updatedAt": "2026-07-13T22:38:26.431643+00:00"
+      "snow7dCm": 28.0,
+      "sourceUrl": "https://www.perisher.com.au/media_files/snowreport12.xml",
+      "updatedAt": "2026-07-13T22:40:45.705726+00:00"
     },
     {
       "collectorResortId": "thredbo",
@@ -630,7 +650,7 @@
     {
       "collectorResortId": "thredbo",
       "date": "2026-07-14",
-      "effectiveSource": "snowatch",
+      "effectiveSource": "official",
       "layers": [
         {
           "collectedAt": "2026-07-13T15:27:12.379578+00:00",
@@ -661,16 +681,38 @@
           "snow7dCm": null,
           "source": "snowatch",
           "sourceUrl": "https://www.snowatch.com.au/"
+        },
+        {
+          "collectedAt": "2026-07-13T22:40:46.082754+00:00",
+          "naturalDepthCm": 35.4,
+          "notes": null,
+          "raw": {
+            "data_url": "https://www.thredbo.com.au/weather/snow-report/",
+            "date": "2026-07-14",
+            "natural_depth": 35.4,
+            "report_time_kind": "report_publication",
+            "reported_at": "2026-07-14T06:30:00+10:00",
+            "snow_24h": 1.0,
+            "snow_7day": 25.0,
+            "source_url": "https://www.thredbo.com.au/weather/weather-report/",
+            "xml_updated_at": "2026-07-14T06:58:53.000+10:00"
+          },
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-07-14T06:30:00+10:00",
+          "snow24hCm": 1.0,
+          "snow7dCm": 25.0,
+          "source": "official",
+          "sourceUrl": "https://www.thredbo.com.au/weather/weather-report/"
         }
       ],
-      "naturalDepthCm": null,
-      "reportTimeKind": null,
-      "reportedAt": null,
+      "naturalDepthCm": 35.4,
+      "reportTimeKind": "report_publication",
+      "reportedAt": "2026-07-14T06:30:00+10:00",
       "resortId": "thredbo_top",
       "snow24hCm": 1.0,
-      "snow7dCm": null,
-      "sourceUrl": "https://www.snowatch.com.au/",
-      "updatedAt": "2026-07-13T22:38:26.434321+00:00"
+      "snow7dCm": 25.0,
+      "sourceUrl": "https://www.thredbo.com.au/weather/weather-report/",
+      "updatedAt": "2026-07-13T22:40:46.082754+00:00"
     },
     {
       "collectorResortId": "hotham",
@@ -903,7 +945,7 @@
     {
       "collectorResortId": "hotham",
       "date": "2026-07-14",
-      "effectiveSource": "snowatch",
+      "effectiveSource": "official",
       "layers": [
         {
           "collectedAt": "2026-07-13T15:27:12.380826+00:00",
@@ -934,22 +976,178 @@
           "snow7dCm": null,
           "source": "snowatch",
           "sourceUrl": "https://www.snowatch.com.au/"
+        },
+        {
+          "collectedAt": "2026-07-13T22:40:46.649080+00:00",
+          "naturalDepthCm": 45.0,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-14",
+            "natural_depth": 45.0,
+            "report_time_kind": "report_publication",
+            "reported_at": "2026-07-14T07:25:22+10:00",
+            "snow_24h": 1.0,
+            "snow_7day": 26.0,
+            "source_url": "https://snowreport.mthotham.com.au/resources/SnowReport.xml"
+          },
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-07-14T07:25:22+10:00",
+          "snow24hCm": 1.0,
+          "snow7dCm": 26.0,
+          "source": "official",
+          "sourceUrl": "https://snowreport.mthotham.com.au/resources/SnowReport.xml"
+        }
+      ],
+      "naturalDepthCm": 45.0,
+      "reportTimeKind": "report_publication",
+      "reportedAt": "2026-07-14T07:25:22+10:00",
+      "resortId": "hotham",
+      "snow24hCm": 1.0,
+      "snow7dCm": 26.0,
+      "sourceUrl": "https://snowreport.mthotham.com.au/resources/SnowReport.xml",
+      "updatedAt": "2026-07-13T22:40:46.649080+00:00"
+    },
+    {
+      "collectorResortId": "fallscreek",
+      "date": "2026-07-06",
+      "effectiveSource": "onthesnow",
+      "layers": [
+        {
+          "collectedAt": "2026-07-13T22:40:48.098148+00:00",
+          "naturalDepthCm": null,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-06",
+            "snow_24h": 0.0
+          },
+          "reportTimeKind": null,
+          "reportedAt": null,
+          "snow24hCm": 0.0,
+          "snow7dCm": null,
+          "source": "onthesnow",
+          "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport"
         }
       ],
       "naturalDepthCm": null,
       "reportTimeKind": null,
       "reportedAt": null,
-      "resortId": "hotham",
-      "snow24hCm": 1.0,
+      "resortId": "falls",
+      "snow24hCm": 0.0,
       "snow7dCm": null,
-      "sourceUrl": "https://www.snowatch.com.au/",
-      "updatedAt": "2026-07-13T22:38:26.435951+00:00"
+      "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport",
+      "updatedAt": "2026-07-13T22:40:48.098148+00:00"
+    },
+    {
+      "collectorResortId": "fallscreek",
+      "date": "2026-07-07",
+      "effectiveSource": "onthesnow",
+      "layers": [
+        {
+          "collectedAt": "2026-07-13T22:40:48.099936+00:00",
+          "naturalDepthCm": null,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-07",
+            "snow_24h": 0.0
+          },
+          "reportTimeKind": null,
+          "reportedAt": null,
+          "snow24hCm": 0.0,
+          "snow7dCm": null,
+          "source": "onthesnow",
+          "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport"
+        }
+      ],
+      "naturalDepthCm": null,
+      "reportTimeKind": null,
+      "reportedAt": null,
+      "resortId": "falls",
+      "snow24hCm": 0.0,
+      "snow7dCm": null,
+      "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport",
+      "updatedAt": "2026-07-13T22:40:48.099936+00:00"
+    },
+    {
+      "collectorResortId": "fallscreek",
+      "date": "2026-07-08",
+      "effectiveSource": "onthesnow",
+      "layers": [
+        {
+          "collectedAt": "2026-07-13T22:40:48.101040+00:00",
+          "naturalDepthCm": null,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-08",
+            "snow_24h": 0.0
+          },
+          "reportTimeKind": null,
+          "reportedAt": null,
+          "snow24hCm": 0.0,
+          "snow7dCm": null,
+          "source": "onthesnow",
+          "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport"
+        }
+      ],
+      "naturalDepthCm": null,
+      "reportTimeKind": null,
+      "reportedAt": null,
+      "resortId": "falls",
+      "snow24hCm": 0.0,
+      "snow7dCm": null,
+      "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport",
+      "updatedAt": "2026-07-13T22:40:48.101040+00:00"
+    },
+    {
+      "collectorResortId": "fallscreek",
+      "date": "2026-07-09",
+      "effectiveSource": "onthesnow",
+      "layers": [
+        {
+          "collectedAt": "2026-07-13T22:40:48.102138+00:00",
+          "naturalDepthCm": null,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-09",
+            "snow_24h": 0.0
+          },
+          "reportTimeKind": null,
+          "reportedAt": null,
+          "snow24hCm": 0.0,
+          "snow7dCm": null,
+          "source": "onthesnow",
+          "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport"
+        }
+      ],
+      "naturalDepthCm": null,
+      "reportTimeKind": null,
+      "reportedAt": null,
+      "resortId": "falls",
+      "snow24hCm": 0.0,
+      "snow7dCm": null,
+      "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport",
+      "updatedAt": "2026-07-13T22:40:48.102138+00:00"
     },
     {
       "collectorResortId": "fallscreek",
       "date": "2026-07-10",
       "effectiveSource": "official",
-      "layers": [],
+      "layers": [
+        {
+          "collectedAt": "2026-07-13T22:40:48.103683+00:00",
+          "naturalDepthCm": null,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-10",
+            "snow_24h": 0.0
+          },
+          "reportTimeKind": null,
+          "reportedAt": null,
+          "snow24hCm": 0.0,
+          "snow7dCm": null,
+          "source": "onthesnow",
+          "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport"
+        }
+      ],
       "naturalDepthCm": null,
       "reportTimeKind": null,
       "reportedAt": null,
@@ -963,7 +1161,23 @@
       "collectorResortId": "fallscreek",
       "date": "2026-07-11",
       "effectiveSource": "official",
-      "layers": [],
+      "layers": [
+        {
+          "collectedAt": "2026-07-13T22:40:48.104696+00:00",
+          "naturalDepthCm": null,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-11",
+            "snow_24h": 0.0
+          },
+          "reportTimeKind": null,
+          "reportedAt": null,
+          "snow24hCm": 0.0,
+          "snow7dCm": null,
+          "source": "onthesnow",
+          "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport"
+        }
+      ],
       "naturalDepthCm": null,
       "reportTimeKind": null,
       "reportedAt": "2026-07-11T06:15:00+10:00",
@@ -1032,6 +1246,21 @@
           "snow7dCm": null,
           "source": "official",
           "sourceUrl": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json"
+        },
+        {
+          "collectedAt": "2026-07-13T22:40:48.105727+00:00",
+          "naturalDepthCm": null,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-12",
+            "snow_24h": 12.0
+          },
+          "reportTimeKind": null,
+          "reportedAt": null,
+          "snow24hCm": 12.0,
+          "snow7dCm": null,
+          "source": "onthesnow",
+          "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport"
         }
       ],
       "naturalDepthCm": 43.0,
@@ -1162,6 +1391,21 @@
           "snow7dCm": null,
           "source": "official",
           "sourceUrl": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json"
+        },
+        {
+          "collectedAt": "2026-07-13T22:40:48.106824+00:00",
+          "naturalDepthCm": null,
+          "notes": null,
+          "raw": {
+            "date": "2026-07-13",
+            "snow_24h": 0.0
+          },
+          "reportTimeKind": null,
+          "reportedAt": null,
+          "snow24hCm": 0.0,
+          "snow7dCm": null,
+          "source": "onthesnow",
+          "sourceUrl": "https://www.onthesnow.com/australia/falls-creek-alpine-resort/skireport"
         }
       ],
       "naturalDepthCm": 38.0,
@@ -1561,7 +1805,7 @@
     {
       "collectorResortId": "buller",
       "date": "2026-07-14",
-      "effectiveSource": "snowatch",
+      "effectiveSource": "official",
       "layers": [
         {
           "collectedAt": "2026-07-13T15:27:12.382754+00:00",
@@ -1592,16 +1836,38 @@
           "snow7dCm": null,
           "source": "snowatch",
           "sourceUrl": "https://www.snowatch.com.au/"
+        },
+        {
+          "collectedAt": "2026-07-13T22:40:50.604346+00:00",
+          "naturalDepthCm": 22.0,
+          "notes": null,
+          "raw": {
+            "data_url": "https://api.mtbuller.com.au/api/weather/widget",
+            "date": "2026-07-14",
+            "natural_depth": 22.0,
+            "report_time_kind": "documented_measurement",
+            "reported_at": "2026-07-14T06:45:00+10:00",
+            "snow_24h": 0.0,
+            "snow_7day": null,
+            "source_url": "https://www.mtbuller.com.au/winter/snow-weather/snow-report",
+            "widget_updated_at": "2026-07-14T08:30:00+10:00"
+          },
+          "reportTimeKind": "documented_measurement",
+          "reportedAt": "2026-07-14T06:45:00+10:00",
+          "snow24hCm": 0.0,
+          "snow7dCm": null,
+          "source": "official",
+          "sourceUrl": "https://www.mtbuller.com.au/winter/snow-weather/snow-report"
         }
       ],
-      "naturalDepthCm": null,
-      "reportTimeKind": null,
-      "reportedAt": null,
+      "naturalDepthCm": 22.0,
+      "reportTimeKind": "documented_measurement",
+      "reportedAt": "2026-07-14T06:45:00+10:00",
       "resortId": "buller",
       "snow24hCm": 0.0,
       "snow7dCm": null,
-      "sourceUrl": "https://www.snowatch.com.au/",
-      "updatedAt": "2026-07-13T22:38:26.438619+00:00"
+      "sourceUrl": "https://www.mtbuller.com.au/winter/snow-weather/snow-report",
+      "updatedAt": "2026-07-13T22:40:50.604346+00:00"
     }
   ],
   "alpineOwnedResorts": [
@@ -1616,7 +1882,7 @@
         "method": "accuracy_weighted_median",
         "values": {
           "2026-07-13": 1.0,
-          "2026-07-14": 1.0,
+          "2026-07-14": 0.44,
           "2026-07-15": 0.0,
           "2026-07-16": 0.0,
           "2026-07-17": 0.0,
@@ -1624,8 +1890,8 @@
           "2026-07-19": 0.0,
           "2026-07-20": 0.0,
           "2026-07-21": 0.0,
-          "2026-07-22": 0.21,
-          "2026-07-23": 4.83,
+          "2026-07-22": 1.15,
+          "2026-07-23": 0.0,
           "2026-07-24": 0.0,
           "2026-07-25": 1.0,
           "2026-07-26": 0.0,
@@ -1686,15 +1952,15 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 5.08,
-            "2026-07-15": 0.0,
+            "2026-07-14": 0.44,
+            "2026-07-15": 0.02,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
             "2026-07-18": 0.0,
             "2026-07-19": 0.0,
-            "2026-07-20": 0.18,
-            "2026-07-21": 0.15,
-            "2026-07-22": 0.0
+            "2026-07-20": 0.0,
+            "2026-07-21": 0.0,
+            "2026-07-22": 1.15
           }
         },
         "mountainwatch": {
@@ -1708,8 +1974,8 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-13": 12.3,
-            "2026-07-14": 9.9,
+            "2026-07-13": 13.4,
+            "2026-07-14": 0.0,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -1736,8 +2002,8 @@
             "2026-07-19": 0.0,
             "2026-07-20": 0.0,
             "2026-07-21": 0.0,
-            "2026-07-22": 0.21,
-            "2026-07-23": 4.83,
+            "2026-07-22": 0.0,
+            "2026-07-23": 0.0,
             "2026-07-24": 0.0
           }
         },
@@ -1786,7 +2052,8 @@
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
-            "2026-07-18": 0.0
+            "2026-07-18": 0.0,
+            "2026-07-19": 0.0
           }
         },
         "yrno": {
@@ -1800,7 +2067,7 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 4.8,
+            "2026-07-14": 3.7,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -1818,17 +2085,17 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
-          "2026-07-13": 1.543421052631579,
-          "2026-07-14": 3.0266766766766766,
-          "2026-07-15": 0.0,
+          "2026-07-13": 1.2635838150289018,
+          "2026-07-14": 1.54142937022387,
+          "2026-07-15": 0.0027543645287551517,
           "2026-07-16": 0.0,
           "2026-07-17": 0.0,
           "2026-07-18": 0.0,
           "2026-07-19": 0.0,
-          "2026-07-20": 0.04010184595798854,
-          "2026-07-21": 0.0559462915601023,
-          "2026-07-22": 1.2239621087314663,
-          "2026-07-23": 3.8433268482490277,
+          "2026-07-20": 0.0,
+          "2026-07-21": 0.023874488403819918,
+          "2026-07-22": 1.6151433691756272,
+          "2026-07-23": 0.0,
           "2026-07-24": 0.0,
           "2026-07-25": 1.0,
           "2026-07-26": 0.0,
@@ -1845,7 +2112,7 @@
         "method": "accuracy_weighted_median",
         "values": {
           "2026-07-13": 5.5,
-          "2026-07-14": 1.0,
+          "2026-07-14": 0.5,
           "2026-07-15": 0.0,
           "2026-07-16": 0.0,
           "2026-07-17": 0.0,
@@ -1853,8 +2120,8 @@
           "2026-07-19": 0.0,
           "2026-07-20": 0.0,
           "2026-07-21": 0.0,
-          "2026-07-22": 1.68,
-          "2026-07-23": 3.78,
+          "2026-07-22": 0.0,
+          "2026-07-23": 0.42,
           "2026-07-24": 0.0,
           "2026-07-25": 1.5,
           "2026-07-26": 0.0,
@@ -1915,15 +2182,15 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 3.43,
+            "2026-07-14": 0.96,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
             "2026-07-18": 0.0,
             "2026-07-19": 0.0,
-            "2026-07-20": 0.51,
-            "2026-07-21": 0.71,
-            "2026-07-22": 0.37
+            "2026-07-20": 0.11,
+            "2026-07-21": 0.03,
+            "2026-07-22": 2.42
           }
         },
         "mountainwatch": {
@@ -1937,8 +2204,8 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-13": 19.5,
-            "2026-07-14": 8.6,
+            "2026-07-13": 9.1,
+            "2026-07-14": 0.0,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -1949,15 +2216,15 @@
         "openmeteo": {
           "accuracy": {
             "leadHours": 13,
-            "n": 4,
-            "pct": 67.0
+            "n": 8,
+            "pct": 73.94736842105263
           },
           "issuedDate": "2026-07-14",
           "referenceElevationM": 1650,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 0.42,
+            "2026-07-14": 0.49,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -1965,8 +2232,8 @@
             "2026-07-19": 0.0,
             "2026-07-20": 0.0,
             "2026-07-21": 0.0,
-            "2026-07-22": 1.68,
-            "2026-07-23": 3.78,
+            "2026-07-22": 0.0,
+            "2026-07-23": 0.42,
             "2026-07-24": 0.0
           }
         },
@@ -2011,11 +2278,12 @@
           "run": "am",
           "values": {
             "2026-07-13": 1.0,
-            "2026-07-14": 1.0,
+            "2026-07-14": 0.0,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
-            "2026-07-18": 0.0
+            "2026-07-18": 0.0,
+            "2026-07-19": 0.0
           }
         },
         "yrno": {
@@ -2029,7 +2297,7 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 1.0,
+            "2026-07-14": 0.5,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -2047,18 +2315,18 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
-          "2026-07-13": 10.208955223880597,
-          "2026-07-14": 3.5774854564881875,
+          "2026-07-13": 4.016216216216216,
+          "2026-07-14": 1.8696195149046473,
           "2026-07-15": 0.0,
           "2026-07-16": 0.0,
           "2026-07-17": 0.0,
           "2026-07-18": 0.0,
           "2026-07-19": 0.0,
-          "2026-07-20": 0.07848695933905718,
-          "2026-07-21": 0.12914034080030634,
-          "2026-07-22": 1.0718792417505265,
-          "2026-07-23": 2.027787610619469,
-          "2026-07-24": 0.46354825115887066,
+          "2026-07-20": 0.016978066612510157,
+          "2026-07-21": 0.005475504322766571,
+          "2026-07-22": 1.0314923619271446,
+          "2026-07-23": 0.25057324840764333,
+          "2026-07-24": 0.4033970276008493,
           "2026-07-25": 1.5,
           "2026-07-26": 0.0,
           "2026-07-27": 1.5,
@@ -2082,7 +2350,7 @@
           "2026-07-19": 0.0,
           "2026-07-20": 0.0,
           "2026-07-21": 0.0,
-          "2026-07-22": 0.63,
+          "2026-07-22": 0.0,
           "2026-07-23": 0.0,
           "2026-07-24": 1.0,
           "2026-07-25": 1.5,
@@ -2144,15 +2412,15 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 2.64,
+            "2026-07-14": 2.35,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
             "2026-07-18": 0.0,
             "2026-07-19": 0.0,
-            "2026-07-20": 0.32,
-            "2026-07-21": 1.25,
-            "2026-07-22": 1.38
+            "2026-07-20": 0.42,
+            "2026-07-21": 0.4,
+            "2026-07-22": 2.54
           }
         },
         "mountainwatch": {
@@ -2166,13 +2434,13 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-13": 17.8,
-            "2026-07-14": 10.4,
+            "2026-07-13": 10.5,
+            "2026-07-14": 0.0,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
             "2026-07-18": 0.0,
-            "2026-07-19": 0.0
+            "2026-07-19": 0.2
           }
         },
         "openmeteo": {
@@ -2186,7 +2454,7 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 0.07,
+            "2026-07-14": 0.0,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -2194,8 +2462,8 @@
             "2026-07-19": 0.0,
             "2026-07-20": 0.0,
             "2026-07-21": 0.0,
-            "2026-07-22": 0.63,
-            "2026-07-23": 4.41,
+            "2026-07-22": 0.0,
+            "2026-07-23": 0.0,
             "2026-07-24": 0.0
           }
         },
@@ -2240,11 +2508,12 @@
           "run": "am",
           "values": {
             "2026-07-13": 1.0,
-            "2026-07-14": 1.0,
+            "2026-07-14": 0.0,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
-            "2026-07-18": 0.0
+            "2026-07-18": 0.0,
+            "2026-07-19": 0.0
           }
         },
         "yrno": {
@@ -2276,18 +2545,18 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
-          "2026-07-13": 6.590000000000001,
-          "2026-07-14": 3.1313918440436814,
+          "2026-07-13": 3.2425515660809774,
+          "2026-07-14": 1.7770462422371203,
           "2026-07-15": 0.0,
           "2026-07-16": 0.0,
           "2026-07-17": 0.0,
           "2026-07-18": 0.0,
-          "2026-07-19": 0.0,
-          "2026-07-20": 0.05660021661263672,
-          "2026-07-21": 0.24850503761518258,
-          "2026-07-22": 1.4667572906612785,
-          "2026-07-23": 1.7714606973385598,
-          "2026-07-24": 0.5983082318960181,
+          "2026-07-19": 0.0005020823915280811,
+          "2026-07-20": 0.06496179647437164,
+          "2026-07-21": 0.10063420698422194,
+          "2026-07-22": 1.632575020878857,
+          "2026-07-23": 0.0,
+          "2026-07-24": 0.5708779709484242,
           "2026-07-25": 1.5,
           "2026-07-26": 0.0,
           "2026-07-27": 1.5,
@@ -2303,7 +2572,7 @@
         "method": "accuracy_weighted_median",
         "values": {
           "2026-07-13": 3.0,
-          "2026-07-14": 1.61,
+          "2026-07-14": 1.2,
           "2026-07-15": 0.0,
           "2026-07-16": 0.0,
           "2026-07-17": 0.0,
@@ -2353,7 +2622,7 @@
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
           "run": "am",
           "values": {
-            "2026-07-14": 7.3125,
+            "2026-07-14": 9.0,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -2373,15 +2642,15 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 5.35,
+            "2026-07-14": 2.25,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
             "2026-07-18": 0.0,
             "2026-07-19": 0.0,
-            "2026-07-20": 0.12,
-            "2026-07-21": 0.56,
-            "2026-07-22": 0.29
+            "2026-07-20": 0.0,
+            "2026-07-21": 0.03,
+            "2026-07-22": 1.05
           }
         },
         "mountainwatch": {
@@ -2395,9 +2664,9 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-13": 16.8,
-            "2026-07-14": 12.5,
-            "2026-07-15": 0.2,
+            "2026-07-13": 16.5,
+            "2026-07-14": 0.2,
+            "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
             "2026-07-18": 0.0,
@@ -2415,7 +2684,7 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 1.61,
+            "2026-07-14": 0.98,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -2423,8 +2692,8 @@
             "2026-07-19": 0.0,
             "2026-07-20": 0.0,
             "2026-07-21": 0.0,
-            "2026-07-22": 1.68,
-            "2026-07-23": 5.46,
+            "2026-07-22": 0.0,
+            "2026-07-23": 0.84,
             "2026-07-24": 0.0
           }
         },
@@ -2469,11 +2738,12 @@
           "run": "am",
           "values": {
             "2026-07-13": 0.0,
-            "2026-07-14": 1.0,
+            "2026-07-14": 0.0,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
-            "2026-07-18": 0.0
+            "2026-07-18": 0.0,
+            "2026-07-19": 0.0
           }
         },
         "yrno": {
@@ -2487,7 +2757,7 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 1.1,
+            "2026-07-14": 1.2,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -2505,18 +2775,18 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
-          "2026-07-13": 4.9257861635220115,
-          "2026-07-14": 4.648156402912043,
-          "2026-07-15": 0.011576560448740897,
+          "2026-07-13": 1.982573726541555,
+          "2026-07-14": 3.643613382899628,
+          "2026-07-15": 0.0,
           "2026-07-16": 0.0,
           "2026-07-17": 0.0,
           "2026-07-18": 0.0,
           "2026-07-19": 0.0,
-          "2026-07-20": 0.03471643035863219,
-          "2026-07-21": 0.10476152496410909,
-          "2026-07-22": 1.4181760579316587,
-          "2026-07-23": 2.909591280653951,
-          "2026-07-24": 0.46710782405605294,
+          "2026-07-20": 0.018718801996672214,
+          "2026-07-21": 0.02566539923954373,
+          "2026-07-22": 1.0305851063829787,
+          "2026-07-23": 0.4125663716814159,
+          "2026-07-24": 0.5088495575221239,
           "2026-07-25": 1.5,
           "2026-07-26": 0.0,
           "2026-07-27": 1.5,
@@ -2532,7 +2802,7 @@
         "method": "accuracy_weighted_median",
         "values": {
           "2026-07-13": 1.0,
-          "2026-07-14": 3.3,
+          "2026-07-14": 1.02,
           "2026-07-15": 0.0,
           "2026-07-16": 0.0,
           "2026-07-17": 0.0,
@@ -2602,15 +2872,15 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 5.09,
+            "2026-07-14": 1.02,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
             "2026-07-18": 0.0,
             "2026-07-19": 0.0,
-            "2026-07-20": 0.04,
-            "2026-07-21": 0.67,
-            "2026-07-22": 0.27
+            "2026-07-20": 0.0,
+            "2026-07-21": 0.0,
+            "2026-07-22": 0.34
           }
         },
         "mountainwatch": {
@@ -2624,9 +2894,9 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-13": 20.1,
-            "2026-07-14": 13.5,
-            "2026-07-15": 0.2,
+            "2026-07-13": 15.5,
+            "2026-07-14": 0.2,
+            "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
             "2026-07-18": 0.0,
@@ -2644,7 +2914,7 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 0.98,
+            "2026-07-14": 0.91,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -2652,9 +2922,9 @@
             "2026-07-19": 0.0,
             "2026-07-20": 0.0,
             "2026-07-21": 0.0,
-            "2026-07-22": 0.63,
-            "2026-07-23": 4.62,
-            "2026-07-24": 0.63
+            "2026-07-22": 0.0,
+            "2026-07-23": 0.42,
+            "2026-07-24": 0.0
           }
         },
         "snowatch": {
@@ -2702,7 +2972,8 @@
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
-            "2026-07-18": 0.0
+            "2026-07-18": 0.0,
+            "2026-07-19": 0.0
           }
         },
         "yrno": {
@@ -2716,7 +2987,7 @@
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
           "run": "am",
           "values": {
-            "2026-07-14": 3.3,
+            "2026-07-14": 2.2,
             "2026-07-15": 0.0,
             "2026-07-16": 0.0,
             "2026-07-17": 0.0,
@@ -2734,18 +3005,18 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
-          "2026-07-13": 9.2062091503268,
-          "2026-07-14": 6.056815780204298,
-          "2026-07-15": 0.03409651285663966,
+          "2026-07-13": 2.044074722708698,
+          "2026-07-14": 3.4059825717796897,
+          "2026-07-15": 0.0,
           "2026-07-16": 0.0,
           "2026-07-17": 0.0,
           "2026-07-18": 0.0,
           "2026-07-19": 0.0,
-          "2026-07-20": 0.02640198511166253,
-          "2026-07-21": 0.17896024464831806,
-          "2026-07-22": 1.1063346613545817,
-          "2026-07-23": 0.8866666666666668,
-          "2026-07-24": 0.928989898989899,
+          "2026-07-20": 0.018245614035087718,
+          "2026-07-21": 0.022317596566523604,
+          "2026-07-22": 1.0501657458563536,
+          "2026-07-23": 0.0709090909090909,
+          "2026-07-24": 0.8311688311688311,
           "2026-07-25": 1.5,
           "2026-07-26": 0.0,
           "2026-07-27": 1.5,
@@ -2754,7 +3025,7 @@
       }
     }
   },
-  "generatedAt": "2026-07-14T08:38:26.643791+10:00",
+  "generatedAt": "2026-07-14T08:41:19.841615+10:00",
   "resortAliases": {
     "buller": "buller",
     "fallscreek": "falls",
