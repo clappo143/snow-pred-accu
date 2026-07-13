@@ -42,7 +42,10 @@ REFERENCE_ELEVATIONS = {
     "bom_meteye": [1737, 1785, 1624, 1637, 1661],
     "snowatch": [None] * 5,
     "mountainwatch": [1830, 1830, 1850, 1770, 1710],
-    "janesweather": [1721, 1367, 1710, 1563, 1597],
+    # JW's snow-forecast page publishes these for its resort snow locations
+    # (the points our queries snap to); its earlier DEM-at-snapped-point
+    # estimates were 1721/1367/1710/1563/1597 — see docs/reference-points.md.
+    "janesweather": [1800, 1850, 1850, 1750, 1700],
 }
 RID_ORDER = list(RESORTS)
 
@@ -65,7 +68,7 @@ def _elevation(source: str, rid: str) -> tuple[int | None, str]:
     value = REFERENCE_ELEVATIONS.get(source, [None] * 5)[RID_ORDER.index(rid)]
     if source == "snowatch":
         return None, "resort-wide; provider states no point elevation"
-    if source in {"bom", "bom_meteye", "janesweather"}:
+    if source in {"bom", "bom_meteye"}:
         return value, "approximate terrain height at provider grid/reference point"
     return value, "provider-stated or explicitly requested elevation"
 

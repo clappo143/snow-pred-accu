@@ -28,11 +28,16 @@ DB_PATH = Path(__file__).parent / "data" / "snow.db"
 # Sources that must never feed the ensemble: the ensemble itself, plus
 # Snow-Forecast's extra elevation bands (bot/top) — the canonical mid band
 # is the 'snowforecast' series; the extras are stored for elevation-gradient
-# analysis only (see docs/reference-points.md). Both BOM methodologies
-# ('bom' and 'bom_meteye') feed the ensemble as independent forecasters —
-# James's call 2026-07-11: eight forecasters, two of them the Bureau via
-# different derivations, each accuracy-weighted on its own record.
-NON_ENSEMBLE_SOURCES = ("ensemble", "snowforecast_bot", "snowforecast_top")
+# analysis only (see docs/reference-points.md). 'janesweather_cal' is the
+# pre-2026-07-13 Jane's Weather series of calendar-day totals, retired when
+# the collector moved to 7am→7am windows (see collectors/janesweather.py).
+# Both BOM methodologies ('bom' and 'bom_meteye') feed the ensemble as
+# independent forecasters — James's call 2026-07-11: eight forecasters, two
+# of them the Bureau via different derivations, each accuracy-weighted on
+# its own record.
+NON_ENSEMBLE_SOURCES = (
+    "ensemble", "snowforecast_bot", "snowforecast_top", "janesweather_cal",
+)
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS forecasts (

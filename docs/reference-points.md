@@ -18,7 +18,7 @@ heights in `resorts.py` (`alt`: 1650–1750 m).
 | BOM | geohash gridpoint; API exposes no elevation — terrain height at the gridpoint centre (DEM) shown | ~1737 | ~1785 | ~1624 | ~1637 | ~1661 |
 | Snowatch | human forecast, no stated reference elevation; text discusses snow levels per range, resort pages carry village/summit metadata only | resort-wide | resort-wide | resort-wide | resort-wide | resort-wide |
 | Mountainwatch | page states "For _X_ m" above the table | 1830 | 1830 | 1850 | 1770 | 1710 |
-| Jane's Weather | API snaps lat/lng to nearest precalculated "snow location"; terrain height at the snapped point (DEM) shown | ~1721 | **~1367** | ~1710 | ~1563 | ~1597 |
+| Jane's Weather | stated per snow location on janesweather.com/snow-forecast (see 2026-07-13 revision below) | 1800 | 1850 | 1850 | 1750 | 1700 |
 
 Verification details:
 
@@ -46,14 +46,20 @@ Verification details:
   for the resort's skiable terrain, i.e. roughly our reference band.
 - **Mountainwatch**: each resort page states its reference ("For 1830 m —
   last updated…"), a near-summit point 60–130 m above `alt`.
-- **Jane's Weather**: the forecast-edge API snaps the query to the nearest
-  precalculated snow location. For four resorts that lands at/near the
-  village on high plateaus (fine); for **Thredbo it snaps to the village at
-  ~1367 m**, ~335 m below the other providers' reference. The API does
-  accept arbitrary coordinates (non-precalculated points still return
-  `dailySnowTotal`), so the query point could be moved upslope — but doing
-  so mid-season would silently change what the historical `janesweather`
-  Thredbo series means, so it is deliberately left as-is and documented here.
+- **Jane's Weather** (revised 2026-07-13): the forecast-edge API snaps the
+  query to the nearest precalculated snow location. The original audit
+  reported DEM terrain height at the snapped coordinates
+  (~1721/**1367**/1710/1563/1597) and flagged Thredbo as materially low.
+  Re-probed 2026-07-13: janesweather.com/snow-forecast embeds JW's official
+  snow-location registry — Perisher 1800 m, Thredbo 1850 m, Hotham 1850 m,
+  Falls Creek 1750 m, Buller 1700 m — and querying the API with JW's own
+  published coordinates snaps to the *same* points our resorts.py
+  coordinates already reach, returning identical forecasts. So the
+  collector was always getting JW's canonical upper-mountain product; the
+  Thredbo snapped point's coordinates sit at the village but JW nominates
+  1850 m for it (the DEM at the snapped point is not what the model is
+  calibrated to). No coordinate change is warranted or possible — there is
+  no better JW point to query.
 
 ## Snow-Forecast elevation bands (added 2026-07-11)
 
@@ -74,13 +80,42 @@ Excluding the extra bands, every provider's reference sits within roughly
 ±150 m of `alt` — inside one Snow-Forecast band, and small relative to the
 vertical spacing of their own bot/mid/top forecasts. The two caveats:
 
-1. **Jane's Weather × Thredbo (~1367 m)** is the one materially low cell.
-   In marginal storms (snow line 1400–1700 m) it will systematically
-   under-forecast what falls on Thredbo's slopes — that will show up as an
-   honest accuracy penalty in the scoring rather than something to correct
-   away. Documented; no adjustment applied.
+1. ~~**Jane's Weather × Thredbo (~1367 m)** is the one materially low
+   cell.~~ Withdrawn 2026-07-13: JW nominates 1850 m for its Thredbo snow
+   location (see the revised JW bullet above); the ~1367 m figure was the
+   DEM at the snapped point's coordinates, not the forecast's reference.
 2. **Mountainwatch** runs 60–130 m high — likely a slight over-read in
    marginal storms, again small.
+
+## Day-window alignment (added 2026-07-13)
+
+Reference *elevation* was the wrong suspect for Jane's Weather's early
+accuracy numbers — the real mismatch was temporal. JW's `dailySnowTotal`
+is a local **calendar-day** total (midnight→midnight, confirmed by summing
+its own hourly series both ways), while the ground truth is the resort
+report covering **7am→7am**, which score.py joins as target D ↔ report
+D+1. The 2026-07-11/12 storm fell almost entirely between 11pm and 7am:
+JW correctly painted it on the calendar day holding the 00:00–07:00 hours,
+and the join scored that as a huge miss on one day and phantom snow the
+next (night-before errors of −6…−13 then +11…+19; re-joined to the report
+window its own hours actually overlap, the same forecasts were within
+~±4 cm at four of five resorts).
+
+Fix (2026-07-13): `collectors/janesweather.py` now sums the API's hourly
+`snow` into 7am→7am windows, so the stored target-D value covers exactly
+the window of the report dated D+1. The old calendar-day rows were renamed
+to `janesweather_cal` (kept for reference; non-ensemble, undisplayed) and
+the canonical `janesweather` series restarts clean — same accepted cost as
+the BOM night-before purge.
+
+The same midnight→midnight skew applies in principle to **Open-Meteo**
+(`daily=snowfall_sum`), **YR.no** (hourly steps bucketed by calendar
+date), and **BOM** daily rainfall. They are hourly-capable and could be
+re-windowed the same way; that is a follow-up decision because it breaks
+those series' meaning too (and Open-Meteo's backfilled history would need
+re-deriving from its previous-runs archive). Snowatch, Mountainwatch and
+Snow-Forecast publish ski-day tables without a stated clock window and
+cannot be re-windowed.
 
 A principled elevation adjustment of daily cm totals would need per-day
 freezing-level data (the rain/snow split is a threshold effect, not a linear
