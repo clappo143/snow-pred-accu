@@ -183,11 +183,18 @@ def report_falls(raw: Any, captured: str) -> Snapshot:
     narrative = narrative_text(overview.get("ReportAnnouncements") or overview.get("ReportWhatsHappening"))
     if status == "unavailable" and narrative and re.search(r"snow[ -]?making|guns?", narrative, re.I):
         status = "mentioned"
-    reported = combined_local(slope.get("LastUpdateDate"), slope.get("LastUpdateTime"))
-    reported = reported or combined_local(patrol.get("PatrolDate"), patrol.get("PatrolTime"))
+    # naturalDepthCm comes from the Patrol block (updated daily ~6am), so its clock is the
+    # snapshot's provenance; SlopeMaintenance's LastUpdate* can freeze for weeks (seen stuck at
+    # 05 Jul while patrol kept reporting) and is kept only as a secondary fallback.
+    slope_reported = combined_local(slope.get("LastUpdateDate"), slope.get("LastUpdateTime"))
+    reported = combined_local(patrol.get("PatrolDate"), patrol.get("PatrolTime")) or slope_reported
     return Snapshot("falls", "resort_report", "falls_official_report", FALLS_URL, captured, status,
         sourceReportedAt=reported, naturalDepthCm=as_number(patrol.get("PatrolNaturalSnowDepth")),
-        narrative=narrative, provenance={"slopeMaintenanceStatus": current, "freshSnowCm": as_number(patrol.get("PatrolFreshSnow"))})
+        narrative=narrative, provenance={"slopeMaintenanceStatus": current, "freshSnowCm": as_number(patrol.get("PatrolFreshSnow")),
+            "slopeMaintenanceReportedAt": slope_reported,
+            "siteDepthsCm": {"villageBowl": as_number(patrol.get("PatrolVillageBowl")),
+                             "sunValley": as_number(patrol.get("PatrolSunValley")),
+                             "northSide": as_number(patrol.get("PatrolNorthSide"))}})
 
 
 def report_hotham(raw: str, captured: str) -> Snapshot:
