@@ -19,3 +19,34 @@ hand-resolve a diff or merge conflict in it. If it conflicts with an
 incoming pull/merge, discard whichever side, complete the merge, then just
 rerun `python dashboard.py` to regenerate it correctly from the merged
 `data/snow.db` and current `dashboard.py`.
+
+## Where this repo sits (don't rebuild the observed-operations pipeline here)
+
+This repo is a **producer**, not the hub. It owns forecast collection,
+scoring and the strict `alpine.official-report-export.v1` daily
+reported-snowfall export. **Alpine Weather Dashboard**
+(`~/Projects/Alpine-Weather-Dashboard`) is the consumer and the owner of
+the Observed Operations product — see its
+`docs/architecture/ADR-0001-observed-operations-ownership.md` (2026-07-13),
+which is the authoritative statement of the boundary. That ADR also
+explicitly rejects splitting this into a third repository.
+
+Resort canonical IDs are owned by Alpine, at
+`Alpine-Weather-Dashboard/contracts/v1/alpine-resort-identities.json`.
+`operations/core.py` reads that path directly (override with
+`ALPINE_RESORT_IDENTITIES_PATH`) and no-ops if it's absent, so the check is
+local-only and CI skips it. Don't add a copy of that contract to this repo
+— an earlier one was archived precisely because it invited drift.
+
+**There was a period (roughly 12–19 July 2026) when this repo was drifting
+into being the *source* project for observed operations.** That was
+reversed. A substantial "operations v2" pipeline built here during that
+drift now lives, committed and further developed, in Alpine under
+`producer/` (Alpine commit `ee2475a`). The snapshot that was left here is
+parked on the **`archive/operations-v2`** branch — read its commit message
+first if you ever need it. It is not intended to land on `main`, and a few
+pieces (`probe_v2.py`, the v2 test suite and fixtures, the `tools/`
+registry scripts) exist *only* on that branch, not in Alpine.
+
+So: if a task here starts to look like building an operations
+normalizer/resolver/exporter, stop — that work belongs in Alpine.
