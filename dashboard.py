@@ -1624,11 +1624,14 @@ def _resort_blob(con, rid: str, label: str, status: dict) -> dict:
         "WHERE resort=? AND source != 'ensemble' GROUP BY source", (rid,)
     ) if s in PROVIDER_COLORS}
 
-    # scored pairs at the headline lead for the forecast-vs-actuals view
+    # scored pairs at the headline lead for the forecast-vs-actuals view.
+    # Retired series are dropped here too — nothing renders them (they have
+    # no PROVIDER_COLORS entry), so carrying their frozen pre-2026-07-13 rows
+    # only bloats the blob and risks them resurfacing in a future view.
     scored_pairs_raw = [
         (s, r, l, d, round(fc, 2), round(a, 2))
         for s, r, l, d, fc, a in pairs(con, rid)
-        if (r, l) == (run, lead)
+        if (r, l) == (run, lead) and s not in store.RETIRED_SOURCES
     ]
     scored_pairs = {}
     for s, _r, _l, d, fc, a in scored_pairs_raw:

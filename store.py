@@ -36,9 +36,15 @@ DB_PATH = Path(__file__).parent / "data" / "snow.db"
 # independent forecasters — James's call 2026-07-11: eight forecasters, two
 # of them the Bureau via different derivations, each accuracy-weighted on
 # its own record.
+# The retired calendar-day series specifically. Frozen since 2026-07-13 —
+# they take no new rows, so any score over them is a fixed 13-day verdict on
+# a window that happened to be almost entirely dry, which reads as ~100%
+# skill. They are kept in the DB for history but must not be scored or
+# displayed alongside live sources; score.py filters on this set.
+RETIRED_SOURCES = ("janesweather_cal", "openmeteo_cal", "yrno_cal")
+
 NON_ENSEMBLE_SOURCES = (
-    "ensemble", "snowforecast_bot", "snowforecast_top", "janesweather_cal",
-    "openmeteo_cal", "yrno_cal",
+    "ensemble", "snowforecast_bot", "snowforecast_top", *RETIRED_SOURCES,
 )
 
 SCHEMA = """
