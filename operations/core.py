@@ -369,6 +369,9 @@ SOURCES: list[SourceSpec] = [
 def validate_canonical_ids() -> None:
     path = Path(os.environ.get("ALPINE_RESORT_IDENTITIES_PATH", "/Users/jamesclapham/Projects/Alpine-Weather-Dashboard/contracts/v1/alpine-resort-identities.json"))
     if not path.exists():
+        # Deliberately silent: this contract only exists on James's Mac, so any
+        # louder signal (warning, error) would fire on every CI run forever
+        # with no way to satisfy it. The check is local-only by design.
         return  # deployment may consume the already-versioned export remotely
     ids = {entry["canonicalId"] for entry in json.loads(path.read_text())["resorts"]}
     bad = {spec.resort_id for spec in SOURCES} - ids
