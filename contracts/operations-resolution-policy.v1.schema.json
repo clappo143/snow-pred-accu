@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://alpine.example/contracts/operations-resolution-policy.v1.schema.json",
+  "title": "Alpine operations resolution policy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "revision", "sourceCatalogueRevision", "conflictWindowMinutes",
+    "futureTimestampToleranceMinutes", "roleLanes", "preferredDisplayOrder",
+    "assetFieldPolicies", "sourceVocabulary"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "alpine.operations-resolution-policy.v1"},
+    "revision": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "sourceCatalogueRevision": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "conflictWindowMinutes": {"type": "integer", "minimum": 0},
+    "futureTimestampToleranceMinutes": {"type": "integer", "minimum": 0},
+    "roleLanes": {
+      "type": "object", "additionalProperties": false,
+      "required": ["actual", "reported", "plan", "advisory", "unknown"],
+      "properties": {
+        "actual": {"$ref": "#/$defs/roles"}, "reported": {"$ref": "#/$defs/roles"},
+        "plan": {"$ref": "#/$defs/roles"}, "advisory": {"$ref": "#/$defs/roles"},
+        "unknown": {"$ref": "#/$defs/roles"}
+      }
+    },
+    "preferredDisplayOrder": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^(actual|reported|plan|advisory|unknown):(fresh|future_timestamp_anomaly|stale|unknown)$"}
+    },
+    "assetFieldPolicies": {
+      "type": "array", "minItems": 9,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["fieldFamily", "knownUnknownValues", "sourcePriorityByLane"],
+        "properties": {
+          "fieldFamily": {"enum": ["operationalStatus", "scheduled", "expectedToOpen", "openTime", "closeTime", "queueMinutes", "groomed", "condition", "statusReason"]},
+          "knownUnknownValues": {"type": "array"},
+          "sourcePriorityByLane": {
+            "type": "object", "additionalProperties": false,
+            "properties": {
+              "actual": {"$ref": "#/$defs/sourceIds"},
+              "reported": {"$ref": "#/$defs/sourceIds"},
+              "plan": {"$ref": "#/$defs/sourceIds"},
+              "advisory": {"$ref": "#/$defs/sourceIds"},
+              "unknown": {"$ref": "#/$defs/sourceIds"}
+            }
+          }
+        }
+      }
+    },
+    "sourceVocabulary": {"$ref": "#/$defs/sourceIds"}
+  },
+  "$defs": {
+    "roles": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["live_actual", "morning_plan", "expected", "report_summary", "measurement", "advisory", "unknown"]}},
+    "sourceIds": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  }
+}

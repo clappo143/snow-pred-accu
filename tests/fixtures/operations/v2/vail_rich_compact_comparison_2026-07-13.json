@@ -1,0 +1,1735 @@
+{
+  "generatedAt": "2026-07-13T07:47:33.596576Z",
+  "identityPromotionGate": "identity fields only; transient status agreement is not required",
+  "identityRule": "same bounded probe: numeric ID, trimmed name, and compact Location/rich publicArea must all match",
+  "observedStatusPairs": [
+    {
+      "compactStatus": "Closed",
+      "compactStatusId": 2,
+      "count": 36,
+      "richStatusCode": 2
+    },
+    {
+      "compactStatus": "Closed",
+      "compactStatusId": 2,
+      "count": 38,
+      "richStatusCode": 6
+    }
+  ],
+  "queueDisposition": "raw_only: repeated all-zero samples do not prove explicit no-wait semantics; no queue timestamp is fabricated",
+  "reports": [
+    {
+      "compactCount": 15,
+      "compactRetrievedAt": "2026-07-13T07:47:24.855666Z",
+      "compactSourceId": "falls_mountainops_lifts",
+      "identity": {
+        "allIdentityMatches": true,
+        "extraRichIds": [],
+        "matchCount": 15,
+        "mismatchCount": 0,
+        "missingRichIds": []
+      },
+      "isScheduledValueTypeCounts": {
+        "integer:1": 15
+      },
+      "observedStatusPairs": [
+        {
+          "compactStatus": "Closed",
+          "compactStatusId": 2,
+          "count": 15,
+          "richStatusCode": 6
+        }
+      ],
+      "queueValueTypeCounts": {
+        "integer:0": 15
+      },
+      "resortId": "falls",
+      "richCount": 15,
+      "richRetrievedAt": "2026-07-13T07:47:25.468554Z",
+      "richSourceId": "falls_mountainops_lifts_rich",
+      "rows": [
+        {
+          "compact": {
+            "id": 1,
+            "location": "Falls Creek",
+            "name": "Boardwalk Carpet",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 1,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 1,
+            "isScheduled": 1,
+            "name": "Boardwalk Carpet",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 2,
+            "location": "Falls Creek",
+            "name": "Drovers Dream Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 2,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 2,
+            "isScheduled": 1,
+            "name": "Drovers Dream Quad Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 3,
+            "location": "Falls Creek",
+            "name": "Eagle Express Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 3,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T17:00:00.000Z",
+            "id": 3,
+            "isScheduled": 1,
+            "name": "Eagle Express Quad Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 4,
+            "location": "Falls Creek",
+            "name": "Gully Triple Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 4,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T17:00:00.000Z",
+            "id": 4,
+            "isScheduled": 1,
+            "name": "Gully Triple Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 5,
+            "location": "Falls Creek",
+            "name": "Halley's Comet Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 5,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T17:00:00.000Z",
+            "id": 5,
+            "isScheduled": 1,
+            "name": "Halley's Comet Quad Chair",
+            "openTime": "1970-01-01T07:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 6,
+            "location": "Falls Creek",
+            "name": "International Poma",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 6,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 6,
+            "isScheduled": 1,
+            "name": "International Poma",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 7,
+            "location": "Falls Creek",
+            "name": "Lakeside Poma",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 7,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 7,
+            "isScheduled": 1,
+            "name": "Lakeside Poma",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 8,
+            "location": "Falls Creek",
+            "name": "Monkey Bar Poma",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 8,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 8,
+            "isScheduled": 1,
+            "name": "Monkey Bar Poma",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 9,
+            "location": "Falls Creek",
+            "name": "Mouse Trap Carpet",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 9,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 9,
+            "isScheduled": 1,
+            "name": "Mouse Trap Carpet",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 10,
+            "location": "Falls Creek",
+            "name": "Pete's Train Carpet (Snowsports School Only)",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 10,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:00:00.000Z",
+            "id": 10,
+            "isScheduled": 1,
+            "name": "Pete's Train Carpet (Snowsports School Only)",
+            "openTime": "1970-01-01T10:00:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 11,
+            "location": "Falls Creek",
+            "name": "Ruined Castle Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 11,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 11,
+            "isScheduled": 1,
+            "name": "Ruined Castle Quad Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 12,
+            "location": "Falls Creek",
+            "name": "Scott Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 12,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:15:00.000Z",
+            "id": 12,
+            "isScheduled": 1,
+            "name": "Scott Quad Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 13,
+            "location": "Falls Creek",
+            "name": "Snowsports School Carpet",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 13,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:00:00.000Z",
+            "id": 13,
+            "isScheduled": 1,
+            "name": "Snowsports School Carpet",
+            "openTime": "1970-01-01T10:00:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 14,
+            "location": "Falls Creek",
+            "name": "Summit Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 14,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T17:00:00.000Z",
+            "id": 14,
+            "isScheduled": 1,
+            "name": "Summit Quad Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 15,
+            "location": "Falls Creek",
+            "name": "Towers Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 15,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 15,
+            "isScheduled": 1,
+            "name": "Towers Quad Chair",
+            "openTime": "1970-01-01T07:30:00.000Z",
+            "publicArea": "Falls Creek",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        }
+      ]
+    },
+    {
+      "compactCount": 14,
+      "compactRetrievedAt": "2026-07-13T07:47:27.398446Z",
+      "compactSourceId": "hotham_mountainops_lifts",
+      "identity": {
+        "allIdentityMatches": true,
+        "extraRichIds": [],
+        "matchCount": 14,
+        "mismatchCount": 0,
+        "missingRichIds": []
+      },
+      "isScheduledValueTypeCounts": {
+        "integer:1": 14
+      },
+      "observedStatusPairs": [
+        {
+          "compactStatus": "Closed",
+          "compactStatusId": 2,
+          "count": 14,
+          "richStatusCode": 6
+        }
+      ],
+      "queueValueTypeCounts": {
+        "integer:0": 14
+      },
+      "resortId": "hotham",
+      "richCount": 14,
+      "richRetrievedAt": "2026-07-13T07:47:28.009184Z",
+      "richSourceId": "hotham_mountainops_lifts_rich",
+      "rows": [
+        {
+          "compact": {
+            "id": 1,
+            "location": "Hotham",
+            "name": "Heavenly Valley",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 1,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:20:00.000Z",
+            "id": 1,
+            "isScheduled": 1,
+            "name": "Heavenly Valley",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 2,
+            "location": "Hotham",
+            "name": "Gotcha",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 2,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:45:00.000Z",
+            "id": 2,
+            "isScheduled": 1,
+            "name": "Gotcha",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 3,
+            "location": "Hotham",
+            "name": "Village",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 3,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 3,
+            "isScheduled": 1,
+            "name": "Village",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 4,
+            "location": "Hotham",
+            "name": "Blue Ribbon",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 4,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:20:00.000Z",
+            "id": 4,
+            "isScheduled": 1,
+            "name": "Blue Ribbon",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 5,
+            "location": "Hotham",
+            "name": "The Drift",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 5,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 5,
+            "isScheduled": 1,
+            "name": "The Drift",
+            "openTime": "1970-01-01T08:45:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 6,
+            "location": "Hotham",
+            "name": "Keogh's",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 6,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 6,
+            "isScheduled": 1,
+            "name": "Keogh's",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 7,
+            "location": "Hotham",
+            "name": "Summit Quad",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 7,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T17:00:00.000Z",
+            "id": 7,
+            "isScheduled": 1,
+            "name": "Summit Quad",
+            "openTime": "1970-01-01T07:30:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 9,
+            "location": "Hotham",
+            "name": "Roadrunner",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 9,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 9,
+            "isScheduled": 1,
+            "name": "Roadrunner",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 10,
+            "location": "Hotham",
+            "name": "Big D",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 10,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T18:00:00.000Z",
+            "id": 10,
+            "isScheduled": 1,
+            "name": "Big D",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 12,
+            "location": "Hotham",
+            "name": "Dinner Plain",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 12,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 12,
+            "isScheduled": 1,
+            "name": "Dinner Plain",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 13,
+            "location": "Hotham",
+            "name": "Orchard",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 13,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:45:00.000Z",
+            "id": 13,
+            "isScheduled": 1,
+            "name": "Orchard",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 14,
+            "location": "Hotham",
+            "name": "Pup's Playground",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 14,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 14,
+            "isScheduled": 1,
+            "name": "Pup's Playground",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 15,
+            "location": "Hotham",
+            "name": "Bunderool",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 15,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 15,
+            "isScheduled": 1,
+            "name": "Bunderool",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 17,
+            "location": "Hotham",
+            "name": "Summit Trainer Carpet",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 17,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T17:00:00.000Z",
+            "id": 17,
+            "isScheduled": 1,
+            "name": "Summit Trainer Carpet",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Hotham",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        }
+      ]
+    },
+    {
+      "compactCount": 45,
+      "compactRetrievedAt": "2026-07-13T07:47:30.316660Z",
+      "compactSourceId": "perisher_mountainops_lifts",
+      "identity": {
+        "allIdentityMatches": true,
+        "extraRichIds": [],
+        "matchCount": 45,
+        "mismatchCount": 0,
+        "missingRichIds": []
+      },
+      "isScheduledValueTypeCounts": {
+        "integer:0": 36,
+        "integer:1": 9
+      },
+      "observedStatusPairs": [
+        {
+          "compactStatus": "Closed",
+          "compactStatusId": 2,
+          "count": 36,
+          "richStatusCode": 2
+        },
+        {
+          "compactStatus": "Closed",
+          "compactStatusId": 2,
+          "count": 9,
+          "richStatusCode": 6
+        }
+      ],
+      "queueValueTypeCounts": {
+        "integer:0": 45
+      },
+      "resortId": "perisher",
+      "richCount": 45,
+      "richRetrievedAt": "2026-07-13T07:47:31.349355Z",
+      "richSourceId": "perisher_mountainops_lifts_rich",
+      "rows": [
+        {
+          "compact": {
+            "id": 1,
+            "location": "Perisher Valley",
+            "name": "Eyre T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 1,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:45:00.000Z",
+            "id": 1,
+            "isScheduled": 0,
+            "name": "Eyre T-Bar",
+            "openTime": "1970-01-01T08:45:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 2,
+            "location": "Perisher Valley",
+            "name": "International T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 2,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:45:00.000Z",
+            "id": 2,
+            "isScheduled": 0,
+            "name": "International T-Bar ",
+            "openTime": "1970-01-01T08:45:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 5,
+            "location": "Perisher Valley",
+            "name": "Sun Valley T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 5,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:45:00.000Z",
+            "id": 5,
+            "isScheduled": 0,
+            "name": "Sun Valley T-Bar",
+            "openTime": "1970-01-01T08:45:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 6,
+            "location": "Perisher Valley",
+            "name": "Olympic T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 6,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:00:00.000Z",
+            "id": 6,
+            "isScheduled": 0,
+            "name": "Olympic T-Bar ",
+            "openTime": "1970-01-01T10:00:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 7,
+            "location": "Perisher Valley",
+            "name": "Happy Valley T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 7,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:15:00.000Z",
+            "id": 7,
+            "isScheduled": 0,
+            "name": "Happy Valley T-Bar",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 8,
+            "location": "Perisher Valley",
+            "name": "Leichhardt Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 8,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 8,
+            "isScheduled": 0,
+            "name": "Leichhardt Quad Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 9,
+            "location": "Perisher Valley",
+            "name": "Home Rope Tow",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 9,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 9,
+            "isScheduled": 0,
+            "name": "Home Rope Tow",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 10,
+            "location": "Perisher Valley",
+            "name": "Lawson T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 10,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 10,
+            "isScheduled": 0,
+            "name": "Lawson T-Bar",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 11,
+            "location": "Perisher Valley",
+            "name": "Blaxland T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 11,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 11,
+            "isScheduled": 0,
+            "name": "Blaxland T-Bar ",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 12,
+            "location": "Perisher Valley",
+            "name": "Wentworth T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 12,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 12,
+            "isScheduled": 0,
+            "name": "Wentworth T-Bar ",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 13,
+            "location": "Perisher Valley",
+            "name": "Quad Express",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 13,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:15:00.000Z",
+            "id": 13,
+            "isScheduled": 1,
+            "name": "Quad Express",
+            "openTime": "1970-01-01T08:45:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 14,
+            "location": "Perisher Valley",
+            "name": "Sturt T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 14,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 14,
+            "isScheduled": 1,
+            "name": "Sturt T-Bar",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 15,
+            "location": "Perisher Valley",
+            "name": "Village 8 Express Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 15,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T17:00:00.000Z",
+            "id": 15,
+            "isScheduled": 1,
+            "name": "Village 8 Express Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 16,
+            "location": "Perisher Valley",
+            "name": "Mitchell T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 16,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 16,
+            "isScheduled": 1,
+            "name": "Mitchell T-Bar ",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 18,
+            "location": "Perisher Valley",
+            "name": "Telemark T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 18,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 18,
+            "isScheduled": 0,
+            "name": "Telemark T-Bar",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 19,
+            "location": "Perisher Valley",
+            "name": "Pretty Valley Double Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 19,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:15:00.000Z",
+            "id": 19,
+            "isScheduled": 0,
+            "name": "Pretty Valley Double Chair",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 20,
+            "location": "Perisher Valley",
+            "name": "North Perisher T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 20,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:30:00.000Z",
+            "id": 20,
+            "isScheduled": 0,
+            "name": "North Perisher T-Bar",
+            "openTime": "1970-01-01T09:15:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 21,
+            "location": "Perisher Valley",
+            "name": "Interceptor Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 21,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:45:00.000Z",
+            "id": 21,
+            "isScheduled": 0,
+            "name": "Interceptor Quad Chair",
+            "openTime": "1970-01-01T08:45:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 24,
+            "location": "Perisher Valley",
+            "name": "Possum Conveyor",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 24,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 24,
+            "isScheduled": 0,
+            "name": "Possum Conveyor",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 25,
+            "location": "Perisher Valley",
+            "name": "Wallaby Conveyor",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 25,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 25,
+            "isScheduled": 1,
+            "name": "Wallaby Conveyor",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 26,
+            "location": "Smiggin Holes",
+            "name": "Piper T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 26,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 26,
+            "isScheduled": 0,
+            "name": "Piper T-Bar",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 27,
+            "location": "Smiggin Holes",
+            "name": "Link T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 27,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 27,
+            "isScheduled": 0,
+            "name": "Link T-Bar",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 28,
+            "location": "Smiggin Holes",
+            "name": "Burke T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 28,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:45:00.000Z",
+            "id": 28,
+            "isScheduled": 0,
+            "name": "Burke T-Bar ",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 29,
+            "location": "Smiggin Holes",
+            "name": "Wills T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 29,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 29,
+            "isScheduled": 0,
+            "name": "Wills T-Bar",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 30,
+            "location": "Smiggin Holes",
+            "name": "Kaaten Triple Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 30,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 30,
+            "isScheduled": 0,
+            "name": "Kaaten Triple Chair ",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 31,
+            "location": "Smiggin Holes",
+            "name": "Hume T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 31,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 31,
+            "isScheduled": 0,
+            "name": "Hume T-Bar",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 32,
+            "location": "Smiggin Holes",
+            "name": "Captain Cook J-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 32,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:45:00.000Z",
+            "id": 32,
+            "isScheduled": 0,
+            "name": "Captain Cook J-Bar",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 33,
+            "location": "Smiggin Holes",
+            "name": "Scott J-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 33,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 33,
+            "isScheduled": 0,
+            "name": "Scott J-Bar ",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 34,
+            "location": "Smiggin Holes",
+            "name": "Zoe's Conveyor",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 34,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:45:00.000Z",
+            "id": 34,
+            "isScheduled": 0,
+            "name": "Zoe's Conveyor",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 35,
+            "location": "Smiggin Holes",
+            "name": "Harry's & Herman's Conveyor",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 35,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 35,
+            "isScheduled": 1,
+            "name": "Harry's & Herman's Conveyor",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Smiggin Holes",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 37,
+            "location": "Blue Cow",
+            "name": "Ridge Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 37,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 37,
+            "isScheduled": 0,
+            "name": "Ridge Quad Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Blue Cow",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 38,
+            "location": "Blue Cow",
+            "name": "Summit Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 38,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 38,
+            "isScheduled": 0,
+            "name": "Summit Quad Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Blue Cow",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 39,
+            "location": "Blue Cow",
+            "name": "Pony Conveyor",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 39,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 39,
+            "isScheduled": 1,
+            "name": "Pony Conveyor",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Blue Cow",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 40,
+            "location": "Blue Cow",
+            "name": "Early Starter Double Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 40,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 40,
+            "isScheduled": 1,
+            "name": "Early Starter Double Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Blue Cow",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 41,
+            "location": "Blue Cow",
+            "name": "Terminal Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 41,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:30:00.000Z",
+            "id": 41,
+            "isScheduled": 0,
+            "name": "Terminal Quad Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Blue Cow",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 42,
+            "location": "Blue Cow",
+            "name": "Brumby T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 42,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:15:00.000Z",
+            "id": 42,
+            "isScheduled": 0,
+            "name": "Brumby T-Bar",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Blue Cow",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 43,
+            "location": "Blue Cow",
+            "name": "Blue Cow Ski School Rope Tow",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 43,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 43,
+            "isScheduled": 0,
+            "name": "Blue Cow Ski School Rope Tow",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Blue Cow",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 45,
+            "location": "Blue Cow",
+            "name": "Pleasant Valley Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 45,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 45,
+            "isScheduled": 0,
+            "name": "Pleasant Valley Quad Chair",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Blue Cow",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 46,
+            "location": "Guthega",
+            "name": "Blue Cow T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 46,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 46,
+            "isScheduled": 0,
+            "name": "Blue Cow T-Bar",
+            "openTime": "1970-01-01T08:45:00.000Z",
+            "publicArea": "Guthega",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 48,
+            "location": "Guthega",
+            "name": "Blue Calf T-Bar",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 48,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 48,
+            "isScheduled": 0,
+            "name": "Blue Calf T-Bar",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Guthega",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 49,
+            "location": "Guthega",
+            "name": "Carpark Double Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 49,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T15:30:00.000Z",
+            "id": 49,
+            "isScheduled": 0,
+            "name": "Carpark Double Chair",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Guthega",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 84,
+            "location": "Perisher Valley",
+            "name": "Front Valley Conveyor",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 84,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:45:00.000Z",
+            "id": 84,
+            "isScheduled": 1,
+            "name": "Front Valley Conveyor",
+            "openTime": "1970-01-01T08:30:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 6
+          }
+        },
+        {
+          "compact": {
+            "id": 91,
+            "location": "Guthega",
+            "name": "Freedom Quad Chair",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 91,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 91,
+            "isScheduled": 0,
+            "name": "Freedom Quad Chair",
+            "openTime": "1970-01-01T08:45:00.000Z",
+            "publicArea": "Guthega",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 94,
+            "location": "Perisher Valley",
+            "name": "Echidna Conveyor",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 94,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 94,
+            "isScheduled": 0,
+            "name": "Echidna Conveyor",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        },
+        {
+          "compact": {
+            "id": 95,
+            "location": "Perisher Valley",
+            "name": "Mt Perisher 6",
+            "status": "Closed",
+            "statusId": 2
+          },
+          "id": 95,
+          "identityMatch": true,
+          "rich": {
+            "closeTime": "1970-01-01T16:00:00.000Z",
+            "id": 95,
+            "isScheduled": 0,
+            "name": "Mt Perisher 6",
+            "openTime": "1970-01-01T09:00:00.000Z",
+            "publicArea": "Perisher Valley",
+            "queueMinsEstimate": 0,
+            "statusCode": 2
+          }
+        }
+      ]
+    }
+  ],
+  "reviewedStatusDisposition": [
+    {
+      "classification": "independently_reviewed_direct_observation",
+      "normalizedStatus": "open",
+      "note": "Reviewed same-poll observation; no durable supporting row was retained.",
+      "rowSupportedByCheckedEvidence": false,
+      "rowSupportedByCurrentReport": false,
+      "statusCode": 1
+    },
+    {
+      "classification": "row_supported",
+      "normalizedStatus": "closed",
+      "rowSupportedByCheckedEvidence": true,
+      "rowSupportedByCurrentReport": true,
+      "statusCode": 2
+    },
+    {
+      "classification": "row_supported_prior_sample",
+      "evidenceSampleId": "hotham-big-d-code-3",
+      "normalizedStatus": "on_hold",
+      "rowSupportedByCheckedEvidence": true,
+      "rowSupportedByCurrentReport": false,
+      "statusCode": 3
+    },
+    {
+      "classification": "unresolved",
+      "normalizedStatus": "unknown",
+      "note": "Observed with compact Closed but not mapped; schedule correlation is not status semantics.",
+      "rowSupportedByCheckedEvidence": false,
+      "rowSupportedByCurrentReport": false,
+      "statusCode": 6
+    }
+  ],
+  "reviewedStatusSamples": [
+    {
+      "compact": {
+        "id": 10,
+        "location": "Hotham",
+        "name": "Big D",
+        "status": "On Hold",
+        "statusId": 3
+      },
+      "identityMatch": true,
+      "resortId": "hotham",
+      "reviewedDate": "2026-07-13",
+      "rich": {
+        "id": 10,
+        "name": "Big D",
+        "publicArea": "Hotham",
+        "statusCode": 3
+      },
+      "sampleId": "hotham-big-d-code-3"
+    }
+  ],
+  "scheduleDisposition": "vail_rich_binary_schedule_flag_v1: exact integer 0=false and 1=true; other values/types are null with diagnostics; independent of operational status",
+  "schemaVersion": "alpine.vail-rich-compact-comparison.v2"
+}

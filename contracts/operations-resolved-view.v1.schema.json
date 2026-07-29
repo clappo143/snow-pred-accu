@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://alpine.example/contracts/operations-resolved-view.v1.schema.json",
+  "title": "Alpine operations deterministic resolved view v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion", "producer", "generatedAt", "asOf", "sourceEvidenceSchemaVersion",
+    "evidenceWindow", "evidenceFingerprint", "resolutionPolicyRevision", "assetRegistryRevision",
+    "sourceInventoryRevision", "metricCatalogueRevision", "resorts", "conflicts",
+    "inputEvidenceConflicts", "planActualComparisons", "diagnostics"
+  ],
+  "properties": {
+    "schemaVersion": {"const": "alpine.operations-resolved-view.v1"},
+    "producer": {"type": "string"},
+    "generatedAt": {"type": "string", "format": "date-time"},
+    "asOf": {"type": "string", "format": "date-time"},
+    "sourceEvidenceSchemaVersion": {"const": "alpine.operations-export.v2"},
+    "evidenceWindow": {
+      "type": "object", "additionalProperties": false, "required": ["start", "end"],
+      "properties": {"start": {"type": "string", "format": "date-time"}, "end": {"type": "string", "format": "date-time"}}
+    },
+    "evidenceFingerprint": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "resolutionPolicyRevision": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "assetRegistryRevision": {"type": "string"},
+    "sourceInventoryRevision": {"type": "string"},
+    "metricCatalogueRevision": {"type": "string"},
+    "resorts": {"type": "array", "items": {"$ref": "#/$defs/resort"}},
+    "conflicts": {"type": "array", "items": {"$ref": "#/$defs/conflict"}},
+    "inputEvidenceConflicts": {"type": "array", "items": {"type": "object"}},
+    "planActualComparisons": {"type": "array", "items": {"$ref": "#/$defs/comparison"}},
+    "diagnostics": {
+      "type": "object", "additionalProperties": false,
+      "required": ["eligibleCaptureCount", "excludedFutureCaptureIds", "excludedFutureCaptures", "unusableCaptures", "captureWarnings", "excludedInputEvidenceConflicts", "staleSelectionCount", "unresolvedSelectionCount", "unmappedSubjectCount", "aggregateIssues", "warnings"],
+      "properties": {
+        "eligibleCaptureCount": {"type": "integer", "minimum": 0},
+        "excludedFutureCaptureIds": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "excludedFutureCaptures": {"type": "array", "items": {"$ref": "#/$defs/excludedCaptureDiagnostic"}},
+        "unusableCaptures": {"type": "array", "items": {"$ref": "#/$defs/excludedCaptureDiagnostic"}},
+        "captureWarnings": {"type": "array", "items": {"$ref": "#/$defs/captureDiagnostic"}},
+        "excludedInputEvidenceConflicts": {"type": "array", "items": {"$ref": "#/$defs/excludedInputConflict"}},
+        "staleSelectionCount": {"type": "integer", "minimum": 0},
+        "unresolvedSelectionCount": {"type": "integer", "minimum": 0},
+        "unmappedSubjectCount": {"type": "integer", "minimum": 0},
+        "aggregateIssues": {"type": "array", "items": {"type": "object"}},
+        "warnings": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+  "$defs": {
+    "captureDiagnostic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["captureId", "resortId", "sourceId", "retrievalStatus", "retrievedAt", "httpStatus", "warnings"],
+      "properties": {
+        "captureId": {"type": "string"}, "resortId": {"type": "string"}, "sourceId": {"type": "string"},
+        "retrievalStatus": {"enum": ["ok", "partial", "failed", "not_modified"]},
+        "retrievedAt": {"type": "string", "format": "date-time"}, "httpStatus": {"type": ["integer", "null"]},
+        "warnings": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "excludedCaptureDiagnostic": {
+      "type": "object", "additionalProperties": false,
+      "required": ["captureId", "resortId", "sourceId", "retrievalStatus", "retrievedAt", "httpStatus", "warnings", "exclusionReason"],
+      "properties": {
+        "captureId": {"type": "string"}, "resortId": {"type": "string"}, "sourceId": {"type": "string"},
+        "retrievalStatus": {"enum": ["ok", "partial", "failed", "not_modified"]},
+        "retrievedAt": {"type": "string", "format": "date-time"}, "httpStatus": {"type": ["integer", "null"]},
+        "warnings": {"type": "array", "items": {"type": "string"}},
+        "exclusionReason": {"enum": ["retrieved_after_as_of", "retrieval_status_not_usable"]}
+      }
+    },
+    "excludedInputConflict": {
+      "type": "object", "additionalProperties": false, "required": ["conflictId", "observationIds", "reasons"],
+      "properties": {
+        "conflictId": {"type": "string"},
+        "observationIds": {"type": "array", "items": {"type": "string"}},
+        "reasons": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["missing_observation", "missing_capture", "capture_retrieved_after_as_of", "capture_not_usable", "observation_effective_period_ineligible"]}}
+      }
+    },
+    "lane": {"enum": ["actual", "reported", "plan", "advisory", "unknown"]},
+    "selection": {
+      "type": ["object", "null"],
+      "properties": {
+        "resolutionId": {"type": "string"}, "value": {}, "selectedObservationId": {"type": "string"},
+        "captureId": {"type": "string"}, "sourceId": {"type": "string"}, "observationRole": {"type": "string"},
+        "observedAt": {"type": ["string", "null"]}, "captureRetrievedAt": {"type": "string"},
+        "captureAgeMinutes": {"type": "number"}, "observationAgeMinutes": {"type": ["number", "null"]},
+        "freshnessThresholdMinutes": {"type": "integer"}, "freshnessState": {"enum": ["fresh", "stale", "future_timestamp_anomaly", "unknown"]},
+        "selectionReason": {"type": "string"}, "alternateCandidateObservationIds": {"type": "array", "items": {"type": "string"}},
+        "known": {"type": "boolean"}
+      },
+      "required": ["resolutionId", "value", "selectedObservationId", "captureId", "sourceId", "observationRole", "observedAt", "captureRetrievedAt", "captureAgeMinutes", "observationAgeMinutes", "freshnessThresholdMinutes", "freshnessState", "selectionReason", "alternateCandidateObservationIds", "known"],
+      "additionalProperties": false
+    },
+    "laneSelection": {"type": "object", "additionalProperties": false, "required": ["lane", "selection"], "properties": {"lane": {"$ref": "#/$defs/lane"}, "selection": {"$ref": "#/$defs/selection"}}},
+    "resolvedRecord": {
+      "type": "object", "required": ["resolutionKey", "fieldFamily", "subject", "lanes", "preferredSelection"],
+      "properties": {"resolutionKey": {"type": "string"}, "fieldFamily": {"type": "string"}, "subject": {"type": "object"}, "unit": {"type": ["string", "null"]}, "scope": {"type": ["string", "null"]}, "locationLabel": {"type": ["string", "null"]}, "denominatorScope": {"type": ["string", "null"]}, "lanes": {"type": "array", "items": {"$ref": "#/$defs/laneSelection"}}, "preferredSelection": {"$ref": "#/$defs/selection"}},
+      "additionalProperties": false
+    },
+    "resort": {
+      "type": "object", "additionalProperties": false,
+      "required": ["resortId", "assetFields", "metrics", "snowmakingSignals", "aggregates", "narratives"],
+      "properties": {"resortId": {"type": "string"}, "assetFields": {"type": "array", "items": {"$ref": "#/$defs/resolvedRecord"}}, "metrics": {"type": "array", "items": {"$ref": "#/$defs/resolvedRecord"}}, "snowmakingSignals": {"type": "array", "items": {"$ref": "#/$defs/resolvedRecord"}}, "aggregates": {"type": "array", "items": {"$ref": "#/$defs/resolvedRecord"}}, "narratives": {"type": "array", "items": {"$ref": "#/$defs/resolvedRecord"}}}
+    },
+    "conflict": {
+      "type": "object", "additionalProperties": false,
+      "required": ["conflictId", "resortId", "fieldFamily", "subject", "observationIds", "conflictType", "detectedAt", "selectedDisplayObservationId", "selectionReason", "status", "notes"],
+      "properties": {"conflictId": {"type": "string"}, "resortId": {"type": "string"}, "fieldFamily": {"type": "string"}, "subject": {"type": "object"}, "observationIds": {"type": "array", "minItems": 1, "items": {"type": "string"}}, "conflictType": {"type": "string"}, "detectedAt": {"type": "string", "format": "date-time"}, "selectedDisplayObservationId": {"type": ["string", "null"]}, "selectionReason": {"type": ["string", "null"]}, "status": {"const": "unresolved"}, "notes": {"type": "array", "items": {"type": "string"}}}
+    },
+    "comparison": {
+      "type": "object", "additionalProperties": false,
+      "required": ["comparisonId", "resortId", "fieldFamily", "subject", "plan", "actual", "different", "notes"],
+      "properties": {"comparisonId": {"type": "string"}, "resortId": {"type": "string"}, "fieldFamily": {"type": "string"}, "subject": {"type": "object"}, "plan": {"$ref": "#/$defs/selection"}, "actual": {"$ref": "#/$defs/selection"}, "different": {"type": "boolean"}, "notes": {"type": "array", "items": {"type": "string"}}}
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "assetFieldPolicies": [
+    {"fieldFamily": "operationalStatus", "knownUnknownValues": [null, "unknown", "unavailable"], "sourcePriorityByLane": {"actual": ["falls_mountainops_lifts", "hotham_mountainops_lifts", "perisher_mountainops_lifts", "falls_mountainops_lifts_rich", "hotham_mountainops_lifts_rich", "perisher_mountainops_lifts_rich"], "reported": ["falls_official_report", "hotham_official_report", "perisher_official_report"], "plan": ["falls_official_report", "hotham_official_report", "perisher_official_report"]}},
+    {"fieldFamily": "scheduled", "knownUnknownValues": [null], "sourcePriorityByLane": {"actual": ["falls_mountainops_lifts_rich", "hotham_mountainops_lifts_rich", "perisher_mountainops_lifts_rich"]}},
+    {"fieldFamily": "expectedToOpen", "knownUnknownValues": [null], "sourcePriorityByLane": {}},
+    {"fieldFamily": "openTime", "knownUnknownValues": [null], "sourcePriorityByLane": {"actual": ["falls_mountainops_lifts", "hotham_mountainops_lifts", "perisher_mountainops_lifts", "falls_mountainops_lifts_rich", "hotham_mountainops_lifts_rich", "perisher_mountainops_lifts_rich"]}},
+    {"fieldFamily": "closeTime", "knownUnknownValues": [null], "sourcePriorityByLane": {"actual": ["falls_mountainops_lifts", "hotham_mountainops_lifts", "perisher_mountainops_lifts", "falls_mountainops_lifts_rich", "hotham_mountainops_lifts_rich", "perisher_mountainops_lifts_rich"]}},
+    {"fieldFamily": "queueMinutes", "knownUnknownValues": [null], "sourcePriorityByLane": {}},
+    {"fieldFamily": "groomed", "knownUnknownValues": [null], "sourcePriorityByLane": {"actual": ["falls_mountainops_runs", "hotham_mountainops_runs", "perisher_mountainops_runs"], "reported": ["falls_official_report", "hotham_official_report", "perisher_official_report"]}},
+    {"fieldFamily": "condition", "knownUnknownValues": [null], "sourcePriorityByLane": {}},
+    {"fieldFamily": "statusReason", "knownUnknownValues": [null, []], "sourcePriorityByLane": {}}
+  ],
+  "conflictWindowMinutes": 15,
+  "futureTimestampToleranceMinutes": 5,
+  "preferredDisplayOrder": ["actual:fresh", "reported:fresh", "actual:future_timestamp_anomaly", "reported:future_timestamp_anomaly", "actual:stale", "reported:stale", "plan:fresh", "plan:future_timestamp_anomaly", "plan:stale", "advisory:fresh", "advisory:future_timestamp_anomaly", "advisory:stale", "unknown:fresh", "unknown:future_timestamp_anomaly", "unknown:stale"],
+  "revision": "3c6fafa3bacb2bf229480015eed0d89f744f60ef6707420bcf1a40cd3bafa034",
+  "roleLanes": {"actual": ["live_actual"], "reported": ["report_summary", "measurement"], "plan": ["morning_plan", "expected"], "advisory": ["advisory"], "unknown": ["unknown"]},
+  "schemaVersion": "alpine.operations-resolution-policy.v1",
+  "sourceCatalogueRevision": "b4bef66f2cf610ae2618114f4b79b31bb28d8df61fb083568c933d9e699b155f",
+  "sourceVocabulary": ["falls_official_report", "falls_mountainops_runs", "falls_mountainops_lifts", "falls_mountainops_lifts_rich", "hotham_official_report", "hotham_mountainops_runs", "hotham_mountainops_lifts", "hotham_mountainops_lifts_rich", "perisher_official_report", "perisher_mountainops_runs", "perisher_mountainops_lifts", "perisher_mountainops_lifts_rich", "buller_weather_widget", "buller_trails", "buller_lifts", "thredbo_lifts_trails", "thredbo_printable_daily_report", "bawbaw_snow_lift_report", "charlotte_pass_on_mountain_report", "selwyn_snow_weather_report"]
+}

@@ -1,0 +1,1938 @@
+{
+  "$defs": {
+    "aggregate": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "assetClass": {
+          "type": "string"
+        },
+        "captureId": {
+          "type": "string"
+        },
+        "denominator": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "denominatorScope": {
+          "enum": [
+            "all_listed",
+            "scheduled_today",
+            "expected_today",
+            "service_records",
+            "unique_physical_assets",
+            "seasonally_active",
+            "eligible_for_snowmaking",
+            "open_terrain",
+            "unknown"
+          ]
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "numerator": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "observationId": {
+          "type": "string"
+        },
+        "observationRole": {
+          "$ref": "#/$defs/role"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "rawValue": {
+          "$ref": "#/$defs/raw"
+        },
+        "resortId": {
+          "type": "string"
+        },
+        "sourceField": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "observationId",
+        "captureId",
+        "resortId",
+        "assetClass",
+        "area",
+        "status",
+        "numerator",
+        "denominator",
+        "denominatorScope",
+        "observationRole",
+        "observedAt",
+        "sourceField",
+        "rawValue",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "aggregateSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "assetClass": {
+          "type": "string"
+        },
+        "denominatorScope": {
+          "enum": [
+            "all_listed",
+            "scheduled_today",
+            "expected_today",
+            "service_records",
+            "winter_skiing_service",
+            "unique_physical_assets",
+            "seasonally_active",
+            "eligible_for_snowmaking",
+            "open_terrain",
+            "unknown"
+          ]
+        },
+        "denominatorSource": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "numeratorStatus": {
+          "type": "string"
+        },
+        "sameCapture": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "assetClass",
+        "numeratorStatus",
+        "denominatorSource",
+        "denominatorScope",
+        "sameCapture"
+      ],
+      "type": "object"
+    },
+    "asset": {
+      "additionalProperties": false,
+      "properties": {
+        "activeFrom": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "activeTo": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "area": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "assetClass": {
+          "enum": [
+            "lift",
+            "run",
+            "terrain_park",
+            "cross_country_trail",
+            "toboggan_area",
+            "activity",
+            "transport",
+            "area"
+          ]
+        },
+        "assetId": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "classificationEvidence": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "denominatorEligibility": {
+          "items": {
+            "enum": [
+              "all_listed",
+              "scheduled_today",
+              "expected_today",
+              "service_records",
+              "winter_skiing_service",
+              "unique_physical_assets",
+              "seasonally_active",
+              "eligible_for_snowmaking",
+              "open_terrain",
+              "unknown"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "difficulty": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "displayName": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "identityConfidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unverified"
+          ]
+        },
+        "lengthM": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "liftType": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "physicalAssetGroupId": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "registryStatus": {
+          "enum": [
+            "active",
+            "retired",
+            "provisional"
+          ]
+        },
+        "resortId": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "serviceVariant": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "sourceMappings": {
+          "items": {
+            "$ref": "#/$defs/mapping"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "trailType": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "required": [
+        "assetId",
+        "resortId",
+        "assetClass",
+        "displayName",
+        "area",
+        "physicalAssetGroupId",
+        "serviceVariant",
+        "liftType",
+        "trailType",
+        "difficulty",
+        "lengthM",
+        "registryStatus",
+        "activeFrom",
+        "activeTo",
+        "denominatorEligibility",
+        "identityConfidence",
+        "classificationEvidence",
+        "sourceMappings",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "assetSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "assetClass": {
+          "type": "string"
+        },
+        "mappingRule": {
+          "type": "string"
+        },
+        "operationalStatusPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "upstreamIdentityPath": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "assetClass",
+        "upstreamIdentityPath",
+        "operationalStatusPath",
+        "mappingRule"
+      ],
+      "type": "object"
+    },
+    "assetStatus": {
+      "additionalProperties": false,
+      "properties": {
+        "assetClass": {
+          "enum": [
+            "lift",
+            "run",
+            "terrain_park",
+            "cross_country_trail",
+            "toboggan_area",
+            "activity",
+            "transport",
+            "area"
+          ]
+        },
+        "assetId": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "captureId": {
+          "type": "string"
+        },
+        "closeTime": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "condition": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "effectiveFrom": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "effectiveTo": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "expectedToOpen": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "groomed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "interpretationConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "observationId": {
+          "type": "string"
+        },
+        "observationRole": {
+          "$ref": "#/$defs/role"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "openTime": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "operationalStatus": {
+          "enum": [
+            "open",
+            "closed",
+            "standby",
+            "on_hold",
+            "delayed",
+            "scheduled",
+            "partial",
+            "unknown",
+            "unavailable"
+          ]
+        },
+        "queueMinutes": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "rawStatus": {
+          "$ref": "#/$defs/raw"
+        },
+        "resortId": {
+          "type": "string"
+        },
+        "scheduled": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "snowmakingObservationIds": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "statusReason": {
+          "items": {
+            "enum": [
+              "wind",
+              "visibility",
+              "weather",
+              "mechanical",
+              "patrol",
+              "snow_cover",
+              "demand",
+              "schedule",
+              "unknown"
+            ]
+          },
+          "type": "array"
+        },
+        "upstreamAssetId": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "upstreamName": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "observationId",
+        "captureId",
+        "resortId",
+        "assetId",
+        "upstreamAssetId",
+        "upstreamName",
+        "assetClass",
+        "operationalStatus",
+        "statusReason",
+        "rawStatus",
+        "observationRole",
+        "scheduled",
+        "expectedToOpen",
+        "openTime",
+        "closeTime",
+        "queueMinutes",
+        "condition",
+        "groomed",
+        "observedAt",
+        "effectiveFrom",
+        "effectiveTo",
+        "interpretationConfidence",
+        "warnings",
+        "snowmakingObservationIds"
+      ],
+      "type": "object"
+    },
+    "capture": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "retrievalStatus": {
+                "enum": [
+                  "ok",
+                  "partial"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payloadHash": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "rawPayloadRef": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "payloadHash",
+              "rawPayloadRef"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "retrievalStatus": {
+                "const": "failed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payloadHash": {
+                "type": "null"
+              },
+              "rawPayloadRef": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "retrievalStatus": {
+                "const": "not_modified"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "payloadHash": {
+                "pattern": "^[a-f0-9]{64}$",
+                "type": "string"
+              },
+              "rawPayloadRef": {
+                "minLength": 1,
+                "type": "string"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "assetRegistryRevision": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "captureId": {
+          "type": "string"
+        },
+        "contentType": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "freshnessMinutes": {
+          "minimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "httpStatus": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "metricCatalogueRevision": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "operationalDate": {
+          "format": "date",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parserVersion": {
+          "type": "string"
+        },
+        "payloadHash": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "rawPayloadRef": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "resortId": {
+          "type": "string"
+        },
+        "responseAt": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "retrievalStatus": {
+          "enum": [
+            "ok",
+            "partial",
+            "failed",
+            "not_modified"
+          ]
+        },
+        "retrievedAt": {
+          "$ref": "#/$defs/time"
+        },
+        "sourceId": {
+          "type": "string"
+        },
+        "sourceInventoryRevision": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "sourceLayer": {
+          "type": "string"
+        },
+        "sourceReportedAt": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "sourceRole": {
+          "enum": [
+            "live_asset_status",
+            "daily_report",
+            "expected_operations",
+            "summary_widget",
+            "narrative_report",
+            "manual_observation",
+            "derived"
+          ]
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "captureId",
+        "resortId",
+        "sourceId",
+        "sourceLayer",
+        "sourceRole",
+        "retrievedAt",
+        "responseAt",
+        "sourceReportedAt",
+        "operationalDate",
+        "httpStatus",
+        "contentType",
+        "payloadHash",
+        "rawPayloadRef",
+        "parserVersion",
+        "retrievalStatus",
+        "freshnessMinutes",
+        "warnings",
+        "assetRegistryRevision",
+        "sourceInventoryRevision",
+        "metricCatalogueRevision"
+      ],
+      "type": "object"
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low",
+        "unverified"
+      ]
+    },
+    "conflict": {
+      "additionalProperties": false,
+      "properties": {
+        "conflictId": {
+          "type": "string"
+        },
+        "conflictType": {
+          "type": "string"
+        },
+        "detectedAt": {
+          "$ref": "#/$defs/time"
+        },
+        "fieldFamily": {
+          "type": "string"
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "observationIds": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 2,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "resolution": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "resortId": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "open",
+            "accepted",
+            "resolved",
+            "not_a_conflict"
+          ]
+        },
+        "subjectId": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "required": [
+        "conflictId",
+        "resortId",
+        "fieldFamily",
+        "subjectId",
+        "observationIds",
+        "conflictType",
+        "detectedAt",
+        "status",
+        "resolution",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "diagnostics": {
+      "additionalProperties": false,
+      "properties": {
+        "unknownSourceFields": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "captureId": {
+                "type": "string"
+              },
+              "path": {
+                "type": "string"
+              },
+              "sourceId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "sourceId",
+              "path",
+              "captureId"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "unmappedAssetCount": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "warnings",
+        "unknownSourceFields",
+        "unmappedAssetCount"
+      ],
+      "type": "object"
+    },
+    "emission": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregateSpec": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/aggregateSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assetSpec": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/assetSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "destinationCollection": {
+          "enum": [
+            "metricObservations",
+            "snowmakingObservations",
+            "assetStatusObservations",
+            "aggregateObservations",
+            "narratives"
+          ]
+        },
+        "destinationField": {
+          "type": "string"
+        },
+        "interpretationConfidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unverified"
+          ]
+        },
+        "metricKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "normalizedValueType": {
+          "enum": [
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "date",
+            "date-time",
+            "status",
+            "object"
+          ]
+        },
+        "observationRole": {
+          "enum": [
+            "live_actual",
+            "morning_plan",
+            "expected",
+            "report_summary",
+            "measurement",
+            "advisory",
+            "unknown"
+          ]
+        },
+        "scope": {
+          "type": "string"
+        },
+        "semanticQualifier": {
+          "type": "string"
+        },
+        "snowmakingSpec": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/snowSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "unitRule": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "destinationCollection",
+        "destinationField",
+        "metricKey",
+        "normalizedValueType",
+        "unitRule",
+        "observationRole",
+        "scope",
+        "interpretationConfidence",
+        "aggregateSpec",
+        "assetSpec",
+        "snowmakingSpec",
+        "semanticQualifier"
+      ],
+      "type": "object"
+    },
+    "listExpansionSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregateDerivation": {
+          "additionalProperties": false,
+          "properties": {
+            "denominatorScope": {
+              "enum": [
+                "all_listed",
+                "expected_today",
+                "unknown"
+              ]
+            },
+            "denominatorSourceFields": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array",
+              "uniqueItems": true
+            },
+            "numerator": {
+              "const": "expanded_nonempty_element_count"
+            },
+            "sameCapture": {
+              "const": true
+            }
+          },
+          "required": [
+            "numerator",
+            "denominatorSourceFields",
+            "denominatorScope",
+            "sameCapture"
+          ],
+          "type": "object"
+        },
+        "assetClass": {
+          "type": "string"
+        },
+        "area": {
+          "type": ["string", "null"]
+        },
+        "blankHandling": {
+          "const": "explicit_empty_list"
+        },
+        "delimiter": {
+          "const": ","
+        },
+        "duplicateHandling": {
+          "const": "retain_and_warn"
+        },
+        "emittedMeaning": {
+          "type": "string"
+        },
+        "mappingRule": {
+          "type": "string"
+        },
+        "memberValue": {
+          "additionalProperties": false,
+          "properties": {
+            "operationalStatus": {"type": ["string", "null"]},
+            "groomed": {"type": ["boolean", "null"]},
+            "snowmakingState": {"type": ["string", "null"]}
+          },
+          "required": ["operationalStatus", "groomed", "snowmakingState"],
+          "type": "object"
+        },
+        "observationRole": {
+          "enum": [
+            "morning_plan",
+            "expected",
+            "report_summary"
+          ]
+        },
+        "preserveRaw": {
+          "const": true
+        },
+        "removeEmptyElements": {
+          "const": "only_empty"
+        },
+        "retainUnmapped": {
+          "const": true
+        },
+        "trimWhitespace": {
+          "const": true
+        }
+      },
+      "required": [
+        "delimiter",
+        "trimWhitespace",
+        "removeEmptyElements",
+        "preserveRaw",
+        "duplicateHandling",
+        "mappingRule",
+        "retainUnmapped",
+        "assetClass",
+        "emittedMeaning",
+        "observationRole",
+        "blankHandling",
+        "aggregateDerivation",
+        "memberValue",
+        "area"
+      ],
+      "type": "object"
+    },
+    "mapping": {
+      "additionalProperties": false,
+      "properties": {
+        "sourceId": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "upstreamArea": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "upstreamAssetId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "upstreamName": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "validFrom": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "validTo": {
+          "$ref": "#/$defs/nullableString"
+        }
+      },
+      "required": [
+        "sourceId",
+        "upstreamAssetId",
+        "upstreamName",
+        "upstreamArea",
+        "validFrom",
+        "validTo"
+      ],
+      "type": "object"
+    },
+    "metric": {
+      "additionalProperties": false,
+      "properties": {
+        "captureId": {
+          "type": "string"
+        },
+        "effectiveFrom": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "effectiveTo": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "interpretationConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "locationLabel": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "metricKey": {
+          "enum": [
+            "snowfall_24h_cm",
+            "snowfall_48h_cm",
+            "snowfall_72h_cm",
+            "snowfall_7d_cm",
+            "storm_total_cm",
+            "season_snowfall_cm",
+            "last_snowfall_date",
+            "natural_depth_cm",
+            "machine_made_depth_cm",
+            "average_depth_open_runs_cm",
+            "location_depth_cm",
+            "snowmaking_volume_m3",
+            "current_temperature_c",
+            "forecast_temperature_c",
+            "forecast_max_temperature_c",
+            "daytime_high_temperature_c",
+            "daytime_low_temperature_c",
+            "overnight_min_temperature_c",
+            "feels_like_temperature_c",
+            "wind_speed_kmh",
+            "wind_speed_min_kmh",
+            "wind_speed_max_kmh",
+            "wind_gust_kmh",
+            "wind_direction_compass",
+            "wind_direction_degrees",
+            "precipitation_since_9am_mm",
+            "cloud_cover",
+            "snow_cover_rating",
+            "surface_condition",
+            "weather_condition",
+            "weather_forecast",
+            "visibility",
+            "precipitation_condition",
+            "road_condition",
+            "chain_requirement",
+            "village_access_condition",
+            "backcountry_advisory",
+            "avalanche_advisory",
+            "heli_operation_status",
+            "cross_country_cover",
+            "cross_country_condition",
+            "cross_country_groomed_km",
+            "cross_country_groomed_24h_km"
+          ]
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "observationId": {
+          "type": "string"
+        },
+        "observationRole": {
+          "$ref": "#/$defs/role"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "rawValue": {
+          "$ref": "#/$defs/raw"
+        },
+        "resortId": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "semanticQualifier": {
+          "type": "string"
+        },
+        "sourceField": {
+          "type": "string"
+        },
+        "subjectId": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "unit": {
+          "enum": [
+            "cm",
+            "compass",
+            "date",
+            "degC",
+            "degrees",
+            "km",
+            "km/h",
+            "m3",
+            "mm",
+            "rating",
+            "status",
+            "text"
+          ]
+        },
+        "value": {
+          "$ref": "#/$defs/raw"
+        },
+        "valueStatus": {
+          "enum": [
+            "observed",
+            "explicit_zero",
+            "blank",
+            "unavailable",
+            "not_applicable",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "observationId",
+        "captureId",
+        "resortId",
+        "metricKey",
+        "value",
+        "unit",
+        "valueStatus",
+        "observationRole",
+        "scope",
+        "subjectId",
+        "locationLabel",
+        "observedAt",
+        "effectiveFrom",
+        "effectiveTo",
+        "sourceField",
+        "rawValue",
+        "semanticQualifier",
+        "interpretationConfidence",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "narrative": {
+      "additionalProperties": false,
+      "properties": {
+        "author": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "body": {
+          "type": "string"
+        },
+        "captureId": {
+          "type": "string"
+        },
+        "effectiveFrom": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "effectiveTo": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "headline": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "narrativeType": {
+          "enum": [
+            "daily_report",
+            "patrol_report",
+            "grooming_report",
+            "road_advisory",
+            "backcountry_advisory",
+            "operational_update",
+            "pick_of_day"
+          ]
+        },
+        "observationId": {
+          "type": "string"
+        },
+        "observationRole": {
+          "$ref": "#/$defs/role"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "resortId": {
+          "type": "string"
+        },
+        "sourceField": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "observationId",
+        "captureId",
+        "resortId",
+        "narrativeType",
+        "headline",
+        "body",
+        "author",
+        "observationRole",
+        "observedAt",
+        "effectiveFrom",
+        "effectiveTo",
+        "sourceField"
+      ],
+      "type": "object"
+    },
+    "nullableString": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "nullableTime": {
+      "format": "date-time",
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "raw": {
+      "type": [
+        "string",
+        "number",
+        "integer",
+        "boolean",
+        "object",
+        "array",
+        "null"
+      ]
+    },
+    "rawPayload": {
+      "additionalProperties": false,
+      "properties": {
+        "contentType": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "firstCapturedAt": {
+          "$ref": "#/$defs/time"
+        },
+        "httpStatus": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "parserVersion": {
+          "type": "string"
+        },
+        "payloadHash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "type": "string"
+        },
+        "rawPayloadRef": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "responseAt": {
+          "$ref": "#/$defs/time"
+        },
+        "sourceId": {
+          "type": "string"
+        },
+        "sourceUrl": {
+          "format": "uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "payloadHash",
+        "sourceId",
+        "sourceUrl",
+        "firstCapturedAt",
+        "responseAt",
+        "httpStatus",
+        "contentType",
+        "rawPayloadRef",
+        "parserVersion"
+      ],
+      "type": "object"
+    },
+    "role": {
+      "enum": [
+        "live_actual",
+        "morning_plan",
+        "expected",
+        "report_summary",
+        "measurement",
+        "advisory",
+        "unknown"
+      ]
+    },
+    "snowSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "semanticMeaning": {
+          "type": "string"
+        },
+        "signalType": {
+          "enum": [
+            "plant_state",
+            "area_state",
+            "guns_operating_count",
+            "runs_snowmaking_count",
+            "run_snowmaking_flag",
+            "run_has_machine_made_cover",
+            "run_snowmaking_capability",
+            "narrative_mention"
+          ]
+        }
+      },
+      "required": [
+        "signalType",
+        "semanticMeaning"
+      ],
+      "type": "object"
+    },
+    "snowmaking": {
+      "additionalProperties": false,
+      "properties": {
+        "area": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "captureId": {
+          "type": "string"
+        },
+        "effectiveFrom": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "effectiveTo": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "interpretationConfidence": {
+          "$ref": "#/$defs/confidence"
+        },
+        "normalizedState": {
+          "enum": [
+            "active",
+            "standby",
+            "inactive",
+            "mentioned",
+            "none_flagged",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "notes": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "numericValue": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "observationId": {
+          "type": "string"
+        },
+        "observationRole": {
+          "$ref": "#/$defs/role"
+        },
+        "observedAt": {
+          "$ref": "#/$defs/nullableTime"
+        },
+        "rawValue": {
+          "$ref": "#/$defs/raw"
+        },
+        "resortId": {
+          "type": "string"
+        },
+        "scope": {
+          "type": "string"
+        },
+        "semanticMeaning": {
+          "type": "string"
+        },
+        "signalType": {
+          "enum": [
+            "plant_state",
+            "area_state",
+            "guns_operating_count",
+            "runs_snowmaking_count",
+            "run_snowmaking_flag",
+            "run_has_machine_made_cover",
+            "run_snowmaking_capability",
+            "narrative_mention"
+          ]
+        },
+        "sourceField": {
+          "type": "string"
+        },
+        "subjectAssetId": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "upstreamAssetId": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "upstreamName": {
+          "$ref": "#/$defs/nullableString"
+        },
+        "warnings": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "observationId",
+        "captureId",
+        "resortId",
+        "scope",
+        "subjectAssetId",
+        "area",
+        "signalType",
+        "normalizedState",
+        "numericValue",
+        "unit",
+        "rawValue",
+        "sourceField",
+        "observationRole",
+        "semanticMeaning",
+        "interpretationConfidence",
+        "observedAt",
+        "effectiveFrom",
+        "effectiveTo",
+        "notes",
+        "upstreamAssetId",
+        "upstreamName",
+        "warnings"
+      ],
+      "type": "object"
+    },
+    "source": {
+      "additionalProperties": false,
+      "properties": {
+        "assetClasses": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "cadenceClass": {
+          "type": "string"
+        },
+        "captureTimestampRuleId": {
+          "type": ["string", "null"]
+        },
+        "denominatorScope": {
+          "type": "string"
+        },
+        "fieldCoverage": {
+          "items": {
+            "$ref": "#/$defs/sourceCoverage"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "freshnessPolicyMinutes": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "layer": {
+          "type": "string"
+        },
+        "metricFamilies": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "string"
+        },
+        "operationalDateRuleId": {
+          "type": ["string", "null"]
+        },
+        "resortId": {
+          "type": "string"
+        },
+        "sourceId": {
+          "type": "string"
+        },
+        "sourceRole": {
+          "enum": [
+            "live_asset_status",
+            "daily_report",
+            "expected_operations",
+            "summary_widget",
+            "narrative_report",
+            "manual_observation",
+            "derived"
+          ]
+        },
+        "unknownFieldPolicy": {
+          "const": "retain_raw_and_warn"
+        },
+        "url": {
+          "format": "uri",
+          "type": "string"
+        }
+      },
+      "required": [
+        "sourceId",
+        "resortId",
+        "url",
+        "layer",
+        "sourceRole",
+        "cadenceClass",
+        "freshnessPolicyMinutes",
+        "assetClasses",
+        "metricFamilies",
+        "fieldCoverage",
+        "unknownFieldPolicy",
+        "denominatorScope",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "sourceCoverage": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "disposition": {
+                "const": "normalized"
+              }
+            }
+          },
+          "then": {
+            "anyOf": [
+              {
+                "properties": {
+                  "destinationCollection": {
+                    "type": "string"
+                  },
+                  "destinationField": {
+                    "type": "string"
+                  },
+                  "interpretationConfidence": {
+                    "type": "string"
+                  },
+                  "normalizedValueType": {
+                    "type": "string"
+                  },
+                  "observationRole": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "destinationCollection",
+                  "destinationField"
+                ]
+              },
+              {
+                "properties": {
+                  "emissions": {
+                    "minItems": 1
+                  }
+                }
+              }
+            ],
+            "required": [
+              "timestampRule",
+              "valueStatusHandling"
+            ]
+          }
+        }
+      ],
+      "properties": {
+        "aggregateSpec": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/aggregateSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "assetSpec": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/assetSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "destinationCollection": {
+          "enum": [
+            "captures",
+            "metricObservations",
+            "snowmakingObservations",
+            "assetStatusObservations",
+            "aggregateObservations",
+            "narratives",
+            "assets",
+            "rawPayloads",
+            null
+          ],
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "destinationField": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "disposition": {
+          "enum": [
+            "normalized",
+            "identity_provenance",
+            "raw_only",
+            "ignored"
+          ]
+        },
+        "emissions": {
+          "items": {
+            "$ref": "#/$defs/emission"
+          },
+          "type": "array"
+        },
+        "interpretationConfidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low",
+            "unverified",
+            null
+          ],
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "listExpansionSpec": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/listExpansionSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "metricKey": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "normalizedValueType": {
+          "enum": [
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "date",
+            "date-time",
+            "status",
+            "object",
+            null
+          ],
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        },
+        "observationRole": {
+          "enum": [
+            "live_actual",
+            "morning_plan",
+            "expected",
+            "report_summary",
+            "measurement",
+            "advisory",
+            "unknown",
+            null
+          ],
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "parserRuleId": {
+          "type": ["string", "null"]
+        },
+        "scope": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "snowmakingSpec": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/snowSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceValueType": {
+          "enum": [
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "null",
+            "array",
+            "object",
+            "mixed",
+            "number_string",
+            "date_string",
+            "date_time_string",
+            "html_string",
+            "comma_delimited_string"
+          ]
+        },
+        "timestampRule": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "unitRule": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "valueStatusHandling": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "path",
+        "disposition",
+        "destinationCollection",
+        "destinationField",
+        "metricKey",
+        "sourceValueType",
+        "normalizedValueType",
+        "unitRule",
+        "observationRole",
+        "scope",
+        "timestampRule",
+        "valueStatusHandling",
+        "interpretationConfidence",
+        "aggregateSpec",
+        "assetSpec",
+        "snowmakingSpec",
+        "emissions",
+        "listExpansionSpec",
+        "notes"
+      ],
+      "type": "object"
+    },
+    "time": {
+      "format": "date-time",
+      "type": "string"
+    }
+  },
+  "$id": "alpine.operations-export.v2",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "aggregateObservations": {
+      "items": {
+        "$ref": "#/$defs/aggregate"
+      },
+      "type": "array"
+    },
+    "assetRegistryCompleteness": {
+      "enum": [
+        "partial",
+        "complete"
+      ]
+    },
+    "assetRegistryRevision": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "assetRegistrySchemaVersion": {
+      "const": "alpine.operations-assets.v1"
+    },
+    "assetStatusObservations": {
+      "items": {
+        "$ref": "#/$defs/assetStatus"
+      },
+      "type": "array"
+    },
+    "assets": {
+      "items": {
+        "$ref": "#/$defs/asset"
+      },
+      "type": "array"
+    },
+    "captures": {
+      "items": {
+        "$ref": "#/$defs/capture"
+      },
+      "type": "array"
+    },
+    "conflicts": {
+      "items": {
+        "$ref": "#/$defs/conflict"
+      },
+      "type": "array"
+    },
+    "diagnostics": {
+      "$ref": "#/$defs/diagnostics"
+    },
+    "generatedAt": {
+      "$ref": "#/$defs/time"
+    },
+    "identitySchemaVersion": {
+      "const": "alpine.resort-identities.v1"
+    },
+    "metricCatalogueRevision": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "metricObservations": {
+      "items": {
+        "$ref": "#/$defs/metric"
+      },
+      "type": "array"
+    },
+    "narratives": {
+      "items": {
+        "$ref": "#/$defs/narrative"
+      },
+      "type": "array"
+    },
+    "producer": {
+      "type": "string"
+    },
+    "rawPayloads": {
+      "items": {
+        "$ref": "#/$defs/rawPayload"
+      },
+      "type": "array"
+    },
+    "schemaVersion": {
+      "const": "alpine.operations-export.v2"
+    },
+    "snowmakingObservations": {
+      "items": {
+        "$ref": "#/$defs/snowmaking"
+      },
+      "type": "array"
+    },
+    "sourceInventory": {
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "type": "array"
+    },
+    "sourceInventoryCompleteness": {
+      "enum": [
+        "partial",
+        "complete"
+      ]
+    },
+    "sourceInventoryRevision": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "windowEnd": {
+      "$ref": "#/$defs/time"
+    },
+    "windowStart": {
+      "$ref": "#/$defs/time"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "identitySchemaVersion",
+    "assetRegistrySchemaVersion",
+    "generatedAt",
+    "windowStart",
+    "windowEnd",
+    "producer",
+    "assets",
+    "captures",
+    "metricObservations",
+    "snowmakingObservations",
+    "assetStatusObservations",
+    "aggregateObservations",
+    "narratives",
+    "conflicts",
+    "diagnostics",
+    "rawPayloads",
+    "sourceInventory",
+    "assetRegistryRevision",
+    "assetRegistryCompleteness",
+    "sourceInventoryRevision",
+    "metricCatalogueRevision",
+    "sourceInventoryCompleteness"
+  ],
+  "type": "object"
+}
