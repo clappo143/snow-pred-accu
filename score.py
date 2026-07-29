@@ -25,6 +25,8 @@ from __future__ import annotations
 
 import sqlite3
 
+from store import RETIRED_SOURCES
+
 FLOOR_CM = 2.0
 HEADLINE = ("pm", 1)  # the classic night-before call
 
@@ -82,30 +84,57 @@ def _skill(fc_actual: list[tuple[float, float]]) -> float:
     return 100 * max(0.0, 1 - mae / norm)
 
 
+# TEMPORARY (added 2026-07-13, James's call): a source's post-fix history
+# can be too short to trust yet even when its skill score is genuinely 100%
+# (e.g. BOM right after 43c323c's purge, n=3). Hide sub-threshold sources
+# from the headline ranking rather than let a tiny sample claim "most
+# accurate". Remove this gate once every live source has clocked enough
+# scored nights to make small-n streaks a non-issue.
+# Extended 2026-07-29 to accuracy_by_lead(): the lead curve thins out badly
+# at the long-lead tail (a source can have n=70 at lead 1 and n<5 at lead 9),
+# which is exactly where the chart was showing its noisiest readings.
+MIN_HEADLINE_N = 5
+
+
 def accuracy(
     con: sqlite3.Connection,
     resort: str | list[str],
     run: str = HEADLINE[0],
     lead: int = HEADLINE[1],
 ) -> dict[str, float]:
-    """Season accuracy % per source at one lead (default: night before)."""
+    """Season accuracy % per source at one lead (default: night before).
+    Retired series (RETIRED_SOURCES) are never scored. Sources with fewer
+    than MIN_HEADLINE_N scored samples are omitted — see MIN_HEADLINE_N
+    docstring above."""
     by_source: dict[str, list[tuple[float, float]]] = {}
     for source, r, l, _d, fc, actual in pairs(con, resort):
+        if source in RETIRED_SOURCES:
+            continue
         if (r, l) == (run, lead):
             by_source.setdefault(source, []).append((fc, actual))
-    return {s: _skill(p) for s, p in by_source.items()}
+    return {
+        s: _skill(p) for s, p in by_source.items() if len(p) >= MIN_HEADLINE_N
+    }
 
 
 def accuracy_by_lead(
     con: sqlite3.Connection, resort: str | list[str]
 ) -> dict[str, list[dict]]:
     """Per source: accuracy at every (run, lead) with data, ordered by how
-    far ahead the snapshot was taken. Feeds the dashboard's lead controls."""
+    far ahead the snapshot was taken. Feeds the dashboard's lead controls.
+
+    Same two exclusions as accuracy(): retired series are never scored, and
+    (run, lead) buckets thinner than MIN_HEADLINE_N are dropped rather than
+    plotted as if they carried the same weight as the short-lead buckets."""
     grouped: dict[tuple[str, str, int], list[tuple[float, float]]] = {}
     for source, run, lead, _d, fc, actual in pairs(con, resort):
+        if source in RETIRED_SOURCES:
+            continue
         grouped.setdefault((source, run, lead), []).append((fc, actual))
     out: dict[str, list[dict]] = {}
     for (source, run, lead), p in grouped.items():
+        if len(p) < MIN_HEADLINE_N:
+            continue
         out.setdefault(source, []).append({
             "run": run, "lead": lead, "h": lead_hours(run, lead),
             "pct": round(_skill(p), 1), "n": len(p),
