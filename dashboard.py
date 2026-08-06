@@ -463,6 +463,10 @@ footer { color: var(--muted); font-size: 12px; margin-top: 12px;
 .fva-table td.actual-col { font-weight: 700; background:
   color-mix(in srgb, var(--accent) 6%, transparent); }
 .fva-table td.err-col { font-variant-numeric: tabular-nums; }
+/* secondary line under a window/column label: the raw ISO date or the clock
+   window, kept subordinate so the human-readable label leads */
+.tstamp { display: block; font-size: 10px; font-weight: 400; letter-spacing: .02em;
+  color: var(--muted); font-variant-numeric: tabular-nums; }
 .fva-summary { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; }
 .fva-stat { text-align: center; }
 .fva-stat b { display: block; font-size: 18px; font-weight: 700;
@@ -1440,6 +1444,33 @@ function renderForecasts() {
      Export and merge to fold these into the season rankings.</footer>`;
 }
 
+// Three distinct instants hide behind one date in this table, and conflating
+// them is the classic misreading of it (see docs/anecdotal-record.md). For a
+// target date D at the night-before lead: the forecast was issued ~6pm on
+// D-1, it covers the 7am D → 7am D+1 window, and the report that measures
+// that window is published ~7am on D+1. The helpers below label all three.
+const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function ymd(d, shift) {  // shift days from an ISO date, stay in local terms
+  const [y, m, dd] = d.split("-").map(Number);
+  const t = new Date(Date.UTC(y, m - 1, dd + (shift || 0)));
+  return { dow: DOW[t.getUTCDay()], day: t.getUTCDate(), mon: MON[t.getUTCMonth()],
+           iso: t.toISOString().slice(0, 10) };
+}
+// "Wed 5 → Thu 6 Aug": the snow window, not a single day
+function windowLabel(d) {
+  const a = ymd(d, 0), b = ymd(d, 1);
+  return `${a.dow} ${a.day} → ${b.dow} ${b.day} ${b.mon}`;
+}
+// the three instants, for tooltips
+function timeline(d) {
+  const i = ymd(d, -1), a = ymd(d, 0), b = ymd(d, 1);
+  return `<div class="trow">issued<b>~6pm ${i.dow} ${i.day} ${i.mon}</b></div>
+    <div class="trow">covers<b>7am ${a.dow} ${a.day} → 7am ${b.dow} ${b.day}</b></div>
+    <div class="trow">reported<b>~7am ${b.dow} ${b.day} ${b.mon}</b></div>`;
+}
+
 // forecast vs actuals review — scored days with per-forecaster predictions
 function renderFva() {
   const sp = R.scoredPairs || {};
@@ -1461,13 +1492,20 @@ function renderFva() {
       const err = Math.abs(fc - actual);
       const cls = err <= Math.max(2, actual * 0.3) ? "hit" : "miss";
       return `<td class="${cls}" ${tipRef(
-        `<h4>${s.name} — ${d}</h4>
+        `<h4>${s.name} — ${windowLabel(d)}</h4>
         <div class="trow">forecast<b>${fc.toFixed(1)}cm</b></div>
         <div class="trow">actual<b>${actual.toFixed(1)}cm</b></div>
-        <div class="trow">error<b>${(fc - actual) >= 0 ? "+" : ""}${(fc - actual).toFixed(1)}cm</b></div>`
+        <div class="trow">error<b>${(fc - actual) >= 0 ? "+" : ""}${(fc - actual).toFixed(1)}cm</b></div>
+        <hr>${timeline(d)}`
       )}>${fc.toFixed(1)}</td>`;
     }).join("");
-    return `<tr><td>${d}</td><td class="actual-col">${actual.toFixed(1)}</td>${cells}</tr>`;
+    return `<tr><td ${tipRef(
+        `<h4>Snow window ${windowLabel(d)}</h4>${timeline(d)}`
+      )}>${windowLabel(d)}<span class="tstamp">${d}</span></td>
+      <td class="actual-col" ${tipRef(
+        `<h4>Reported ~7am ${ymd(d, 1).dow} ${ymd(d, 1).day} ${ymd(d, 1).mon}</h4>
+        <div class="trow">24h to 7am<b>${actual.toFixed(1)}cm</b></div>`
+      )}>${actual.toFixed(1)}</td>${cells}</tr>`;
   }).join("");
   // per-source MAE summary
   const maes = vis.map((s) => {
@@ -1483,9 +1521,14 @@ function renderFva() {
     }).join("")}</tr>`;
   $("#fvaBody").innerHTML =
     `<div class="scroll"><table class="fva-table">
-      <tr><th>Date</th><th>Actual</th>${srcHead}</tr>
+      <tr><th title="the 7am→7am window the snow fell in">Snow window
+        <span class="tstamp">7am → 7am</span></th>
+      <th title="the resort's 24h-to-7am report published the morning the window closes">Reported
+        <span class="tstamp">24h to 7am</span></th>${srcHead}</tr>
       ${rows}${maeRow}</table></div>
-     <footer>${dates.length} day(s) scored at the night-before lead. Cells
+     <footer>${dates.length} window(s) scored at the night-before lead —
+     each forecast was issued ~6pm the evening before its window opens, and is
+     scored against the report published as the window closes. Cells
      highlighted where forecast is within 2cm or 30% of actual.</footer>`;
 }
 
@@ -1831,9 +1874,9 @@ def render(out: Path | None = None) -> Path:
 </div>
 <div class="card resort-only">
   <div class="cardhead">
-    <h2>Forecast vs actual — scored days</h2>
+    <h2>Forecast vs actual — scored windows</h2>
     <span class="spacer"></span>
-    <span class="hint">night-before predictions vs next-morning reports</span>
+    <span class="hint">forecast issued ~6pm · window 7am→7am · reported as it closes</span>
   </div>
   <div id="fvaBody"></div>
 </div>
@@ -1868,8 +1911,9 @@ def render(out: Path | None = None) -> Path:
   <div id="fchips"></div>
   <div id="alignBox" style="margin-top:12px"></div>
   <footer>Transcribe historical predictions (e.g. from the ski.com.au thread) as
-  night-before calls — a forecast for day D is scored against the report
-  published the morning of D+1. Actuals are entered under the report date.
+  night-before calls — a forecast for day D covers 7am D → 7am D+1 and is
+  scored against the report published the morning of D+1. Actuals are entered
+  under the report date, so the actual for window D carries the date D+1.
   Entries live in this browser until exported; drop the file at
   <code>data/manual.json</code> and the morning run merges it (feed data always
   wins on conflicts).</footer>
