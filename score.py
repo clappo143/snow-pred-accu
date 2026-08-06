@@ -55,7 +55,7 @@ def pairs(
     Pooled queries skip POOLED_EXCLUDE (source, resort) pairs."""
     rids = [resort] if isinstance(resort, str) else list(resort)
     exclude = ""
-    params: list[str] = list(rids)
+    params: list[str] = [*rids, *RETIRED_SOURCES]
     if len(rids) > 1:
         for src, rid in sorted(POOLED_EXCLUDE):
             exclude += " AND NOT (f.source = ? AND f.resort = ?)"
@@ -70,6 +70,7 @@ def pairs(
         JOIN actuals a ON a.resort = f.resort
                       AND a.date = date(f.target_date, '+1 day')
         WHERE f.resort IN ({','.join('?' * len(rids))})
+          AND f.source NOT IN ({','.join('?' * len(RETIRED_SOURCES))})
           AND lead >= 0
           AND NOT (f.run = 'pm' AND lead = 0){exclude}
         ORDER BY f.target_date

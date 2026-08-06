@@ -33,7 +33,7 @@ self-hosted runner in both slots (`--only snowatch`); the cloud jobs pass
 | BOM | `api.weather.bom.gov.au` JSON; rain-range midpoint on days with tmax ≤2°C |
 | BOM MetEye | MetEye text views (`bom.gov.au/places/…/forecast/detailed/`): 3-hourly forecaster-edited Snow flags × 50th-pct precip, summed per day — the parallel BOM methodology; a full ensemble member alongside `bom`, each weighted on its own accuracy record |
 | Snow-Forecast.com | server-rendered table, mid-mountain (canonical); bot/top elevation bands stored DB-only (see `docs/reference-points.md`) |
-| Mountainwatch | server-rendered 7-day table, anchored to its day labels |
+| Mountainwatch | scoped weather-graph headers plus its `forecastgraph/*.json` three-hour data, re-windowed to 7am→7am |
 | Snowatch | server-rendered 15-day page; range midpoints |
 | Jane's Weather | public forecast-edge API, `model=ml` |
 | Open-Meteo | free model API; also backfillable (`backfill_openmeteo.py`) |

@@ -47,6 +47,27 @@ class StoreV4Tests(unittest.TestCase):
         self.assertEqual(con.execute(
             "select count(*) from actual_observations").fetchone()[0], 3)
 
+    def test_retires_mountainwatch_history_once(self):
+        con = sqlite3.connect(store.DB_PATH)
+        con.execute(
+            "CREATE TABLE forecasts (resort TEXT,source TEXT,issued_date TEXT,"
+            "run TEXT,target_date TEXT,snow_cm REAL,"
+            "PRIMARY KEY(resort,source,issued_date,run,target_date))"
+        )
+        con.execute(
+            "INSERT INTO forecasts VALUES "
+            "('perisher','mountainwatch','2026-08-01','pm','2026-08-02',3)"
+        )
+        con.commit()
+        con.close()
+
+        con = store.connect()
+        self.assertEqual(con.execute("SELECT source FROM forecasts").fetchone()[0],
+                         "mountainwatch_legacy")
+        con.close()
+        con = store.connect()  # idempotent: a second connect does not re-migrate
+        self.assertEqual(con.execute("SELECT count(*) FROM forecasts").fetchone()[0], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

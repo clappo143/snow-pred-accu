@@ -31,7 +31,10 @@ DB_PATH = Path(__file__).parent / "data" / "snow.db"
 # analysis only (see docs/reference-points.md). The '*_cal' names are the
 # pre-2026-07-13 calendar-day series of Jane's Weather, Open-Meteo and
 # YR.no, retired when those collectors moved to 7am→7am windows (see
-# collectors/janesweather.py and docs/reference-points.md).
+# collectors/janesweather.py and docs/reference-points.md). Mountainwatch's
+# original HTML parser could attach graph values to unrelated article dates
+# and also used calendar-day totals, so its pre-2026-08-02 history is retained
+# under mountainwatch_legacy for audit only.
 # Both BOM methodologies ('bom' and 'bom_meteye') feed the ensemble as
 # independent forecasters — James's call 2026-07-11: eight forecasters, two
 # of them the Bureau via different derivations, each accuracy-weighted on
@@ -41,7 +44,9 @@ DB_PATH = Path(__file__).parent / "data" / "snow.db"
 # a window that happened to be almost entirely dry, which reads as ~100%
 # skill. They are kept in the DB for history but must not be scored or
 # displayed alongside live sources; score.py filters on this set.
-RETIRED_SOURCES = ("janesweather_cal", "openmeteo_cal", "yrno_cal")
+RETIRED_SOURCES = (
+    "janesweather_cal", "openmeteo_cal", "yrno_cal", "mountainwatch_legacy",
+)
 
 NON_ENSEMBLE_SOURCES = (
     "ensemble", "snowforecast_bot", "snowforecast_top", *RETIRED_SOURCES,
@@ -79,6 +84,10 @@ CREATE TABLE IF NOT EXISTS actual_observations (
 );
 CREATE INDEX IF NOT EXISTS actual_observations_resort_date
     ON actual_observations(resort, date);
+CREATE TABLE IF NOT EXISTS schema_migrations (
+    name TEXT PRIMARY KEY,
+    applied_at TEXT NOT NULL
+);
 """
 
 # Actuals-source precedence: higher rank wins; equal rank may refresh its
@@ -146,6 +155,44 @@ def _migrate_v4(con: sqlite3.Connection) -> None:
     con.commit()
 
 
+def _migrate_mountainwatch_history(con: sqlite3.Connection) -> None:
+    """Retire the unreliable pre-JSON Mountainwatch series exactly once.
+
+    A marker is necessary: later connects must leave newly-collected canonical
+    ``mountainwatch`` rows alone.  Refuse a primary-key collision rather than
+    silently dropping either audit trail.
+    """
+    name = "2026-08-02_mountainwatch_json_7am"
+    if con.execute("SELECT 1 FROM schema_migrations WHERE name=?", (name,)).fetchone():
+        return
+    collision = con.execute(
+        """
+        SELECT 1
+        FROM forecasts old
+        JOIN forecasts legacy
+          ON legacy.resort=old.resort AND legacy.issued_date=old.issued_date
+         AND legacy.run=old.run AND legacy.target_date=old.target_date
+         AND legacy.source='mountainwatch_legacy'
+        WHERE old.source='mountainwatch'
+        LIMIT 1
+        """
+    ).fetchone()
+    if collision:
+        raise RuntimeError(
+            "cannot retire Mountainwatch history: mountainwatch_legacy "
+            "already contains a conflicting forecast"
+        )
+    count = con.execute(
+        "UPDATE forecasts SET source='mountainwatch_legacy' WHERE source='mountainwatch'"
+    ).rowcount
+    con.execute(
+        "INSERT INTO schema_migrations VALUES (?,?)",
+        (name, dt.datetime.now(dt.timezone.utc).isoformat()),
+    )
+    con.commit()
+    print(f"[ok] retired {count} unreliable Mountainwatch forecast row(s)")
+
+
 def connect() -> sqlite3.Connection:
     DB_PATH.parent.mkdir(exist_ok=True)
     con = sqlite3.connect(DB_PATH)
@@ -154,6 +201,7 @@ def connect() -> sqlite3.Connection:
     _migrate_v3(con)
     _migrate_v4(con)
     con.executescript(SCHEMA)
+    _migrate_mountainwatch_history(con)
     return con
 
 

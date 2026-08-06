@@ -141,8 +141,16 @@ shared by all three collectors):
   derivation itself, not just the alignment. The residual skew is a known
   caveat on both `bom` series' scores.
 
-Snowatch, Mountainwatch and Snow-Forecast publish ski-day tables without a
-stated clock window and cannot be re-windowed.
+**Mountainwatch** is now an exception: its scoped weather graph exposes
+three-hour data through `forecastgraph/*.json`. The collector anchors those
+blocks only to the graph's abbreviated date headers, then sums valid blocks
+into 7am→7am windows. It apportions the 6am–9am block uniformly, so one third
+falls before 7am and two thirds after; this neutral assumption is necessary
+because the source exposes no finer timing. The former HTML-table rows are
+retained as `mountainwatch_legacy` for audit but excluded from scoring,
+display and future ensembles; the canonical `mountainwatch` series restarts
+with the corrected collector. Snowatch and Snow-Forecast still publish
+ski-day tables without a stated clock window and cannot be re-windowed.
 
 A principled elevation adjustment of daily cm totals would need per-day
 freezing-level data (the rain/snow split is a threshold effect, not a linear

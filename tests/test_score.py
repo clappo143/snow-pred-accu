@@ -42,3 +42,13 @@ def test_per_resort_keeps_bom_meteye():
     con = _db()
     rows = score.pairs(con, "hotham")
     assert sum(1 for s, *_ in rows if s == "bom_meteye") == 1
+
+
+def test_retired_mountainwatch_history_is_not_scored():
+    con = _db()
+    con.execute(
+        "INSERT INTO forecasts VALUES "
+        "('perisher', 'mountainwatch_legacy', '2026-07-11', 'pm', "
+        "'2026-07-12', 10.0)"
+    )
+    assert "mountainwatch_legacy" not in {source for source, *_ in score.pairs(con, "perisher")}
