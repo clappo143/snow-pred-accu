@@ -2,16 +2,16 @@
   "diagnostics": {
     "bawbaw": {
       "coverage": {
-        "actualCaptures": 381,
+        "actualCaptures": 382,
         "bySource": {
           "bawbaw_public_report": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:54.745768Z",
-            "lastCapture": "2026-08-19T23:12:59.423099Z",
+            "lastCapture": "2026-08-19T23:43:48.784268Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 0,
             "statusCounts": {
@@ -19,7 +19,7 @@
               "inactive": 0,
               "mentioned": 0,
               "none_flagged": 0,
-              "unavailable": 381,
+              "unavailable": 382,
               "unknown": 0
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
@@ -28,9 +28,9 @@
         "cadenceMinutes": null,
         "cadenceMode": "schedule_30m_night_60m_day",
         "coveragePct": 63.3,
-        "expectedCaptures": 602,
+        "expectedCaptures": 603,
         "firstCapture": "2026-08-05T23:44:54.745768Z",
-        "lastCapture": "2026-08-19T23:12:59.423099Z",
+        "lastCapture": "2026-08-19T23:43:48.784268Z",
         "maximumGapMinutes": 578.4,
         "parserFailures": 0,
         "sourceCount": 1,
@@ -39,26 +39,26 @@
           "inactive": 0,
           "mentioned": 0,
           "none_flagged": 0,
-          "unavailable": 381,
+          "unavailable": 382,
           "unknown": 0
         },
         "timingNote": "Coverage is calculated independently per source then aggregated. Status changes are interval-censored between captures; first observation is not an exact activation time."
       },
       "interpretation": "early calibration / diagnostic; operational choice is not determined only by wet-bulb viability.",
-      "sampleSize": 381
+      "sampleSize": 382
     },
     "buller": {
       "coverage": {
-        "actualCaptures": 1125,
+        "actualCaptures": 1128,
         "bySource": {
           "buller_lifts": {
-            "actualCaptures": 375,
+            "actualCaptures": 376,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
-            "coveragePct": 62.3,
-            "expectedCaptures": 602,
+            "coveragePct": 62.4,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:59.511312Z",
-            "lastCapture": "2026-08-19T23:13:05.128089Z",
+            "lastCapture": "2026-08-19T23:43:53.013772Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 6,
             "statusCounts": {
@@ -66,39 +66,39 @@
               "inactive": 0,
               "mentioned": 0,
               "none_flagged": 0,
-              "unavailable": 375,
+              "unavailable": 376,
               "unknown": 6
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
           },
           "buller_trails": {
-            "actualCaptures": 375,
+            "actualCaptures": 376,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
-            "coveragePct": 62.3,
-            "expectedCaptures": 602,
+            "coveragePct": 62.4,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:59.309528Z",
-            "lastCapture": "2026-08-19T23:13:04.919799Z",
+            "lastCapture": "2026-08-19T23:43:52.828812Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 6,
             "statusCounts": {
               "active": 223,
               "inactive": 0,
               "mentioned": 0,
-              "none_flagged": 152,
+              "none_flagged": 153,
               "unavailable": 0,
               "unknown": 6
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
           },
           "buller_weather_widget": {
-            "actualCaptures": 375,
+            "actualCaptures": 376,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
-            "coveragePct": 62.3,
-            "expectedCaptures": 602,
+            "coveragePct": 62.4,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:54.060940Z",
-            "lastCapture": "2026-08-19T23:12:58.760877Z",
+            "lastCapture": "2026-08-19T23:43:48.137735Z",
             "maximumGapMinutes": 578.3,
             "parserFailures": 6,
             "statusCounts": {
@@ -106,7 +106,7 @@
               "inactive": 0,
               "mentioned": 0,
               "none_flagged": 0,
-              "unavailable": 375,
+              "unavailable": 376,
               "unknown": 6
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
@@ -114,10 +114,10 @@
         },
         "cadenceMinutes": null,
         "cadenceMode": "schedule_30m_night_60m_day",
-        "coveragePct": 62.3,
-        "expectedCaptures": 1806,
+        "coveragePct": 62.4,
+        "expectedCaptures": 1809,
         "firstCapture": "2026-08-05T23:44:54.060940Z",
-        "lastCapture": "2026-08-19T23:13:05.128089Z",
+        "lastCapture": "2026-08-19T23:43:53.013772Z",
         "maximumGapMinutes": 578.4,
         "parserFailures": 18,
         "sourceCount": 3,
@@ -125,27 +125,27 @@
           "active": 223,
           "inactive": 0,
           "mentioned": 0,
-          "none_flagged": 152,
-          "unavailable": 750,
+          "none_flagged": 153,
+          "unavailable": 752,
           "unknown": 18
         },
         "timingNote": "Coverage is calculated independently per source then aggregated. Status changes are interval-censored between captures; first observation is not an exact activation time."
       },
       "interpretation": "early calibration / diagnostic; operational choice is not determined only by wet-bulb viability.",
-      "sampleSize": 1143
+      "sampleSize": 1146
     },
     "falls": {
       "coverage": {
-        "actualCaptures": 1143,
+        "actualCaptures": 1146,
         "bySource": {
           "falls_mountainops_lifts": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:58.759763Z",
-            "lastCapture": "2026-08-19T23:13:04.376247Z",
+            "lastCapture": "2026-08-19T23:43:52.320273Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 0,
             "statusCounts": {
@@ -153,43 +153,43 @@
               "inactive": 0,
               "mentioned": 0,
               "none_flagged": 0,
-              "unavailable": 381,
+              "unavailable": 382,
               "unknown": 0
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
           },
           "falls_mountainops_runs": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:56.436004Z",
-            "lastCapture": "2026-08-19T23:13:02.099141Z",
+            "lastCapture": "2026-08-19T23:43:50.523040Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 0,
             "statusCounts": {
               "active": 0,
               "inactive": 0,
               "mentioned": 0,
-              "none_flagged": 381,
+              "none_flagged": 382,
               "unavailable": 0,
               "unknown": 0
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
           },
           "falls_official_report": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:51.437521Z",
-            "lastCapture": "2026-08-19T23:12:55.897722Z",
+            "lastCapture": "2026-08-19T23:43:46.036857Z",
             "maximumGapMinutes": 578.3,
             "parserFailures": 0,
             "statusCounts": {
-              "active": 381,
+              "active": 382,
               "inactive": 0,
               "mentioned": 0,
               "none_flagged": 0,
@@ -202,37 +202,37 @@
         "cadenceMinutes": null,
         "cadenceMode": "schedule_30m_night_60m_day",
         "coveragePct": 63.3,
-        "expectedCaptures": 1806,
+        "expectedCaptures": 1809,
         "firstCapture": "2026-08-05T23:44:51.437521Z",
-        "lastCapture": "2026-08-19T23:13:04.376247Z",
+        "lastCapture": "2026-08-19T23:43:52.320273Z",
         "maximumGapMinutes": 578.4,
         "parserFailures": 0,
         "sourceCount": 3,
         "statusCounts": {
-          "active": 381,
+          "active": 382,
           "inactive": 0,
           "mentioned": 0,
-          "none_flagged": 381,
-          "unavailable": 381,
+          "none_flagged": 382,
+          "unavailable": 382,
           "unknown": 0
         },
         "timingNote": "Coverage is calculated independently per source then aggregated. Status changes are interval-censored between captures; first observation is not an exact activation time."
       },
       "interpretation": "early calibration / diagnostic; operational choice is not determined only by wet-bulb viability.",
-      "sampleSize": 1143
+      "sampleSize": 1146
     },
     "hotham": {
       "coverage": {
-        "actualCaptures": 1141,
+        "actualCaptures": 1144,
         "bySource": {
           "hotham_mountainops_lifts": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:58.942387Z",
-            "lastCapture": "2026-08-19T23:13:04.558321Z",
+            "lastCapture": "2026-08-19T23:43:52.489250Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 0,
             "statusCounts": {
@@ -240,43 +240,43 @@
               "inactive": 0,
               "mentioned": 0,
               "none_flagged": 0,
-              "unavailable": 381,
+              "unavailable": 382,
               "unknown": 0
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
           },
           "hotham_mountainops_runs": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:57.221697Z",
-            "lastCapture": "2026-08-19T23:13:02.831723Z",
+            "lastCapture": "2026-08-19T23:43:51.238321Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 0,
             "statusCounts": {
               "active": 0,
               "inactive": 0,
               "mentioned": 0,
-              "none_flagged": 381,
+              "none_flagged": 382,
               "unavailable": 0,
               "unknown": 0
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
           },
           "hotham_official_report": {
-            "actualCaptures": 379,
+            "actualCaptures": 380,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.0,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:52.354786Z",
-            "lastCapture": "2026-08-19T23:12:57.114987Z",
+            "lastCapture": "2026-08-19T23:43:46.786702Z",
             "maximumGapMinutes": 578.3,
             "parserFailures": 2,
             "statusCounts": {
-              "active": 379,
+              "active": 380,
               "inactive": 0,
               "mentioned": 0,
               "none_flagged": 0,
@@ -289,37 +289,37 @@
         "cadenceMinutes": null,
         "cadenceMode": "schedule_30m_night_60m_day",
         "coveragePct": 63.2,
-        "expectedCaptures": 1806,
+        "expectedCaptures": 1809,
         "firstCapture": "2026-08-05T23:44:52.354786Z",
-        "lastCapture": "2026-08-19T23:13:04.558321Z",
+        "lastCapture": "2026-08-19T23:43:52.489250Z",
         "maximumGapMinutes": 578.4,
         "parserFailures": 2,
         "sourceCount": 3,
         "statusCounts": {
-          "active": 379,
+          "active": 380,
           "inactive": 0,
           "mentioned": 0,
-          "none_flagged": 381,
-          "unavailable": 381,
+          "none_flagged": 382,
+          "unavailable": 382,
           "unknown": 2
         },
         "timingNote": "Coverage is calculated independently per source then aggregated. Status changes are interval-censored between captures; first observation is not an exact activation time."
       },
       "interpretation": "early calibration / diagnostic; operational choice is not determined only by wet-bulb viability.",
-      "sampleSize": 1143
+      "sampleSize": 1146
     },
     "perisher": {
       "coverage": {
-        "actualCaptures": 1143,
+        "actualCaptures": 1146,
         "bySource": {
           "perisher_mountainops_lifts": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:59.127029Z",
-            "lastCapture": "2026-08-19T23:13:04.737789Z",
+            "lastCapture": "2026-08-19T23:43:52.659619Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 0,
             "statusCounts": {
@@ -327,39 +327,39 @@
               "inactive": 0,
               "mentioned": 0,
               "none_flagged": 0,
-              "unavailable": 381,
+              "unavailable": 382,
               "unknown": 0
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
           },
           "perisher_mountainops_runs": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:57.979449Z",
-            "lastCapture": "2026-08-19T23:13:03.612049Z",
+            "lastCapture": "2026-08-19T23:43:51.778277Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 0,
             "statusCounts": {
               "active": 0,
               "inactive": 0,
               "mentioned": 0,
-              "none_flagged": 381,
+              "none_flagged": 382,
               "unavailable": 0,
               "unknown": 0
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
           },
           "perisher_official_report": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:53.155804Z",
-            "lastCapture": "2026-08-19T23:12:57.887748Z",
+            "lastCapture": "2026-08-19T23:43:47.389386Z",
             "maximumGapMinutes": 578.3,
             "parserFailures": 0,
             "statusCounts": {
@@ -368,7 +368,7 @@
               "mentioned": 0,
               "none_flagged": 0,
               "unavailable": 0,
-              "unknown": 158
+              "unknown": 159
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
           }
@@ -376,9 +376,9 @@
         "cadenceMinutes": null,
         "cadenceMode": "schedule_30m_night_60m_day",
         "coveragePct": 63.3,
-        "expectedCaptures": 1806,
+        "expectedCaptures": 1809,
         "firstCapture": "2026-08-05T23:44:53.155804Z",
-        "lastCapture": "2026-08-19T23:13:04.737789Z",
+        "lastCapture": "2026-08-19T23:43:52.659619Z",
         "maximumGapMinutes": 578.4,
         "parserFailures": 0,
         "sourceCount": 3,
@@ -386,27 +386,27 @@
           "active": 223,
           "inactive": 0,
           "mentioned": 0,
-          "none_flagged": 381,
-          "unavailable": 381,
-          "unknown": 158
+          "none_flagged": 382,
+          "unavailable": 382,
+          "unknown": 159
         },
         "timingNote": "Coverage is calculated independently per source then aggregated. Status changes are interval-censored between captures; first observation is not an exact activation time."
       },
       "interpretation": "early calibration / diagnostic; operational choice is not determined only by wet-bulb viability.",
-      "sampleSize": 1143
+      "sampleSize": 1146
     },
     "thredbo_top": {
       "coverage": {
-        "actualCaptures": 381,
+        "actualCaptures": 382,
         "bySource": {
           "thredbo_trails": {
-            "actualCaptures": 381,
+            "actualCaptures": 382,
             "cadenceMinutes": null,
             "cadenceMode": "schedule_30m_night_60m_day",
             "coveragePct": 63.3,
-            "expectedCaptures": 602,
+            "expectedCaptures": 603,
             "firstCapture": "2026-08-05T23:44:59.706609Z",
-            "lastCapture": "2026-08-19T23:13:05.324003Z",
+            "lastCapture": "2026-08-19T23:43:53.201626Z",
             "maximumGapMinutes": 578.4,
             "parserFailures": 0,
             "statusCounts": {
@@ -414,7 +414,7 @@
               "inactive": 0,
               "mentioned": 0,
               "none_flagged": 0,
-              "unavailable": 381,
+              "unavailable": 382,
               "unknown": 0
             },
             "timingNote": "Status changes are interval-censored between captures; first observation is not an exact activation time."
@@ -423,9 +423,9 @@
         "cadenceMinutes": null,
         "cadenceMode": "schedule_30m_night_60m_day",
         "coveragePct": 63.3,
-        "expectedCaptures": 602,
+        "expectedCaptures": 603,
         "firstCapture": "2026-08-05T23:44:59.706609Z",
-        "lastCapture": "2026-08-19T23:13:05.324003Z",
+        "lastCapture": "2026-08-19T23:43:53.201626Z",
         "maximumGapMinutes": 578.4,
         "parserFailures": 0,
         "sourceCount": 1,
@@ -434,13 +434,13 @@
           "inactive": 0,
           "mentioned": 0,
           "none_flagged": 0,
-          "unavailable": 381,
+          "unavailable": 382,
           "unknown": 0
         },
         "timingNote": "Coverage is calculated independently per source then aggregated. Status changes are interval-censored between captures; first observation is not an exact activation time."
       },
       "interpretation": "early calibration / diagnostic; operational choice is not determined only by wet-bulb viability.",
-      "sampleSize": 381
+      "sampleSize": 382
     }
   },
   "disagreements": [
@@ -455,7 +455,7 @@
       "resortId": "hotham",
       "runFeedStatus": "none_flagged",
       "runSource": "hotham_mountainops_runs",
-      "start": "2026-08-19T23:13:02.831723Z"
+      "start": "2026-08-19T23:43:51.238321Z"
     },
     {
       "end": null,
@@ -468,10 +468,10 @@
       "resortId": "falls",
       "runFeedStatus": "none_flagged",
       "runSource": "falls_mountainops_runs",
-      "start": "2026-08-19T23:13:02.099141Z"
+      "start": "2026-08-19T23:43:50.523040Z"
     }
   ],
-  "generatedAt": "2026-08-19T23:13:06.187895Z",
+  "generatedAt": "2026-08-19T23:43:54.624704Z",
   "history": {
     "bawbaw": [
       {
@@ -12652,6 +12652,38 @@
           "sourceSurface": "public report page"
         },
         "rawPayloadRef": "data/operations/raw/2026-08-19/bawbaw_public_report/c4ce393c6f5fb49d233bff2b9880767f01553d9fb82811f7622b1fb94bda5288.json",
+        "resortId": "bawbaw",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "unavailable",
+        "source": "bawbaw_public_report",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://www.mountbawbaw.com.au/reports/snow-weather/",
+        "warnings": [
+          "No structured current snowmaking field was found; narrative is preserved without inferring activation."
+        ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:48.784268Z",
+        "groomedRunCount": null,
+        "id": "7da27952-8f3c-4558-91da-887ea370bdb9",
+        "layer": "resort_report",
+        "machineMadeDepthCm": null,
+        "narrative": "Snow &amp; Lift Report &#8211; Mt Baw Baw :root { --theme: #FF6200; --theme-dark: #cc4e00; } img:is([sizes=\"auto\" i], [sizes^=\"auto,\" i]) { contain-intrinsic-size: 3000px 1500px } {\"@context\":\"https:\\/\\/schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"@id\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/\",\"url\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/\",\"name\":\"Snow & Lift Report &#8211; Mt Baw Baw\",\"isPartOf\":{\"@id\":\"http:\\/\\/10.0.0.207\\/#website\"},\"datePublished\":\"2022-02-03T01:50:52+00:00\",\"dateModified\":\"2026-03-12T22:40:07+00:00\",\"description\":\"Check out the snow conditions, road and ski lift status daily during the declared snow season from June to September.\",\"breadcrumb\":{\"@id\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/#breadcrumb\"},\"inLanguage\":\"en-US\",\"potentialAction\":[{\"@type\":\"ReadAction\",\"target\":[\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/\"]}]},{\"@type\":\"BreadcrumbList\",\"@id\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"http:\\/\\/10.0.0.207\\/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Reports\",\"item\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/\"},{\"@type\":\"ListItem\",\"position\":3,\"name\":\"Snow &#038; Lift Report\"}]},{\"@type\":\"WebSite\",\"@id\":\"http:\\/\\/10.0.0.207\\/#website\",\"url\":\"http:\\/\\/10.0.0.207\\/\",\"name\":\"Mt Baw Baw\",\"description\":\"Melbourne&#039;s closest ski, snowboard, bike &amp; hike resort\",\"publisher\":{\"@id\":\"http:\\/\\/10.0.0.207\\/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"http:\\/\\/10.0.0.207\\/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"http:\\/\\/10.0.0.207\\/#organization\",\"name\":\"Mt. Baw Baw\",\"url\":\"http:\\/\\/10.0.0.207\\/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"http:\\/\\/10.0.0.207\\/#\\/schema\\/logo\\/im",
+        "naturalDepthCm": null,
+        "openLiftCount": null,
+        "openRunCount": null,
+        "provenance": {
+          "contentType": "text/html; charset=UTF-8",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "sourceSurface": "public report page"
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/bawbaw_public_report/16286e283d512bc58a1d07fa442b52d3a0ca8f99db7eb4790e6693d831cb7646.json",
         "resortId": "bawbaw",
         "retrievalStatus": "ok",
         "schemaVersion": 1,
@@ -63984,6 +64016,104 @@
         "warnings": [
           "Lift feed has no snowmaking field; status is unavailable, not inactive."
         ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:48.137735Z",
+        "groomedRunCount": null,
+        "id": "0ef23854-ffd4-4181-8f12-efa6e3834d75",
+        "layer": "resort_report",
+        "machineMadeDepthCm": 63,
+        "narrative": "Light showers expected across the day and temperatures starting to dip back down tonight. Will feel fresh.",
+        "naturalDepthCm": 25,
+        "openLiftCount": 7,
+        "openRunCount": 2,
+        "provenance": {
+          "contentType": "application/json",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "snowmakingField": null,
+          "widgetUpdatedAt": "2026-08-20T09:30:00+10:00"
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/buller_weather_widget/090823e523da19929ad607ed54b265dcfbed852e73d453cb0f1e31d9f004a33a.json",
+        "resortId": "buller",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "unavailable",
+        "source": "buller_weather_widget",
+        "sourceRecordId": null,
+        "sourceReportedAt": "2026-08-19T23:30:00Z",
+        "sourceUrl": "https://api.mtbuller.com.au/api/weather/widget",
+        "warnings": [
+          "Widget update time is a source-refresh time, not a physical snow-patrol measurement timestamp."
+        ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:52.828812Z",
+        "groomedRunCount": 8,
+        "id": "8f9da465-40dd-4f4f-93f5-06094c57defc",
+        "layer": "resort_trails",
+        "machineMadeDepthCm": null,
+        "narrative": null,
+        "naturalDepthCm": null,
+        "openLiftCount": null,
+        "openRunCount": 2,
+        "provenance": {
+          "contentType": "application/json",
+          "flagField": "snowmaking",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "upstreamRowCount": 81
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/buller_trails/55bef8a6375494db71ab9a0c3fe5bc88ef7ecec37cf879be0778cd02412e198f.json",
+        "resortId": "buller",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "none_flagged",
+        "source": "buller_trails",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://api.mtbuller.com.au/api/trails",
+        "warnings": [
+          "No active per-trail flags; this does not mean snowmaking was off."
+        ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:53.013772Z",
+        "groomedRunCount": null,
+        "id": "0474b452-576b-47a0-b5f4-e178f6f1de76",
+        "layer": "resort_lifts",
+        "machineMadeDepthCm": null,
+        "narrative": null,
+        "naturalDepthCm": null,
+        "openLiftCount": 7,
+        "openRunCount": null,
+        "provenance": {
+          "contentType": "application/json",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "upstreamRowCount": 19
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/buller_lifts/0bc195c2ddfb0b0aef910a30a69b7304b863b1a64917f1fe35229f990b3b4a3f.json",
+        "resortId": "buller",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "unavailable",
+        "source": "buller_lifts",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://api.mtbuller.com.au/api/lifts",
+        "warnings": [
+          "Lift feed has no snowmaking field; status is unavailable, not inactive."
+        ]
       }
     ],
     "falls": [
@@ -102848,6 +102978,108 @@
         "warnings": [
           "Lift feed has no snowmaking field; status is unavailable, not inactive."
         ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:46.036857Z",
+        "groomedRunCount": null,
+        "id": "a13be098-e8f9-4ec0-bd52-e52174034324",
+        "layer": "resort_report",
+        "machineMadeDepthCm": null,
+        "narrative": "August is a big month on the mountain, with a packed calendar of on-snow events, races and activities, alongside plenty to enjoy off the slopes. From exciting action on the snow and Nordic trails to live music, food, family activities and events across the village, there\u2019s something happening throughout the month.",
+        "naturalDepthCm": 45,
+        "openLiftCount": null,
+        "openRunCount": null,
+        "provenance": {
+          "contentType": "application/json",
+          "freshSnowCm": 0,
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "siteDepthsCm": {
+            "northSide": 32,
+            "sunValley": 61,
+            "villageBowl": 43
+          },
+          "slopeMaintenanceReportedAt": "2026-07-05T01:44:00Z",
+          "slopeMaintenanceStatus": "On"
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/falls_official_report/1bb6764a57ff7e379d2c55e02aba52984d8e6cd26409be2d39de51807abbfa9d.json",
+        "resortId": "falls",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "active",
+        "source": "falls_official_report",
+        "sourceRecordId": null,
+        "sourceReportedAt": "2026-08-19T20:15:00Z",
+        "sourceUrl": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json",
+        "warnings": []
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:50.523040Z",
+        "groomedRunCount": 3,
+        "id": "caa043fd-46bc-4a86-a275-a4ece86d78bd",
+        "layer": "mountainops_runs",
+        "machineMadeDepthCm": null,
+        "narrative": null,
+        "naturalDepthCm": null,
+        "openLiftCount": null,
+        "openRunCount": 37,
+        "provenance": {
+          "contentType": "application/json; charset=utf-8",
+          "flagField": "Snowmaking",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "upstreamRowCount": 83
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/falls_mountainops_runs/56204203bf4fc30b40207ccfca455f45a177f3023d33d91d269468892f6d395b.json",
+        "resortId": "falls",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "none_flagged",
+        "source": "falls_mountainops_runs",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://fc-mountainops.vailresorts.com.au/api/public/run-status",
+        "warnings": [
+          "No run-level active snowmaking flags; this does not assert the plant was off or that the feed is comprehensive."
+        ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:52.320273Z",
+        "groomedRunCount": null,
+        "id": "b120fbc4-055a-4d44-b5bb-8741dc9df5b3",
+        "layer": "resort_lifts",
+        "machineMadeDepthCm": null,
+        "narrative": null,
+        "naturalDepthCm": null,
+        "openLiftCount": 9,
+        "openRunCount": null,
+        "provenance": {
+          "contentType": "application/json; charset=utf-8",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "upstreamRowCount": 15
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/falls_mountainops_lifts/e98c4acce774e28ff4017ff013fb98412ea218a642f782d8ef998f73d6ecfcec.json",
+        "resortId": "falls",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "unavailable",
+        "source": "falls_mountainops_lifts",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://fc-mountainops.vailresorts.com.au/api/public/lift-status",
+        "warnings": [
+          "Lift feed has no snowmaking field; status is unavailable, not inactive."
+        ]
       }
     ],
     "hotham": [
@@ -139409,6 +139641,102 @@
           "upstreamRowCount": 14
         },
         "rawPayloadRef": "data/operations/raw/2026-08-19/hotham_mountainops_lifts/586d54e190f900e17d750bc6fd4abd84261184ac787c733eddf37316e8be77e9.json",
+        "resortId": "hotham",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "unavailable",
+        "source": "hotham_mountainops_lifts",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://mh-mountainops.vailresorts.com.au/api/public/lift-status",
+        "warnings": [
+          "Lift feed has no snowmaking field; status is unavailable, not inactive."
+        ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:46.786702Z",
+        "groomedRunCount": null,
+        "id": "e10ab76a-bfe4-47e7-b4d7-01fd06572f17",
+        "layer": "resort_report",
+        "machineMadeDepthCm": 107,
+        "narrative": "Well, I wish I left this one for Bill. Thankfully the showers stayed away longer than expected yesterday however they intensified in the early evening and persisted through the night. The current temp is +3.4 which is already slightly above our forecast max of +3 degrees. There's a damp fog in the Village and while there's no precipitation right at this moment there are more showers forecast throughout the day. The wind is still strong from NNW so again keep an eye on the App and the lift report for live updates as some lifts may be hampered. With the showers and warm overnight temps the snow will be soft and very forgiving from the outset today. The open groomed terrain will be the best bet on a very user friendly surface. In more positive news this unwelcome weather looks set to ease tomorrow and should continue to improve into the weekend. It'll be a day for low light lenses and your best Gore-Tex. Cheers, Burner.",
+        "naturalDepthCm": 44,
+        "openLiftCount": null,
+        "openRunCount": null,
+        "provenance": {
+          "contentType": "text/xml",
+          "freshSnowCm": 0,
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "snowmakingText": "On Standby"
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/hotham_official_report/635c9655f5da502f97b53d5b6493491cb6e13fd0bb35c5f6c2ff3dfdac1c4cda.json",
+        "resortId": "hotham",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": 5,
+        "snowmakingStatus": "active",
+        "source": "hotham_official_report",
+        "sourceRecordId": null,
+        "sourceReportedAt": "2026-08-19T23:07:58Z",
+        "sourceUrl": "https://snowreport.mthotham.com.au/resources/SnowReport.xml",
+        "warnings": []
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:51.238321Z",
+        "groomedRunCount": 15,
+        "id": "81787a20-7380-45d3-b84f-eaad74a65151",
+        "layer": "mountainops_runs",
+        "machineMadeDepthCm": null,
+        "narrative": null,
+        "naturalDepthCm": null,
+        "openLiftCount": null,
+        "openRunCount": 43,
+        "provenance": {
+          "contentType": "application/json; charset=utf-8",
+          "flagField": "Snowmaking",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "upstreamRowCount": 107
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/hotham_mountainops_runs/63dfe09b6178bfeaa10522ae1d95cab3f3e9888e5b10fe7a35e53c90ceff270a.json",
+        "resortId": "hotham",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "none_flagged",
+        "source": "hotham_mountainops_runs",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://mh-mountainops.vailresorts.com.au/api/public/run-status",
+        "warnings": [
+          "No run-level active snowmaking flags; this does not assert the plant was off or that the feed is comprehensive."
+        ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:52.489250Z",
+        "groomedRunCount": null,
+        "id": "49742607-f6b7-47c4-b683-32bf49927b43",
+        "layer": "resort_lifts",
+        "machineMadeDepthCm": null,
+        "narrative": null,
+        "naturalDepthCm": null,
+        "openLiftCount": 6,
+        "openRunCount": null,
+        "provenance": {
+          "contentType": "application/json; charset=utf-8",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "upstreamRowCount": 14
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/hotham_mountainops_lifts/7ac96fc9aec36fe17afb63220c6f2a09b57c376915b2d2d52811127cb642381f.json",
         "resortId": "hotham",
         "retrievalStatus": "ok",
         "schemaVersion": 1,
@@ -176381,6 +176709,103 @@
         "warnings": [
           "Lift feed has no snowmaking field; status is unavailable, not inactive."
         ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:47.389386Z",
+        "groomedRunCount": 38,
+        "id": "48d11db4-2a86-468b-823b-73653cfb8a0e",
+        "layer": "resort_report",
+        "machineMadeDepthCm": null,
+        "narrative": "Pick of the day? Retail therapy!. In good news, yesterday afternoon's change rolled through later than forecast, so we had a great day out on the slopes. We hope you made the most of it, as today's a different story. The moisture arrived overnight and the resort is currently blanketed in thick fog. If you needed a rest day, today's it. It's currently just under 4 degrees and we're headed for a top of 6 degrees. The moisture is expected to hang around and could fall as snow on the peaks above 1900m. We're also expecting high winds, which may impact some lift operations. We have 31 lifts expected today, though this number may change as the team assesses any damage to the snowpack. We have 38 groomed runs, and the snow will be soft underfoot from the outset. As we roll into day 4 of State Interschools, there may be some changes to the schedule based on conditions. Snow Australia will provide updates. With great savings on offer at Slopestyle and Perisher Sports, and conditions less than ideal on the mountain, today's pick is retail therapy. With up to 50% off select products, you can't go wrong! The good news: this weather should clear by mid-morning tomorrow, and we're in for a mostly sunny weekend!",
+        "naturalDepthCm": 96,
+        "openLiftCount": 31,
+        "openRunCount": null,
+        "provenance": {
+          "contentType": "application/xml",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "snowGunsRaw": "0"
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/perisher_official_report/3dade7ea39489aea763514836316dc5745bf71938492675781687b6965473719.json",
+        "resortId": "perisher",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": 0,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "unknown",
+        "source": "perisher_official_report",
+        "sourceRecordId": null,
+        "sourceReportedAt": "2026-08-19T22:20:00Z",
+        "sourceUrl": "https://www.perisher.com.au/media_files/snowreport12.xml",
+        "warnings": [
+          "snow_guns is zero/ambiguous; it is not interpreted as plant off."
+        ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:51.778277Z",
+        "groomedRunCount": 35,
+        "id": "5ff15de9-1064-4157-b6be-e0c3885155ff",
+        "layer": "mountainops_runs",
+        "machineMadeDepthCm": null,
+        "narrative": null,
+        "naturalDepthCm": null,
+        "openLiftCount": null,
+        "openRunCount": 54,
+        "provenance": {
+          "contentType": "application/json; charset=utf-8",
+          "flagField": "Snowmaking",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "upstreamRowCount": 121
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/perisher_mountainops_runs/61b40382b4129bf07f33cc52a36ee7c05a931cfed661932005a651fa72940d52.json",
+        "resortId": "perisher",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "none_flagged",
+        "source": "perisher_mountainops_runs",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://pb-mountainops.vailresorts.com.au/api/public/run-status",
+        "warnings": [
+          "No run-level active snowmaking flags; this does not assert the plant was off or that the feed is comprehensive."
+        ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:52.659619Z",
+        "groomedRunCount": null,
+        "id": "3cc91221-fa6b-47f3-ab99-f2f4952a84b5",
+        "layer": "resort_lifts",
+        "machineMadeDepthCm": null,
+        "narrative": null,
+        "naturalDepthCm": null,
+        "openLiftCount": 32,
+        "openRunCount": null,
+        "provenance": {
+          "contentType": "application/json; charset=utf-8",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "upstreamRowCount": 45
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/perisher_mountainops_lifts/1e091f074349be55bbe7a8ddbbb0e24f7977157b198ce6112ff7135d94672a0c.json",
+        "resortId": "perisher",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "unavailable",
+        "source": "perisher_mountainops_lifts",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://pb-mountainops.vailresorts.com.au/api/public/lift-status",
+        "warnings": [
+          "Lift feed has no snowmaking field; status is unavailable, not inactive."
+        ]
       }
     ],
     "thredbo_top": [
@@ -190099,6 +190524,42 @@
         "warnings": [
           "Current public Thredbo trail/lift feed exposes operational state but no defensible snowmaking metric."
         ]
+      },
+      {
+        "activeSnowmakingRuns": [],
+        "capturedAt": "2026-08-19T23:43:53.201626Z",
+        "groomedRunCount": null,
+        "id": "dd2505e0-6a2c-45a1-80ab-c714602507f8",
+        "layer": "resort_trails",
+        "machineMadeDepthCm": null,
+        "narrative": null,
+        "naturalDepthCm": null,
+        "openLiftCount": null,
+        "openRunCount": null,
+        "provenance": {
+          "contentType": "application/json; charset=UTF-8",
+          "httpStatus": 200,
+          "parserVersion": 1,
+          "testedFieldFamilies": [
+            "acf",
+            "global_lift_trail_main_status"
+          ],
+          "upstreamRowCount": 151
+        },
+        "rawPayloadRef": "data/operations/raw/2026-08-19/thredbo_trails/5afa8f75f19bafc8f50d2e8c14f9625a964cde951e02c6883d13577be73f5e7b.json",
+        "resortId": "thredbo_top",
+        "retrievalStatus": "ok",
+        "schemaVersion": 1,
+        "snowGunCount": null,
+        "snowmakingRunCount": null,
+        "snowmakingStatus": "unavailable",
+        "source": "thredbo_trails",
+        "sourceRecordId": null,
+        "sourceReportedAt": null,
+        "sourceUrl": "https://www.thredbo.com.au/wp-json/thredbo/v1/get-lifts-and-trails",
+        "warnings": [
+          "Current public Thredbo trail/lift feed exposes operational state but no defensible snowmaking metric."
+        ]
       }
     ]
   },
@@ -190106,9 +190567,9 @@
   "latest": [
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:13:05.324003Z",
+      "capturedAt": "2026-08-19T23:43:53.201626Z",
       "groomedRunCount": null,
-      "id": "d775de4a-94aa-4a4e-8269-e84d28c2e246",
+      "id": "dd2505e0-6a2c-45a1-80ab-c714602507f8",
       "layer": "resort_trails",
       "machineMadeDepthCm": null,
       "narrative": null,
@@ -190142,14 +190603,14 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:13:05.128089Z",
+      "capturedAt": "2026-08-19T23:43:53.013772Z",
       "groomedRunCount": null,
-      "id": "51c2cf6f-cd5b-4c7c-8727-758d3ee7695b",
+      "id": "0474b452-576b-47a0-b5f4-e178f6f1de76",
       "layer": "resort_lifts",
       "machineMadeDepthCm": null,
       "narrative": null,
       "naturalDepthCm": null,
-      "openLiftCount": 6,
+      "openLiftCount": 7,
       "openRunCount": null,
       "provenance": {
         "contentType": "application/json",
@@ -190157,7 +190618,7 @@
         "parserVersion": 1,
         "upstreamRowCount": 19
       },
-      "rawPayloadRef": "data/operations/raw/2026-08-19/buller_lifts/af985b7be23ff47466e082e61ba16a631af53ddddd9d823fe20e5cd746e43aba.json",
+      "rawPayloadRef": "data/operations/raw/2026-08-19/buller_lifts/0bc195c2ddfb0b0aef910a30a69b7304b863b1a64917f1fe35229f990b3b4a3f.json",
       "resortId": "buller",
       "retrievalStatus": "ok",
       "schemaVersion": 1,
@@ -190174,9 +190635,9 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:13:04.919799Z",
+      "capturedAt": "2026-08-19T23:43:52.828812Z",
       "groomedRunCount": 8,
-      "id": "722e9724-16e4-4a58-a0c1-ce058e8f56e8",
+      "id": "8f9da465-40dd-4f4f-93f5-06094c57defc",
       "layer": "resort_trails",
       "machineMadeDepthCm": null,
       "narrative": null,
@@ -190207,9 +190668,9 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:13:04.737789Z",
+      "capturedAt": "2026-08-19T23:43:52.659619Z",
       "groomedRunCount": null,
-      "id": "edcc6816-3a35-48e0-a24b-a4ac078c1650",
+      "id": "3cc91221-fa6b-47f3-ab99-f2f4952a84b5",
       "layer": "resort_lifts",
       "machineMadeDepthCm": null,
       "narrative": null,
@@ -190239,14 +190700,14 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:13:04.558321Z",
+      "capturedAt": "2026-08-19T23:43:52.489250Z",
       "groomedRunCount": null,
-      "id": "894eb746-475f-4019-ae65-73a587be1620",
+      "id": "49742607-f6b7-47c4-b683-32bf49927b43",
       "layer": "resort_lifts",
       "machineMadeDepthCm": null,
       "narrative": null,
       "naturalDepthCm": null,
-      "openLiftCount": 5,
+      "openLiftCount": 6,
       "openRunCount": null,
       "provenance": {
         "contentType": "application/json; charset=utf-8",
@@ -190254,7 +190715,7 @@
         "parserVersion": 1,
         "upstreamRowCount": 14
       },
-      "rawPayloadRef": "data/operations/raw/2026-08-19/hotham_mountainops_lifts/586d54e190f900e17d750bc6fd4abd84261184ac787c733eddf37316e8be77e9.json",
+      "rawPayloadRef": "data/operations/raw/2026-08-19/hotham_mountainops_lifts/7ac96fc9aec36fe17afb63220c6f2a09b57c376915b2d2d52811127cb642381f.json",
       "resortId": "hotham",
       "retrievalStatus": "ok",
       "schemaVersion": 1,
@@ -190271,14 +190732,14 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:13:04.376247Z",
+      "capturedAt": "2026-08-19T23:43:52.320273Z",
       "groomedRunCount": null,
-      "id": "f1c4f791-30d6-402e-be11-c676bb25c0aa",
+      "id": "b120fbc4-055a-4d44-b5bb-8741dc9df5b3",
       "layer": "resort_lifts",
       "machineMadeDepthCm": null,
       "narrative": null,
       "naturalDepthCm": null,
-      "openLiftCount": 8,
+      "openLiftCount": 9,
       "openRunCount": null,
       "provenance": {
         "contentType": "application/json; charset=utf-8",
@@ -190286,7 +190747,7 @@
         "parserVersion": 1,
         "upstreamRowCount": 15
       },
-      "rawPayloadRef": "data/operations/raw/2026-08-19/falls_mountainops_lifts/a6e8605e16ce1ead004822a94353f87a2c4e35bb14295cd083c06d8669c62629.json",
+      "rawPayloadRef": "data/operations/raw/2026-08-19/falls_mountainops_lifts/e98c4acce774e28ff4017ff013fb98412ea218a642f782d8ef998f73d6ecfcec.json",
       "resortId": "falls",
       "retrievalStatus": "ok",
       "schemaVersion": 1,
@@ -190303,9 +190764,9 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:13:03.612049Z",
+      "capturedAt": "2026-08-19T23:43:51.778277Z",
       "groomedRunCount": 35,
-      "id": "263602c0-9405-41f4-9132-8ebc08dc8339",
+      "id": "5ff15de9-1064-4157-b6be-e0c3885155ff",
       "layer": "mountainops_runs",
       "machineMadeDepthCm": null,
       "narrative": null,
@@ -190336,9 +190797,9 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:13:02.831723Z",
+      "capturedAt": "2026-08-19T23:43:51.238321Z",
       "groomedRunCount": 15,
-      "id": "802bc6f0-64b0-4be4-9858-a34b63130791",
+      "id": "81787a20-7380-45d3-b84f-eaad74a65151",
       "layer": "mountainops_runs",
       "machineMadeDepthCm": null,
       "narrative": null,
@@ -190369,9 +190830,9 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:13:02.099141Z",
+      "capturedAt": "2026-08-19T23:43:50.523040Z",
       "groomedRunCount": 3,
-      "id": "5a5950ea-fd5e-4bcf-9662-ea63f5a62082",
+      "id": "caa043fd-46bc-4a86-a275-a4ece86d78bd",
       "layer": "mountainops_runs",
       "machineMadeDepthCm": null,
       "narrative": null,
@@ -190402,9 +190863,9 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:12:59.423099Z",
+      "capturedAt": "2026-08-19T23:43:48.784268Z",
       "groomedRunCount": null,
-      "id": "6c1e8d50-865f-462f-9d9f-0957b138255c",
+      "id": "7da27952-8f3c-4558-91da-887ea370bdb9",
       "layer": "resort_report",
       "machineMadeDepthCm": null,
       "narrative": "Snow &amp; Lift Report &#8211; Mt Baw Baw :root { --theme: #FF6200; --theme-dark: #cc4e00; } img:is([sizes=\"auto\" i], [sizes^=\"auto,\" i]) { contain-intrinsic-size: 3000px 1500px } {\"@context\":\"https:\\/\\/schema.org\",\"@graph\":[{\"@type\":\"WebPage\",\"@id\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/\",\"url\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/\",\"name\":\"Snow & Lift Report &#8211; Mt Baw Baw\",\"isPartOf\":{\"@id\":\"http:\\/\\/10.0.0.207\\/#website\"},\"datePublished\":\"2022-02-03T01:50:52+00:00\",\"dateModified\":\"2026-03-12T22:40:07+00:00\",\"description\":\"Check out the snow conditions, road and ski lift status daily during the declared snow season from June to September.\",\"breadcrumb\":{\"@id\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/#breadcrumb\"},\"inLanguage\":\"en-US\",\"potentialAction\":[{\"@type\":\"ReadAction\",\"target\":[\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/\"]}]},{\"@type\":\"BreadcrumbList\",\"@id\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/snow-weather\\/#breadcrumb\",\"itemListElement\":[{\"@type\":\"ListItem\",\"position\":1,\"name\":\"Home\",\"item\":\"http:\\/\\/10.0.0.207\\/\"},{\"@type\":\"ListItem\",\"position\":2,\"name\":\"Reports\",\"item\":\"https:\\/\\/mountbawbaw.com.au\\/reports\\/\"},{\"@type\":\"ListItem\",\"position\":3,\"name\":\"Snow &#038; Lift Report\"}]},{\"@type\":\"WebSite\",\"@id\":\"http:\\/\\/10.0.0.207\\/#website\",\"url\":\"http:\\/\\/10.0.0.207\\/\",\"name\":\"Mt Baw Baw\",\"description\":\"Melbourne&#039;s closest ski, snowboard, bike &amp; hike resort\",\"publisher\":{\"@id\":\"http:\\/\\/10.0.0.207\\/#organization\"},\"potentialAction\":[{\"@type\":\"SearchAction\",\"target\":{\"@type\":\"EntryPoint\",\"urlTemplate\":\"http:\\/\\/10.0.0.207\\/?s={search_term_string}\"},\"query-input\":{\"@type\":\"PropertyValueSpecification\",\"valueRequired\":true,\"valueName\":\"search_term_string\"}}],\"inLanguage\":\"en-US\"},{\"@type\":\"Organization\",\"@id\":\"http:\\/\\/10.0.0.207\\/#organization\",\"name\":\"Mt. Baw Baw\",\"url\":\"http:\\/\\/10.0.0.207\\/\",\"logo\":{\"@type\":\"ImageObject\",\"inLanguage\":\"en-US\",\"@id\":\"http:\\/\\/10.0.0.207\\/#\\/schema\\/logo\\/im",
@@ -190417,7 +190878,7 @@
         "parserVersion": 1,
         "sourceSurface": "public report page"
       },
-      "rawPayloadRef": "data/operations/raw/2026-08-19/bawbaw_public_report/c4ce393c6f5fb49d233bff2b9880767f01553d9fb82811f7622b1fb94bda5288.json",
+      "rawPayloadRef": "data/operations/raw/2026-08-19/bawbaw_public_report/16286e283d512bc58a1d07fa442b52d3a0ca8f99db7eb4790e6693d831cb7646.json",
       "resortId": "bawbaw",
       "retrievalStatus": "ok",
       "schemaVersion": 1,
@@ -190434,23 +190895,23 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:12:58.760877Z",
+      "capturedAt": "2026-08-19T23:43:48.137735Z",
       "groomedRunCount": null,
-      "id": "f09995a7-07a1-4bc5-ba23-769e9aaa626f",
+      "id": "0ef23854-ffd4-4181-8f12-efa6e3834d75",
       "layer": "resort_report",
       "machineMadeDepthCm": 63,
       "narrative": "Light showers expected across the day and temperatures starting to dip back down tonight. Will feel fresh.",
       "naturalDepthCm": 25,
-      "openLiftCount": 6,
+      "openLiftCount": 7,
       "openRunCount": 2,
       "provenance": {
         "contentType": "application/json",
         "httpStatus": 200,
         "parserVersion": 1,
         "snowmakingField": null,
-        "widgetUpdatedAt": "2026-08-20T09:00:00+10:00"
+        "widgetUpdatedAt": "2026-08-20T09:30:00+10:00"
       },
-      "rawPayloadRef": "data/operations/raw/2026-08-19/buller_weather_widget/3ce9e1707c4cc8aa2cc63f9c1812148d6f321863d9dab8a7351864ffcc111fa5.json",
+      "rawPayloadRef": "data/operations/raw/2026-08-19/buller_weather_widget/090823e523da19929ad607ed54b265dcfbed852e73d453cb0f1e31d9f004a33a.json",
       "resortId": "buller",
       "retrievalStatus": "ok",
       "schemaVersion": 1,
@@ -190459,7 +190920,7 @@
       "snowmakingStatus": "unavailable",
       "source": "buller_weather_widget",
       "sourceRecordId": null,
-      "sourceReportedAt": "2026-08-19T23:00:00Z",
+      "sourceReportedAt": "2026-08-19T23:30:00Z",
       "sourceUrl": "https://api.mtbuller.com.au/api/weather/widget",
       "warnings": [
         "Widget update time is a source-refresh time, not a physical snow-patrol measurement timestamp."
@@ -190467,9 +190928,9 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:12:57.887748Z",
+      "capturedAt": "2026-08-19T23:43:47.389386Z",
       "groomedRunCount": 38,
-      "id": "8d18f46c-7bbc-4fd0-b116-a8dc75752b67",
+      "id": "48d11db4-2a86-468b-823b-73653cfb8a0e",
       "layer": "resort_report",
       "machineMadeDepthCm": null,
       "narrative": "Pick of the day? Retail therapy!. In good news, yesterday afternoon's change rolled through later than forecast, so we had a great day out on the slopes. We hope you made the most of it, as today's a different story. The moisture arrived overnight and the resort is currently blanketed in thick fog. If you needed a rest day, today's it. It's currently just under 4 degrees and we're headed for a top of 6 degrees. The moisture is expected to hang around and could fall as snow on the peaks above 1900m. We're also expecting high winds, which may impact some lift operations. We have 31 lifts expected today, though this number may change as the team assesses any damage to the snowpack. We have 38 groomed runs, and the snow will be soft underfoot from the outset. As we roll into day 4 of State Interschools, there may be some changes to the schedule based on conditions. Snow Australia will provide updates. With great savings on offer at Slopestyle and Perisher Sports, and conditions less than ideal on the mountain, today's pick is retail therapy. With up to 50% off select products, you can't go wrong! The good news: this weather should clear by mid-morning tomorrow, and we're in for a mostly sunny weekend!",
@@ -190499,9 +190960,9 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:12:57.114987Z",
+      "capturedAt": "2026-08-19T23:43:46.786702Z",
       "groomedRunCount": null,
-      "id": "5287e528-06b5-4ae0-ad67-4851e815d4cc",
+      "id": "e10ab76a-bfe4-47e7-b4d7-01fd06572f17",
       "layer": "resort_report",
       "machineMadeDepthCm": 107,
       "narrative": "Well, I wish I left this one for Bill. Thankfully the showers stayed away longer than expected yesterday however they intensified in the early evening and persisted through the night. The current temp is +3.4 which is already slightly above our forecast max of +3 degrees. There's a damp fog in the Village and while there's no precipitation right at this moment there are more showers forecast throughout the day. The wind is still strong from NNW so again keep an eye on the App and the lift report for live updates as some lifts may be hampered. With the showers and warm overnight temps the snow will be soft and very forgiving from the outset today. The open groomed terrain will be the best bet on a very user friendly surface. In more positive news this unwelcome weather looks set to ease tomorrow and should continue to improve into the weekend. It'll be a day for low light lenses and your best Gore-Tex. Cheers, Burner.",
@@ -190530,9 +190991,9 @@
     },
     {
       "activeSnowmakingRuns": [],
-      "capturedAt": "2026-08-19T23:12:55.897722Z",
+      "capturedAt": "2026-08-19T23:43:46.036857Z",
       "groomedRunCount": null,
-      "id": "710c450b-ddf1-44a2-81e0-7fc7e36a3403",
+      "id": "a13be098-e8f9-4ec0-bd52-e52174034324",
       "layer": "resort_report",
       "machineMadeDepthCm": null,
       "narrative": "August is a big month on the mountain, with a packed calendar of on-snow events, races and activities, alongside plenty to enjoy off the slopes. From exciting action on the snow and Nordic trails to live music, food, family activities and events across the village, there\u2019s something happening throughout the month.",
@@ -190552,7 +191013,7 @@
         "slopeMaintenanceReportedAt": "2026-07-05T01:44:00Z",
         "slopeMaintenanceStatus": "On"
       },
-      "rawPayloadRef": "data/operations/raw/2026-08-19/falls_official_report/680fbdae8d1ba4ce2054bd6cf05aef950f3edc1c9e80d3902257475cc44a1467.json",
+      "rawPayloadRef": "data/operations/raw/2026-08-19/falls_official_report/1bb6764a57ff7e379d2c55e02aba52984d8e6cd26409be2d39de51807abbfa9d.json",
       "resortId": "falls",
       "retrievalStatus": "ok",
       "schemaVersion": 1,
@@ -190568,6 +191029,90 @@
   ],
   "producer": "snow-pred-accu operations collector",
   "rawPayloads": [
+    {
+      "archiveRef": "data/operations/raw/2026-08-19/buller_lifts/0bc195c2ddfb0b0aef910a30a69b7304b863b1a64917f1fe35229f990b3b4a3f.json",
+      "contentType": "application/json",
+      "firstCapturedAt": "2026-08-19T23:43:53.013772Z",
+      "httpStatus": 200,
+      "normalizedRecordIds": [
+        "0474b452-576b-47a0-b5f4-e178f6f1de76"
+      ],
+      "parserVersion": 1,
+      "payloadHash": "0bc195c2ddfb0b0aef910a30a69b7304b863b1a64917f1fe35229f990b3b4a3f",
+      "responseAt": "2026-08-19T23:43:53.198218Z",
+      "source": "buller_lifts",
+      "sourceUrl": "https://api.mtbuller.com.au/api/lifts"
+    },
+    {
+      "archiveRef": "data/operations/raw/2026-08-19/hotham_mountainops_lifts/7ac96fc9aec36fe17afb63220c6f2a09b57c376915b2d2d52811127cb642381f.json",
+      "contentType": "application/json; charset=utf-8",
+      "firstCapturedAt": "2026-08-19T23:43:52.489250Z",
+      "httpStatus": 200,
+      "normalizedRecordIds": [
+        "49742607-f6b7-47c4-b683-32bf49927b43"
+      ],
+      "parserVersion": 1,
+      "payloadHash": "7ac96fc9aec36fe17afb63220c6f2a09b57c376915b2d2d52811127cb642381f",
+      "responseAt": "2026-08-19T23:43:52.656473Z",
+      "source": "hotham_mountainops_lifts",
+      "sourceUrl": "https://mh-mountainops.vailresorts.com.au/api/public/lift-status"
+    },
+    {
+      "archiveRef": "data/operations/raw/2026-08-19/falls_mountainops_lifts/e98c4acce774e28ff4017ff013fb98412ea218a642f782d8ef998f73d6ecfcec.json",
+      "contentType": "application/json; charset=utf-8",
+      "firstCapturedAt": "2026-08-19T23:43:52.320273Z",
+      "httpStatus": 200,
+      "normalizedRecordIds": [
+        "b120fbc4-055a-4d44-b5bb-8741dc9df5b3"
+      ],
+      "parserVersion": 1,
+      "payloadHash": "e98c4acce774e28ff4017ff013fb98412ea218a642f782d8ef998f73d6ecfcec",
+      "responseAt": "2026-08-19T23:43:52.485388Z",
+      "source": "falls_mountainops_lifts",
+      "sourceUrl": "https://fc-mountainops.vailresorts.com.au/api/public/lift-status"
+    },
+    {
+      "archiveRef": "data/operations/raw/2026-08-19/bawbaw_public_report/16286e283d512bc58a1d07fa442b52d3a0ca8f99db7eb4790e6693d831cb7646.json",
+      "contentType": "text/html; charset=UTF-8",
+      "firstCapturedAt": "2026-08-19T23:43:48.784268Z",
+      "httpStatus": 200,
+      "normalizedRecordIds": [
+        "7da27952-8f3c-4558-91da-887ea370bdb9"
+      ],
+      "parserVersion": 1,
+      "payloadHash": "16286e283d512bc58a1d07fa442b52d3a0ca8f99db7eb4790e6693d831cb7646",
+      "responseAt": "2026-08-19T23:43:50.517141Z",
+      "source": "bawbaw_public_report",
+      "sourceUrl": "https://www.mountbawbaw.com.au/reports/snow-weather/"
+    },
+    {
+      "archiveRef": "data/operations/raw/2026-08-19/buller_weather_widget/090823e523da19929ad607ed54b265dcfbed852e73d453cb0f1e31d9f004a33a.json",
+      "contentType": "application/json",
+      "firstCapturedAt": "2026-08-19T23:43:48.137735Z",
+      "httpStatus": 200,
+      "normalizedRecordIds": [
+        "0ef23854-ffd4-4181-8f12-efa6e3834d75"
+      ],
+      "parserVersion": 1,
+      "payloadHash": "090823e523da19929ad607ed54b265dcfbed852e73d453cb0f1e31d9f004a33a",
+      "responseAt": "2026-08-19T23:43:48.781461Z",
+      "source": "buller_weather_widget",
+      "sourceUrl": "https://api.mtbuller.com.au/api/weather/widget"
+    },
+    {
+      "archiveRef": "data/operations/raw/2026-08-19/falls_official_report/1bb6764a57ff7e379d2c55e02aba52984d8e6cd26409be2d39de51807abbfa9d.json",
+      "contentType": "application/json",
+      "firstCapturedAt": "2026-08-19T23:43:46.036857Z",
+      "httpStatus": 200,
+      "normalizedRecordIds": [
+        "a13be098-e8f9-4ec0-bd52-e52174034324"
+      ],
+      "parserVersion": 1,
+      "payloadHash": "1bb6764a57ff7e379d2c55e02aba52984d8e6cd26409be2d39de51807abbfa9d",
+      "responseAt": "2026-08-19T23:43:46.741739Z",
+      "source": "falls_official_report",
+      "sourceUrl": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json"
+    },
     {
       "archiveRef": "data/operations/raw/2026-08-19/buller_lifts/af985b7be23ff47466e082e61ba16a631af53ddddd9d823fe20e5cd746e43aba.json",
       "contentType": "application/json",
@@ -190588,7 +191133,8 @@
       "firstCapturedAt": "2026-08-19T23:13:04.737789Z",
       "httpStatus": 200,
       "normalizedRecordIds": [
-        "edcc6816-3a35-48e0-a24b-a4ac078c1650"
+        "edcc6816-3a35-48e0-a24b-a4ac078c1650",
+        "3cc91221-fa6b-47f3-ab99-f2f4952a84b5"
       ],
       "parserVersion": 1,
       "payloadHash": "1e091f074349be55bbe7a8ddbbb0e24f7977157b198ce6112ff7135d94672a0c",
@@ -190630,7 +191176,8 @@
       "firstCapturedAt": "2026-08-19T23:13:03.612049Z",
       "httpStatus": 200,
       "normalizedRecordIds": [
-        "263602c0-9405-41f4-9132-8ebc08dc8339"
+        "263602c0-9405-41f4-9132-8ebc08dc8339",
+        "5ff15de9-1064-4157-b6be-e0c3885155ff"
       ],
       "parserVersion": 1,
       "payloadHash": "61b40382b4129bf07f33cc52a36ee7c05a931cfed661932005a651fa72940d52",
@@ -190672,7 +191219,8 @@
       "firstCapturedAt": "2026-08-19T23:12:57.114987Z",
       "httpStatus": 200,
       "normalizedRecordIds": [
-        "5287e528-06b5-4ae0-ad67-4851e815d4cc"
+        "5287e528-06b5-4ae0-ad67-4851e815d4cc",
+        "e10ab76a-bfe4-47e7-b4d7-01fd06572f17"
       ],
       "parserVersion": 1,
       "payloadHash": "635c9655f5da502f97b53d5b6493491cb6e13fd0bb35c5f6c2ff3dfdac1c4cda",
@@ -190701,7 +191249,8 @@
       "httpStatus": 200,
       "normalizedRecordIds": [
         "70a5cf4f-b186-4a41-93ae-eb411ec3eded",
-        "d775de4a-94aa-4a4e-8269-e84d28c2e246"
+        "d775de4a-94aa-4a4e-8269-e84d28c2e246",
+        "dd2505e0-6a2c-45a1-80ab-c714602507f8"
       ],
       "parserVersion": 1,
       "payloadHash": "5afa8f75f19bafc8f50d2e8c14f9625a964cde951e02c6883d13577be73f5e7b",
@@ -190814,7 +191363,8 @@
       "httpStatus": 200,
       "normalizedRecordIds": [
         "46d48bcc-5df0-42cb-b0ca-b1d6ed58482f",
-        "8d18f46c-7bbc-4fd0-b116-a8dc75752b67"
+        "8d18f46c-7bbc-4fd0-b116-a8dc75752b67",
+        "48d11db4-2a86-468b-823b-73653cfb8a0e"
       ],
       "parserVersion": 1,
       "payloadHash": "3dade7ea39489aea763514836316dc5745bf71938492675781687b6965473719",
@@ -190914,7 +191464,8 @@
       "normalizedRecordIds": [
         "c5f3327c-c111-4047-b183-526a4c883bb7",
         "824a9c4f-16c5-4fde-a543-a5995b1e51df",
-        "5a5950ea-fd5e-4bcf-9662-ea63f5a62082"
+        "5a5950ea-fd5e-4bcf-9662-ea63f5a62082",
+        "caa043fd-46bc-4a86-a275-a4ece86d78bd"
       ],
       "parserVersion": 1,
       "payloadHash": "56204203bf4fc30b40207ccfca455f45a177f3023d33d91d269468892f6d395b",
@@ -191760,7 +192311,8 @@
         "ab4a32f5-8e7c-414e-bead-b23e332ab6be",
         "def09c7a-c1b7-40d2-9cd2-4487876c3d20",
         "54fc4bfc-970f-44bc-9572-9b68d5e341a3",
-        "802bc6f0-64b0-4be4-9858-a34b63130791"
+        "802bc6f0-64b0-4be4-9858-a34b63130791",
+        "81787a20-7380-45d3-b84f-eaad74a65151"
       ],
       "parserVersion": 1,
       "payloadHash": "63dfe09b6178bfeaa10522ae1d95cab3f3e9888e5b10fe7a35e53c90ceff270a",
@@ -192496,7 +193048,8 @@
         "a1499536-0d98-4600-b17c-d9b2321421c2",
         "aef79f67-3233-478d-9c61-94ee9d6e5c2a",
         "114523db-4352-41b5-802d-ca3c7dabe940",
-        "722e9724-16e4-4a58-a0c1-ce058e8f56e8"
+        "722e9724-16e4-4a58-a0c1-ce058e8f56e8",
+        "8f9da465-40dd-4f4f-93f5-06094c57defc"
       ],
       "parserVersion": 1,
       "payloadHash": "55bef8a6375494db71ab9a0c3fe5bc88ef7ecec37cf879be0778cd02412e198f",
