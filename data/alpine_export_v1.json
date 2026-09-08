@@ -4130,7 +4130,7 @@
     {
       "collectorResortId": "perisher",
       "date": "2026-09-09",
-      "effectiveSource": "snowatch",
+      "effectiveSource": "official",
       "layers": [
         {
           "collectedAt": "2026-09-08T23:40:08.592333+00:00",
@@ -4146,16 +4146,36 @@
           "snow7dCm": null,
           "source": "snowatch",
           "sourceUrl": "https://www.snowatch.com.au/"
+        },
+        {
+          "collectedAt": "2026-09-08T23:43:16.125841+00:00",
+          "naturalDepthCm": 17.0,
+          "notes": null,
+          "raw": {
+            "date": "2026-09-09",
+            "natural_depth": 17.0,
+            "report_time_kind": "report_publication",
+            "reported_at": "2026-09-09T07:23:00+10:00",
+            "snow_24h": 0.0,
+            "snow_7day": 8.0,
+            "source_url": "https://www.perisher.com.au/media_files/snowreport12.xml"
+          },
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-09-09T07:23:00+10:00",
+          "snow24hCm": 0.0,
+          "snow7dCm": 8.0,
+          "source": "official",
+          "sourceUrl": "https://www.perisher.com.au/media_files/snowreport12.xml"
         }
       ],
-      "naturalDepthCm": null,
-      "reportTimeKind": null,
-      "reportedAt": null,
+      "naturalDepthCm": 17.0,
+      "reportTimeKind": "report_publication",
+      "reportedAt": "2026-09-09T07:23:00+10:00",
       "resortId": "perisher",
       "snow24hCm": 0.0,
-      "snow7dCm": null,
-      "sourceUrl": "https://www.snowatch.com.au/",
-      "updatedAt": "2026-09-08T23:40:08.592333+00:00"
+      "snow7dCm": 8.0,
+      "sourceUrl": "https://www.perisher.com.au/media_files/snowreport12.xml",
+      "updatedAt": "2026-09-08T23:43:16.125841+00:00"
     },
     {
       "collectorResortId": "thredbo",
@@ -8613,7 +8633,7 @@
     {
       "collectorResortId": "thredbo",
       "date": "2026-09-09",
-      "effectiveSource": "snowatch",
+      "effectiveSource": "official",
       "layers": [
         {
           "collectedAt": "2026-09-08T23:40:08.595796+00:00",
@@ -8629,16 +8649,38 @@
           "snow7dCm": null,
           "source": "snowatch",
           "sourceUrl": "https://www.snowatch.com.au/"
+        },
+        {
+          "collectedAt": "2026-09-08T23:43:16.409560+00:00",
+          "naturalDepthCm": 31.2,
+          "notes": null,
+          "raw": {
+            "data_url": "https://www.thredbo.com.au/weather/snow-report/",
+            "date": "2026-09-09",
+            "natural_depth": 31.2,
+            "report_time_kind": "report_publication",
+            "reported_at": "2026-09-09T06:30:00+10:00",
+            "snow_24h": 0.0,
+            "snow_7day": 0.0,
+            "source_url": "https://www.thredbo.com.au/weather/weather-report/",
+            "xml_updated_at": "2026-09-09T07:00:22.000+10:00"
+          },
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-09-09T06:30:00+10:00",
+          "snow24hCm": 0.0,
+          "snow7dCm": 0.0,
+          "source": "official",
+          "sourceUrl": "https://www.thredbo.com.au/weather/weather-report/"
         }
       ],
-      "naturalDepthCm": null,
-      "reportTimeKind": null,
-      "reportedAt": null,
+      "naturalDepthCm": 31.2,
+      "reportTimeKind": "report_publication",
+      "reportedAt": "2026-09-09T06:30:00+10:00",
       "resortId": "thredbo_top",
       "snow24hCm": 0.0,
-      "snow7dCm": null,
-      "sourceUrl": "https://www.snowatch.com.au/",
-      "updatedAt": "2026-09-08T23:40:08.595796+00:00"
+      "snow7dCm": 0.0,
+      "sourceUrl": "https://www.thredbo.com.au/weather/weather-report/",
+      "updatedAt": "2026-09-08T23:43:16.409560+00:00"
     },
     {
       "collectorResortId": "hotham",
@@ -12712,6 +12754,26 @@
           "snow7dCm": 2.0,
           "source": "official",
           "sourceUrl": "https://snowreport.mthotham.com.au/resources/SnowReport.xml"
+        },
+        {
+          "collectedAt": "2026-09-08T23:43:16.917651+00:00",
+          "naturalDepthCm": 0.0,
+          "notes": null,
+          "raw": {
+            "date": "2026-09-07",
+            "natural_depth": 0.0,
+            "report_time_kind": "report_publication",
+            "reported_at": "2026-09-07T14:18:10+10:00",
+            "snow_24h": 0.0,
+            "snow_7day": 2.0,
+            "source_url": "https://snowreport.mthotham.com.au/resources/SnowReport.xml"
+          },
+          "reportTimeKind": "report_publication",
+          "reportedAt": "2026-09-07T14:18:10+10:00",
+          "snow24hCm": 0.0,
+          "snow7dCm": 2.0,
+          "source": "official",
+          "sourceUrl": "https://snowreport.mthotham.com.au/resources/SnowReport.xml"
         }
       ],
       "naturalDepthCm": 0.0,
@@ -12721,7 +12783,7 @@
       "snow24hCm": 0.0,
       "snow7dCm": 2.0,
       "sourceUrl": "https://snowreport.mthotham.com.au/resources/SnowReport.xml",
-      "updatedAt": "2026-09-08T12:36:42.332446+00:00"
+      "updatedAt": "2026-09-08T23:43:16.917651+00:00"
     },
     {
       "collectorResortId": "hotham",
@@ -16987,6 +17049,26 @@
           "snow7dCm": null,
           "source": "official",
           "sourceUrl": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json"
+        },
+        {
+          "collectedAt": "2026-09-08T23:43:17.525632+00:00",
+          "naturalDepthCm": 8.0,
+          "notes": null,
+          "raw": {
+            "date": "2026-09-06",
+            "natural_depth": 8.0,
+            "report_time_kind": "patrol_observation",
+            "reported_at": "2026-09-06T06:32:00+10:00",
+            "snow_24h": 3.0,
+            "snow_7day": null,
+            "source_url": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json"
+          },
+          "reportTimeKind": "patrol_observation",
+          "reportedAt": "2026-09-06T06:32:00+10:00",
+          "snow24hCm": 3.0,
+          "snow7dCm": null,
+          "source": "official",
+          "sourceUrl": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json"
         }
       ],
       "naturalDepthCm": 8.0,
@@ -16996,7 +17078,7 @@
       "snow24hCm": 3.0,
       "snow7dCm": null,
       "sourceUrl": "https://www.fallscreek.com.au/wp-content/uploads/FCSnowReport.json",
-      "updatedAt": "2026-09-08T12:36:43.080672+00:00"
+      "updatedAt": "2026-09-08T23:43:17.525632+00:00"
     },
     {
       "collectorResortId": "fallscreek",
@@ -21553,6 +21635,28 @@
           "snow7dCm": null,
           "source": "official",
           "sourceUrl": "https://www.mtbuller.com.au/winter/snow-weather/snow-report"
+        },
+        {
+          "collectedAt": "2026-09-08T23:43:18.985793+00:00",
+          "naturalDepthCm": 0.0,
+          "notes": null,
+          "raw": {
+            "data_url": "https://api.mtbuller.com.au/api/weather/widget",
+            "date": "2026-09-06",
+            "natural_depth": 0.0,
+            "report_time_kind": "documented_measurement",
+            "reported_at": "2026-09-06T07:12:00+10:00",
+            "snow_24h": 0.0,
+            "snow_7day": null,
+            "source_url": "https://www.mtbuller.com.au/winter/snow-weather/snow-report",
+            "widget_updated_at": "2026-09-09T09:30:00+10:00"
+          },
+          "reportTimeKind": "documented_measurement",
+          "reportedAt": "2026-09-06T07:12:00+10:00",
+          "snow24hCm": 0.0,
+          "snow7dCm": null,
+          "source": "official",
+          "sourceUrl": "https://www.mtbuller.com.au/winter/snow-weather/snow-report"
         }
       ],
       "naturalDepthCm": 0.0,
@@ -21562,7 +21666,7 @@
       "snow24hCm": 0.0,
       "snow7dCm": null,
       "sourceUrl": "https://www.mtbuller.com.au/winter/snow-weather/snow-report",
-      "updatedAt": "2026-09-08T12:36:44.860485+00:00"
+      "updatedAt": "2026-09-08T23:43:18.985793+00:00"
     },
     {
       "collectorResortId": "buller",
@@ -21636,17 +21740,17 @@
       "operationalConsensus": {
         "method": "accuracy_weighted_median",
         "values": {
-          "2026-09-08": 0.0,
           "2026-09-09": 0.0,
           "2026-09-10": 0.0,
           "2026-09-11": 0.0,
           "2026-09-12": 0.0,
           "2026-09-13": 0.0,
           "2026-09-14": 0.0,
-          "2026-09-15": 0.0,
-          "2026-09-16": 0.0,
+          "2026-09-15": 1.87,
+          "2026-09-16": 0.2,
           "2026-09-17": 0.0,
           "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 0.0,
@@ -21671,19 +21775,18 @@
             "n": 54,
             "pct": 22.377622377622387
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1661,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 6.0,
+            "2026-09-15": 7.0,
             "2026-09-16": 0.0
           }
         },
@@ -21693,18 +21796,18 @@
             "n": 55,
             "pct": 69.33497536945814
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1661,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
-            "2026-09-14": 0.0
+            "2026-09-14": 0.0,
+            "2026-09-15": 0.0
           }
         },
         "janesweather": {
@@ -21713,18 +21816,17 @@
             "n": 54,
             "pct": 70.97902097902097
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1700,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-09": 0.29,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.1,
+            "2026-09-15": 1.87,
             "2026-09-16": 0.0,
             "2026-09-17": 0.0
           }
@@ -21733,14 +21835,14 @@
           "accuracy": {
             "leadHours": 13,
             "n": 20,
-            "pct": 32.69387755102039
+            "pct": 32.69387755102042
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1710,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-09": 0.07,
+            "2026-09-09": 0.1,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
@@ -21754,22 +21856,22 @@
             "n": 65,
             "pct": 62.662921348314605
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1700,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.0,
-            "2026-09-16": 0.0,
+            "2026-09-15": 1.05,
+            "2026-09-16": 0.21,
             "2026-09-17": 0.0,
-            "2026-09-18": 0.0
+            "2026-09-18": 0.0,
+            "2026-09-19": 0.0
           }
         },
         "snowatch": {
@@ -21806,29 +21908,29 @@
             "n": 57,
             "pct": 64.19753086419753
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1590,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
-            "2026-09-13": 0.0
+            "2026-09-13": 0.0,
+            "2026-09-14": 0.0
           }
         },
         "yrno": {
           "accuracy": {
             "leadHours": 13,
             "n": 54,
-            "pct": 48.11188811188812
+            "pct": 48.11188811188811
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1700,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
@@ -21836,8 +21938,8 @@
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.0,
-            "2026-09-16": 0.0,
+            "2026-09-15": 2.8,
+            "2026-09-16": 0.2,
             "2026-09-17": 0.0
           }
         }
@@ -21848,6 +21950,17 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
+          "2026-09-09": 0.010920571478325791,
+          "2026-09-10": 0.0,
+          "2026-09-11": 0.0,
+          "2026-09-12": 0.0,
+          "2026-09-13": 0.0,
+          "2026-09-14": 0.0,
+          "2026-09-15": 1.7913843510962908,
+          "2026-09-16": 0.11160255213567764,
+          "2026-09-17": 0.0,
+          "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 0.0,
@@ -21873,17 +21986,17 @@
       "operationalConsensus": {
         "method": "accuracy_weighted_median",
         "values": {
-          "2026-09-08": 0.0,
-          "2026-09-09": 0.07,
+          "2026-09-09": 0.0,
           "2026-09-10": 0.0,
           "2026-09-11": 0.0,
           "2026-09-12": 0.0,
           "2026-09-13": 0.0,
           "2026-09-14": 0.0,
-          "2026-09-15": 0.0,
-          "2026-09-16": 0.0,
+          "2026-09-15": 1.68,
+          "2026-09-16": 0.17,
           "2026-09-17": 0.0,
           "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 0.0,
@@ -21908,19 +22021,18 @@
             "n": 53,
             "pct": 16.176470588235293
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1637,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 5.0,
+            "2026-09-15": 7.0,
             "2026-09-16": 0.0
           }
         },
@@ -21930,18 +22042,18 @@
             "n": 53,
             "pct": 75.81660067873302
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1637,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
-            "2026-09-14": 0.0
+            "2026-09-14": 0.0,
+            "2026-09-15": 1.75
           }
         },
         "janesweather": {
@@ -21950,19 +22062,18 @@
             "n": 53,
             "pct": 68.19117647058823
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1750,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-09": 0.13,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.12,
-            "2026-09-16": 0.0,
+            "2026-09-15": 1.0,
+            "2026-09-16": 0.17,
             "2026-09-17": 0.0
           }
         },
@@ -21972,10 +22083,10 @@
             "n": 22,
             "pct": 8.732142857142833
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1770,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
             "2026-09-09": 0.1,
             "2026-09-10": 0.0,
@@ -21989,24 +22100,24 @@
           "accuracy": {
             "leadHours": 13,
             "n": 61,
-            "pct": 71.59770114942528
+            "pct": 71.59770114942529
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1650,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
-            "2026-09-09": 0.07,
+            "2026-09-09": 0.14,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.0,
+            "2026-09-15": 1.68,
             "2026-09-16": 0.0,
             "2026-09-17": 0.0,
-            "2026-09-18": 0.0
+            "2026-09-18": 0.0,
+            "2026-09-19": 0.0
           }
         },
         "snowatch": {
@@ -22043,17 +22154,17 @@
             "n": 56,
             "pct": 60.36585365853657
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1690,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
-            "2026-09-13": 0.0
+            "2026-09-13": 0.0,
+            "2026-09-14": 0.0
           }
         },
         "yrno": {
@@ -22062,19 +22173,19 @@
             "n": 53,
             "pct": 70.44117647058823
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1650,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-09": 0.1,
+            "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.0,
-            "2026-09-16": 0.0,
+            "2026-09-15": 0.35,
+            "2026-09-16": 0.35,
             "2026-09-17": 0.0
           }
         }
@@ -22085,6 +22196,17 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
+          "2026-09-09": 0.035947924683452134,
+          "2026-09-10": 0.0,
+          "2026-09-11": 0.0,
+          "2026-09-12": 0.0,
+          "2026-09-13": 0.0,
+          "2026-09-14": 0.0,
+          "2026-09-15": 1.5188912857963743,
+          "2026-09-16": 0.16009658651014133,
+          "2026-09-17": 0.0,
+          "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 0.0,
@@ -22110,17 +22232,17 @@
       "operationalConsensus": {
         "method": "accuracy_weighted_median",
         "values": {
-          "2026-09-08": 0.0,
           "2026-09-09": 0.0,
           "2026-09-10": 0.0,
           "2026-09-11": 0.0,
           "2026-09-12": 0.0,
           "2026-09-13": 0.0,
           "2026-09-14": 0.0,
-          "2026-09-15": 0.0,
-          "2026-09-16": 0.0,
+          "2026-09-15": 2.32,
+          "2026-09-16": 0.65,
           "2026-09-17": 0.0,
           "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 0.0,
@@ -22145,19 +22267,18 @@
             "n": 55,
             "pct": 25.16556291390728
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1624,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 5.0,
+            "2026-09-15": 7.0,
             "2026-09-16": 0.0
           }
         },
@@ -22167,52 +22288,51 @@
             "n": 56,
             "pct": 64.39329354930379
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1624,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
-            "2026-09-14": 0.0
+            "2026-09-14": 0.0,
+            "2026-09-15": 0.0
           }
         },
         "janesweather": {
           "accuracy": {
             "leadHours": 13,
             "n": 55,
-            "pct": 54.635761589403984
+            "pct": 54.63576158940398
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1850,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-09": 0.63,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 1.01,
-            "2026-09-16": 0.01,
-            "2026-09-17": 0.0
+            "2026-09-15": 2.32,
+            "2026-09-16": 0.69,
+            "2026-09-17": 0.03
           }
         },
         "mountainwatch": {
           "accuracy": {
             "leadHours": 13,
             "n": 20,
-            "pct": 26.758064516129032
+            "pct": 26.758064516129043
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1850,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
             "2026-09-09": 0.2,
             "2026-09-10": 0.0,
@@ -22226,24 +22346,24 @@
           "accuracy": {
             "leadHours": 13,
             "n": 59,
-            "pct": 70.45555555555555
+            "pct": 70.45555555555556
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1750,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.0,
-            "2026-09-16": 0.0,
+            "2026-09-15": 1.89,
+            "2026-09-16": 0.63,
             "2026-09-17": 0.0,
-            "2026-09-18": 0.0
+            "2026-09-18": 0.0,
+            "2026-09-19": 0.0
           }
         },
         "snowatch": {
@@ -22280,29 +22400,29 @@
             "n": 58,
             "pct": 73.59550561797754
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1652,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
-            "2026-09-13": 0.0
+            "2026-09-13": 0.0,
+            "2026-09-14": 0.0
           }
         },
         "yrno": {
           "accuracy": {
             "leadHours": 13,
             "n": 55,
-            "pct": 72.11920529801324
+            "pct": 72.11920529801326
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1750,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
@@ -22310,8 +22430,8 @@
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.0,
-            "2026-09-16": 0.0,
+            "2026-09-15": 3.25,
+            "2026-09-16": 0.65,
             "2026-09-17": 0.0
           }
         }
@@ -22322,6 +22442,17 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
+          "2026-09-09": 0.016095696631968186,
+          "2026-09-10": 0.0,
+          "2026-09-11": 0.0,
+          "2026-09-12": 0.0,
+          "2026-09-13": 0.0,
+          "2026-09-14": 0.0,
+          "2026-09-15": 2.3379843659062773,
+          "2026-09-16": 0.5799326790622784,
+          "2026-09-17": 0.0083112849526378,
+          "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 0.0,
@@ -22347,17 +22478,17 @@
       "operationalConsensus": {
         "method": "accuracy_weighted_median",
         "values": {
-          "2026-09-08": 0.0,
           "2026-09-09": 0.0,
           "2026-09-10": 0.0,
           "2026-09-11": 0.0,
           "2026-09-12": 0.0,
           "2026-09-13": 0.0,
           "2026-09-14": 0.0,
-          "2026-09-15": 1.42,
-          "2026-09-16": 0.0,
+          "2026-09-15": 4.31,
+          "2026-09-16": 0.2,
           "2026-09-17": 0.0,
           "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 1.0,
@@ -22382,19 +22513,18 @@
             "n": 56,
             "pct": 37.267080745341616
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1737,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 5.0,
+            "2026-09-15": 6.0,
             "2026-09-16": 0.0
           }
         },
@@ -22404,18 +22534,18 @@
             "n": 55,
             "pct": 68.98706980741436
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1737,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
-            "2026-09-14": 0.0
+            "2026-09-14": 0.0,
+            "2026-09-15": 1.5
           }
         },
         "janesweather": {
@@ -22424,19 +22554,18 @@
             "n": 55,
             "pct": 81.0
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1800,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-09": 0.13,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 1.42,
-            "2026-09-16": 0.0,
+            "2026-09-15": 4.31,
+            "2026-09-16": 0.2,
             "2026-09-17": 0.0
           }
         },
@@ -22465,22 +22594,22 @@
             "n": 60,
             "pct": 74.43157894736842
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1720,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 1.68,
+            "2026-09-15": 5.88,
             "2026-09-16": 0.0,
             "2026-09-17": 0.0,
-            "2026-09-18": 0.0
+            "2026-09-18": 0.0,
+            "2026-09-19": 0.0
           }
         },
         "snowatch": {
@@ -22517,29 +22646,29 @@
             "n": 59,
             "pct": 58.73015873015872
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1867,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
-            "2026-09-13": 0.0
+            "2026-09-13": 0.0,
+            "2026-09-14": 0.0
           }
         },
         "yrno": {
           "accuracy": {
             "leadHours": 13,
             "n": 55,
-            "pct": 75.66037735849058
+            "pct": 75.66037735849056
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1720,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
@@ -22547,9 +22676,9 @@
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.0,
-            "2026-09-16": 0.0,
-            "2026-09-17": 0.0
+            "2026-09-15": 0.15,
+            "2026-09-16": 0.6,
+            "2026-09-17": 0.05
           }
         }
       },
@@ -22559,6 +22688,17 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
+          "2026-09-09": 0.0,
+          "2026-09-10": 0.0,
+          "2026-09-11": 0.0,
+          "2026-09-12": 0.0,
+          "2026-09-13": 0.0,
+          "2026-09-14": 0.0,
+          "2026-09-15": 3.335446317953369,
+          "2026-09-16": 0.22952916768494105,
+          "2026-09-17": 0.016370188423683426,
+          "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 1.0,
@@ -22584,17 +22724,17 @@
       "operationalConsensus": {
         "method": "accuracy_weighted_median",
         "values": {
-          "2026-09-08": 0.0,
           "2026-09-09": 0.0,
           "2026-09-10": 0.0,
           "2026-09-11": 0.0,
           "2026-09-12": 0.0,
           "2026-09-13": 0.0,
           "2026-09-14": 0.0,
-          "2026-09-15": 0.73,
-          "2026-09-16": 0.0,
-          "2026-09-17": 0.0,
+          "2026-09-15": 2.72,
+          "2026-09-16": 0.42,
+          "2026-09-17": 0.02,
           "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 1.0,
@@ -22619,19 +22759,18 @@
             "n": 55,
             "pct": 2.2058823529411797
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1785,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 5.0,
+            "2026-09-15": 7.0,
             "2026-09-16": 0.0
           }
         },
@@ -22639,42 +22778,41 @@
           "accuracy": {
             "leadHours": 13,
             "n": 55,
-            "pct": 40.78081940561867
+            "pct": 40.780819405618665
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1785,
           "referenceElevationQualifier": "approximate terrain height at provider grid/reference point",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
-            "2026-09-14": 0.0
+            "2026-09-14": 0.0,
+            "2026-09-15": 2.625
           }
         },
         "janesweather": {
           "accuracy": {
             "leadHours": 13,
             "n": 55,
-            "pct": 62.16176470588234
+            "pct": 62.16176470588235
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1850,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-09": 0.27,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 0.73,
-            "2026-09-16": 0.0,
-            "2026-09-17": 0.0
+            "2026-09-15": 2.72,
+            "2026-09-16": 0.27,
+            "2026-09-17": 0.02
           }
         },
         "mountainwatch": {
@@ -22700,24 +22838,24 @@
           "accuracy": {
             "leadHours": 13,
             "n": 66,
-            "pct": 50.14000000000001
+            "pct": 50.13999999999999
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1700,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
-            "2026-09-09": 0.21,
+            "2026-09-09": 0.28,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
-            "2026-09-15": 2.52,
-            "2026-09-16": 0.0,
+            "2026-09-15": 4.2,
+            "2026-09-16": 0.42,
             "2026-09-17": 0.0,
-            "2026-09-18": 0.0
+            "2026-09-18": 0.0,
+            "2026-09-19": 0.0
           }
         },
         "snowatch": {
@@ -22754,29 +22892,29 @@
             "n": 58,
             "pct": 67.28395061728395
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1701,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
-            "2026-09-08": 0.0,
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
             "2026-09-11": 0.0,
             "2026-09-12": 0.0,
-            "2026-09-13": 0.0
+            "2026-09-13": 0.0,
+            "2026-09-14": 0.0
           }
         },
         "yrno": {
           "accuracy": {
             "leadHours": 13,
             "n": 55,
-            "pct": 58.45588235294118
+            "pct": 58.45588235294117
           },
-          "issuedDate": "2026-09-08",
+          "issuedDate": "2026-09-09",
           "referenceElevationM": 1700,
           "referenceElevationQualifier": "provider-stated or explicitly requested elevation",
-          "run": "pm",
+          "run": "am",
           "values": {
             "2026-09-09": 0.0,
             "2026-09-10": 0.0,
@@ -22785,8 +22923,8 @@
             "2026-09-13": 0.0,
             "2026-09-14": 0.0,
             "2026-09-15": 0.3,
-            "2026-09-16": 0.0,
-            "2026-09-17": 0.0
+            "2026-09-16": 0.95,
+            "2026-09-17": 0.05
           }
         }
       },
@@ -22796,6 +22934,17 @@
         "method": "accuracy_weighted_mean",
         "run": "am",
         "values": {
+          "2026-09-09": 0.06414502800712359,
+          "2026-09-10": 0.0,
+          "2026-09-11": 0.0,
+          "2026-09-12": 0.0,
+          "2026-09-13": 0.0,
+          "2026-09-14": 0.0,
+          "2026-09-15": 2.4313886892992507,
+          "2026-09-16": 0.539856957264027,
+          "2026-09-17": 0.024397322658876702,
+          "2026-09-18": 0.0,
+          "2026-09-19": 0.0,
           "2026-10-07": 0.0,
           "2026-10-08": 0.0,
           "2026-10-09": 1.0,
@@ -22815,7 +22964,7 @@
       }
     }
   },
-  "generatedAt": "2026-09-09T09:40:10.041367+10:00",
+  "generatedAt": "2026-09-09T09:45:34.535537+10:00",
   "resortAliases": {
     "buller": "buller",
     "fallscreek": "falls",
